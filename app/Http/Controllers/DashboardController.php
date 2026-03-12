@@ -6,12 +6,9 @@ use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
-    public function index($id)
+    public function index()  
     {
-        $nama = "Agus";
-        $alamat = "Bandung";
-        $notelp = "08123456789";
-        $jurusan = "Teknik Informatika";
-        return view('dashboard', compact('id', 'nama', 'alamat', 'notelp', 'jurusan'));
+
+        return view('dashboard');
     }
 }
