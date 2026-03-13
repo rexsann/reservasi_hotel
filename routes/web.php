@@ -6,6 +6,7 @@ Use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ListBarangController; 
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\KamarController;
 
 //Route::get('/', function () {
 // return view('welcome');
@@ -34,3 +35,4 @@ Route::get('/list_barang/{id}/{nama}', [ListBarangController::class, 'tampilkan'
 Route::get('/dashboard', [DashboardController::class, 'index']);
 Route::get('/login', [LoginController::class, 'index']);
 Route::post('/login', [LoginController::class, 'authenticate']);
+Route::get('/kamar', [KamarController::class, 'index']);
