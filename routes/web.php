@@ -8,7 +8,8 @@ use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\KamarController;
 use App\Http\Controllers\AboutController;
-
+use App\Http\Controllers\RegistrasiController;
+use App\Http\Controllers\ProfilController;
 
 //Route::get('/', function () {
 // return view('welcome');
@@ -26,8 +27,15 @@ Route :: get('/app', function () {return view('app');
 Route :: get('/home', [HomeController::class, 'index']);
 Route::get('/about', [AboutController::class, 'index']);
 
+Route::get('/registrasi', [RegistrasiController::class, 'showRegistrasi']);
+Route::post('/registrasi', [RegistrasiController::class, 'registrasi']);
+
+Route::get('/profil', [ProfilController::class, 'index'])->name('profil');
+
 Route :: get('/user/{id}', function ($id) {return 'User dengan ID ' . $id;
 });
+
+
 
 Route::prefix('admin')->group(function () {
     Route::get('/dashboard', function () {
