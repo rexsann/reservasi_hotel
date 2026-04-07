@@ -1,25 +1,33 @@
 <?php
 
-namespace App\Http\Controllers; use Illuminate\Http\Request;
-class HomeController extends Controller
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+
+class homeController extends Controller
 {
-public function index()
-{
-// $data = [
-//	'nama' => 'Budi',
-// 'pekerjaan' => 'Developer',
-//];
-// return view('home')->with($data);
-$nama = "Teddy";
-$pekerjaan = "programmer";
-$alamat = "Jakarta";
-$notelp = "08123456789";
-$jurusan = "Teknik Informatika";
-return view('home', compact('nama', 'pekerjaan', 'alamat', 'notelp', 'jurusan'));
+    public function index()
+    {
+        // data dummy (nanti bisa dari database)
+        $rooms = [
+            [
+                'name' => 'Deluxe Room',
+                'desc' => 'Nyaman dan elegan',
+                'image' => 'https://source.unsplash.com/400x300/?hotel-room'
+            ],
+            [
+                'name' => 'Executive Room',
+                'desc' => 'Lebih luas dan mewah',
+                'image' => 'https://source.unsplash.com/400x300/?luxury-hotel'
+            ],
+            [
+                'name' => 'Suite Room',
+                'desc' => 'Fasilitas premium',
+                'image' => 'https://source.unsplash.com/400x300/?suite-hotel'
+            ]
+        ];
+
+        return view('home', compact('rooms'));
+    }
 }
-public function contact()
-{
-return view('contact');
-}
-}
- 
+

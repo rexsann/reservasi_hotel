@@ -8,6 +8,7 @@ use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\KamarController;
 
+
 //Route::get('/', function () {
 // return view('welcome');
 //});
@@ -17,6 +18,12 @@ Route::get('/contact', [HomeController::class, 'contact']);
 
 Route :: get('/welcome', function () {return view('welcome');
 });
+
+Route :: get('/app', function () {return view('app');
+});
+
+Route :: get('/home', [HomeController::class, 'index']);
+
 Route :: get('/user/{id}', function ($id) {return 'User dengan ID ' . $id;
 });
 
