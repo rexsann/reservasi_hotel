@@ -21,6 +21,7 @@
         <div>
             <a href="/" class="mx-2 text-blue-600 font-semibold">Home</a>
             <a href="/about" class="mx-2 text-gray-700 hover:text-gray-500">About</a>
+            <a href="/contact" class="mx-2 text-gray-700 hover:text-gray-500">Contact</a>
         </div>
     </div>
 </nav>
