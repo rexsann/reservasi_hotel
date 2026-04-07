@@ -15,8 +15,13 @@
 
 <!-- Navbar -->
 <nav class="bg-white shadow-md">
-    <div class="container mx-auto px-6 py-4 flex justify-between">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
         <h1 class="text-xl font-bold text-blue-600">HotelKu</h1>
+
+        <div>
+            <a href="/" class="mx-2 text-blue-600 font-semibold">Home</a>
+            <a href="/about" class="mx-2 text-gray-700 hover:text-gray-500">About</a>
+        </div>
     </div>
 </nav>
 

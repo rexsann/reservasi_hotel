@@ -7,6 +7,7 @@ use App\Http\Controllers\ListBarangController;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\KamarController;
+use App\Http\Controllers\AboutController;
 
 
 //Route::get('/', function () {
@@ -23,6 +24,7 @@ Route :: get('/app', function () {return view('app');
 });
 
 Route :: get('/home', [HomeController::class, 'index']);
+Route::get('/about', [AboutController::class, 'index']);
 
 Route :: get('/user/{id}', function ($id) {return 'User dengan ID ' . $id;
 });
