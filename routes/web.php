@@ -10,13 +10,14 @@ use App\Http\Controllers\KamarController;
 use App\Http\Controllers\AboutController;
 use App\Http\Controllers\RegistrasiController;
 use App\Http\Controllers\ProfilController;
+use App\Http\Controllers\ContactController;
 
 //Route::get('/', function () {
 // return view('welcome');
 //});
 
 Route::get('/', [HomeController::class, 'index']);
-Route::get('/contact', [HomeController::class, 'contact']);
+Route::get('/contact', [ContactController::class, 'index']);
 
 Route :: get('/welcome', function () {return view('welcome');
 });
