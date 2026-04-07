@@ -1,13 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
-</head>
-<body>
-    <h1>Dashboard</h1>
-    <p>Selamat datang di dashboard!</p>
-    
-</body>
+<html>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nama</th>
+                <th>Harga</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach($data as $dataku)
+            <tr>
+                <td>{{ $dataku['id'] }}</td>
+                <td>{{ $dataku['nama'] }}</td>
+                <td>{{ $dataku['harga'] }}</td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
 </html>

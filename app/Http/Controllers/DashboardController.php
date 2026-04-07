@@ -6,9 +6,23 @@ use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
-    public function index()  
+    public function getData()  
     {
 
-        return view('dashboard');
+        $dataBarang = [
+            ['id' => 1, 'nama' => 'Beras Pandan Wangi', 'harga' => 15000],
+            ['id' => 2, 'nama' => 'Tepung Terigu', 'harga' => 20000],
+            ['id' => 3, 'nama' => 'Baygon Cair', 'harga' => 135000],
+            ['id' => 4, 'nama' => 'Penyedap Royco', 'harga' => 14000],
+            ['id' => 5, 'nama' => 'Minyak Goreng', 'harga' => 12000],
+        ];
+        return $dataBarang;
     }
+public function tampilkan()
+{
+    $data = $this->getData();
+    $id = null;   // atau nilai default
+    $nama = null; // atau nilai default
+    return view('list_barang', compact('data', 'id', 'nama'));
+}
 }

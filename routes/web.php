@@ -31,6 +31,6 @@ Route::prefix('admin')->group(function () {
     //return view('list_barang', ['id' => $id, 'nama' => $nama]);
 //  });
 Route::get('/list_barang/{id}/{nama}', [ListBarangController::class, 'tampilkan']);
-Route::get('/dashboard', [DashboardController::class, 'index']);
+Route::get('/dashboard', [DashboardController::class, 'tampilkan']);
 Route::get('/login', [LoginController::class, 'index']);
 Route::post('/login', [LoginController::class, 'authenticate']);
