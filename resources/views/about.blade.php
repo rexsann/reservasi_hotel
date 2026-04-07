@@ -18,6 +18,7 @@
         <div>
             <a href="/home" class="mx-2 text-gray-700 hover:text-blue-500">Home</a>
             <a href="/about" class="mx-2 text-blue-600 font-semibold">About</a>
+            <a href="/contact" class="mx-2 text-gray-700 hover:text-gray-500">Contact</a>
         </div>
     </div>
 </nav>
