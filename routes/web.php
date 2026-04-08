@@ -11,6 +11,7 @@ use App\Http\Controllers\AboutController;
 use App\Http\Controllers\RegistrasiController;
 use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\LupaPasswrodController;
 
 //Route::get('/', function () {
 // return view('welcome');
@@ -30,6 +31,10 @@ Route::get('/about', [AboutController::class, 'index']);
 
 Route::get('/registrasi', [RegistrasiController::class, 'showRegistrasi']);
 Route::post('/registrasi', [RegistrasiController::class, 'registrasi']);
+Route::get('/login', [LoginController::class, 'index']);
+Route::post('/login', [LoginController::class, 'authenticate']);
+Route::get('/lupapassword', [LupaPasswrodController::class, 'index']);
+Route::post('/lupapassword', [LupaPasswrodController::class, 'resetPassword']);
 
 Route::get('/profil', [ProfilController::class, 'index'])->name('profil');
 
@@ -51,6 +56,6 @@ Route::prefix('admin')->group(function () {
 //  });
 Route::get('/list_barang/{id}/{nama}', [ListBarangController::class, 'tampilkan']);
 Route::get('/dashboard', [DashboardController::class, 'tampilkan']);
-Route::get('/login', [LoginController::class, 'index']);
-Route::post('/login', [LoginController::class, 'authenticate']);
+
+    Route::post('/login', [LoginController::class, 'authenticate']);
 Route::get('/kamar', [KamarController::class, 'index']);
