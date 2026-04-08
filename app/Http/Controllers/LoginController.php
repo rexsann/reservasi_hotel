@@ -17,7 +17,7 @@ class LoginController extends Controller
         $password = $request->password;
 
         if($username == "admin" && $password == "12345"){
-            return redirect('/dashboard');
+            return redirect('/home');
         }
 
         return back()->with('error','Username atau password salah');
