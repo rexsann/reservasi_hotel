@@ -36,12 +36,10 @@ Route::post('/login', [LoginController::class, 'authenticate']);
 Route::get('/lupapassword', [LupaPasswrodController::class, 'index']);
 Route::post('/lupapassword', [LupaPasswrodController::class, 'resetPassword']);
 
-Route::get('/profil', [ProfilController::class, 'index'])->name('profil');
-
 Route :: get('/user/{id}', function ($id) {return 'User dengan ID ' . $id;
 });
 
-
+Route::get('/profil', [ProfilController::class, 'index'])->name('profil');
 
 Route::prefix('admin')->group(function () {
     Route::get('/dashboard', function () {
