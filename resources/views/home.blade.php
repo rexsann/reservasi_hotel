@@ -269,341 +269,79 @@
       <!-- ROOMS -->
       <div id="rooms" class="scroll-mt-24 mt-16 container mx-auto px-6">
 
-        <h2 class="text-3xl font-bold mb-8">Stay Choices</h2>
+  <h2 class="text-3xl font-bold mb-8">Stay Choices</h2>
 
-        <!-- ================= ROOM 1 ================= -->
-        <div class="bg-white rounded-xl shadow-md mb-8 p-4">
-          <div class="grid md:grid-cols-3 gap-6">
+  @foreach ($rooms as $room)
+    <div class="bg-white rounded-xl shadow-md mb-8 p-4">
+      <div class="grid md:grid-cols-3 gap-6">
 
-            <!-- LEFT -->
-            <div>
-              <img src="https://source.unsplash.com/600x400/?hotel-room"
-                class="rounded-lg w-full h-48 object-cover">
+        <!-- LEFT -->
+        <div>
+          <img src="{{ $room['image'] }}" class="rounded-lg w-full h-48 object-cover">
 
-              <h4 class="mt-3 font-semibold text-lg">Superior Twin</h4>
-              <p class="text-sm text-gray-500">2 beds • 2 guests</p>
+          <h4 class="mt-3 font-semibold text-lg">{{ $room['name'] }}</h4>
+          <p class="text-sm text-gray-500">
+            {{ $room['bed'] }} • {{ $room['guest'] }}
+          </p>
 
-              <div class="mt-3 text-sm grid grid-cols-2 gap-2 text-gray-600">
-                <span>Free WiFi</span>
-                <span>AC</span>
-                <span>Mini Fridge</span>
-                <span>TV</span>
-              </div>
-
-              <button class="mt-4 w-full bg-teal-700 text-white py-2 rounded-lg">
-                See Room Detail
-              </button>
-            </div>
-
-            <!-- RIGHT -->
-            <!-- RIGHT -->
-            <div class="md:col-span-2">
-
-              <div class="max-h-[260px] overflow-y-auto space-y-4 pr-2">
-
-                <!-- OPTION 1 -->
-                <div class="border rounded-xl p-4 flex justify-between items-center">
-                  <div>
-                    <h5 class="font-semibold">MyValue Offer</h5>
-                    <ul class="text-sm text-gray-500 mt-2">
-                      <li>✔ Breakfast</li>
-                      <li>✔ Online Payment</li>
-                      <li>✔ Non-refundable</li>
-                    </ul>
-                  </div>
-
-                  <div class="text-right">
-                    <p class="line-through text-gray-400 text-sm">Rp 1.100.000</p>
-                    <p class="text-xl font-bold text-teal-700">Rp 950.000</p>
-                    <button class="mt-2 bg-orange-500 text-white px-4 py-2 rounded">
-                      Select
-                    </button>
-                  </div>
-                </div>
-
-                <!-- OPTION 2 -->
-                <div class="border rounded-xl p-4 flex justify-between items-center">
-                  <div>
-                    <h5 class="font-semibold">Regular Offer</h5>
-                    <ul class="text-sm text-gray-500 mt-2">
-                      <li>✔ Breakfast</li>
-                      <li>✔ Free Cancel</li>
-                    </ul>
-                  </div>
-
-                  <div class="text-right">
-                    <p class="text-xl font-bold text-teal-700">Rp 1.100.000</p>
-                    <button class="mt-2 bg-teal-700 text-white px-4 py-2 rounded">
-                      Select
-                    </button>
-                  </div>
-                </div>
-
-                <!-- OPTION 3 -->
-                <div class="border rounded-xl p-4 flex justify-between items-center">
-                  <div>
-                    <h5 class="font-semibold">Promo Hemat</h5>
-                    <ul class="text-sm text-gray-500 mt-2">
-                      <li>✔ No Breakfast</li>
-                      <li>✔ Non-refundable</li>
-                    </ul>
-                  </div>
-
-                  <div class="text-right">
-                    <p class="text-xl font-bold text-teal-700">Rp 850.000</p>
-                    <button class="mt-2 bg-teal-700 text-white px-4 py-2 rounded">
-                      Select
-                    </button>
-                  </div>
-                </div>
-
-                <!-- OPTION 4 -->
-                <div class="border rounded-xl p-4 flex justify-between items-center">
-                  <div>
-                    <h5 class="font-semibold">Flexible Stay</h5>
-                    <ul class="text-sm text-gray-500 mt-2">
-                      <li>✔ Breakfast</li>
-                      <li>✔ Free Cancel Anytime</li>
-                    </ul>
-                  </div>
-
-                  <div class="text-right">
-                    <p class="text-xl font-bold text-teal-700">Rp 1.250.000</p>
-                    <button class="mt-2 bg-teal-700 text-white px-4 py-2 rounded">
-                      Select
-                    </button>
-                  </div>
-                </div>
-
-              </div>
-
-            </div>
-
+          <div class="mt-3 text-sm grid grid-cols-2 gap-2 text-gray-600">
+            @foreach ($room['amenities'] as $item)
+              <span>{{ $item }}</span>
+            @endforeach
           </div>
+
+          <button class="mt-4 w-full bg-teal-700 text-white py-2 rounded-lg">
+            See Room Detail
+          </button>
         </div>
 
-        <!-- ================= ROOM 2 ================= -->
-        <div class="bg-white rounded-xl shadow-md mb-8 p-4">
-          <div class="grid md:grid-cols-3 gap-6">
+        <!-- RIGHT -->
+        <div class="md:col-span-2">
+          <div class="max-h-[260px] overflow-y-auto space-y-4 pr-2">
 
-            <div>
-              <img src="https://source.unsplash.com/600x400/?hotel-bedroom"
-                class="rounded-lg w-full h-48 object-cover">
+            @foreach ($room['prices'] as $price)
+              <div class="border rounded-xl p-4 flex justify-between items-center">
 
-              <h4 class="mt-3 font-semibold text-lg">Superior Hollywood</h4>
-              <p class="text-sm text-gray-500">1 king bed • 2 guests</p>
+                <div>
+                  <h5 class="font-semibold">{{ $price['title'] }}</h5>
 
-              <div class="mt-3 text-sm grid grid-cols-2 gap-2 text-gray-600">
-                <span>Free WiFi</span>
-                <span>AC</span>
-                <span>Smart TV</span>
-                <span>Mini Bar</span>
-              </div>
-
-              <button class="mt-4 w-full bg-teal-700 text-white py-2 rounded-lg">
-                See Room Detail
-              </button>
-            </div>
-
-            <!-- RIGHT -->
-            <div class="md:col-span-2">
-
-              <div class="max-h-[260px] overflow-y-auto space-y-4 pr-2">
-
-                <!-- OPTION 1 -->
-                <div class="border rounded-xl p-4 flex justify-between items-center">
-                  <div>
-                    <h5 class="font-semibold">MyValue Offer</h5>
-                    <ul class="text-sm text-gray-500 mt-2">
-                      <li>✔ Breakfast</li>
-                      <li>✔ Online Payment</li>
-                      <li>✔ Non-refundable</li>
-                    </ul>
-                  </div>
-
-                  <div class="text-right">
-                    <p class="line-through text-gray-400 text-sm">Rp 1.100.000</p>
-                    <p class="text-xl font-bold text-teal-700">Rp 950.000</p>
-                    <button class="mt-2 bg-orange-500 text-white px-4 py-2 rounded">
-                      Select
-                    </button>
-                  </div>
+                  <ul class="text-sm text-gray-500 mt-2">
+                    @foreach ($price['features'] as $f)
+                      <li>✔ {{ $f }}</li>
+                    @endforeach
+                  </ul>
                 </div>
 
-                <!-- OPTION 2 -->
-                <div class="border rounded-xl p-4 flex justify-between items-center">
-                  <div>
-                    <h5 class="font-semibold">Regular Offer</h5>
-                    <ul class="text-sm text-gray-500 mt-2">
-                      <li>✔ Breakfast</li>
-                      <li>✔ Free Cancel</li>
-                    </ul>
-                  </div>
+                <div class="text-right">
 
-                  <div class="text-right">
-                    <p class="text-xl font-bold text-teal-700">Rp 1.100.000</p>
-                    <button class="mt-2 bg-teal-700 text-white px-4 py-2 rounded">
-                      Select
-                    </button>
-                  </div>
-                </div>
+                  @if(isset($price['old_price']))
+                    <p class="line-through text-gray-400 text-sm">
+                      Rp {{ number_format($price['old_price'], 0, ',', '.') }}
+                    </p>
+                  @endif
 
-                <!-- OPTION 3 -->
-                <div class="border rounded-xl p-4 flex justify-between items-center">
-                  <div>
-                    <h5 class="font-semibold">Promo Hemat</h5>
-                    <ul class="text-sm text-gray-500 mt-2">
-                      <li>✔ No Breakfast</li>
-                      <li>✔ Non-refundable</li>
-                    </ul>
-                  </div>
+                  <p class="text-xl font-bold text-teal-700">
+                    Rp {{ number_format($price['price'], 0, ',', '.') }}
+                  </p>
 
-                  <div class="text-right">
-                    <p class="text-xl font-bold text-teal-700">Rp 850.000</p>
-                    <button class="mt-2 bg-teal-700 text-white px-4 py-2 rounded">
-                      Select
-                    </button>
-                  </div>
-                </div>
+                  <button class="mt-2 px-4 py-2 rounded text-white 
+                    {{ isset($price['highlight']) ? 'bg-orange-500' : 'bg-teal-700' }}">
+                    Select
+                  </button>
 
-                <!-- OPTION 4 -->
-                <div class="border rounded-xl p-4 flex justify-between items-center">
-                  <div>
-                    <h5 class="font-semibold">Flexible Stay</h5>
-                    <ul class="text-sm text-gray-500 mt-2">
-                      <li>✔ Breakfast</li>
-                      <li>✔ Free Cancel Anytime</li>
-                    </ul>
-                  </div>
-
-                  <div class="text-right">
-                    <p class="text-xl font-bold text-teal-700">Rp 1.250.000</p>
-                    <button class="mt-2 bg-teal-700 text-white px-4 py-2 rounded">
-                      Select
-                    </button>
-                  </div>
                 </div>
 
               </div>
-
-            </div>
-
-
-          </div>
-        </div>
-
-        <!-- ================= ROOM 3 ================= -->
-        <div class="bg-white rounded-xl shadow-md mb-8 p-4">
-          <div class="grid md:grid-cols-3 gap-6">
-
-            <div>
-              <img src="https://source.unsplash.com/600x400/?luxury-room"
-                class="rounded-lg w-full h-48 object-cover">
-
-              <h4 class="mt-3 font-semibold text-lg">Deluxe Room</h4>
-              <p class="text-sm text-gray-500">King bed • 2 guests</p>
-
-              <div class="mt-3 text-sm grid grid-cols-2 gap-2 text-gray-600">
-                <span>Free WiFi</span>
-                <span>Bathtub</span>
-                <span>AC</span>
-                <span>Mini Bar</span>
-              </div>
-
-              <button class="mt-4 w-full bg-teal-700 text-white py-2 rounded-lg">
-                See Room Detail
-              </button>
-            </div>
-
-            <!-- RIGHT -->
-            <div class="md:col-span-2">
-
-              <div class="max-h-[260px] overflow-y-auto space-y-4 pr-2">
-
-                <!-- OPTION 1 -->
-                <div class="border rounded-xl p-4 flex justify-between items-center">
-                  <div>
-                    <h5 class="font-semibold">MyValue Offer</h5>
-                    <ul class="text-sm text-gray-500 mt-2">
-                      <li>✔ Breakfast</li>
-                      <li>✔ Online Payment</li>
-                      <li>✔ Non-refundable</li>
-                    </ul>
-                  </div>
-
-                  <div class="text-right">
-                    <p class="line-through text-gray-400 text-sm">Rp 1.100.000</p>
-                    <p class="text-xl font-bold text-teal-700">Rp 950.000</p>
-                    <button class="mt-2 bg-orange-500 text-white px-4 py-2 rounded">
-                      Select
-                    </button>
-                  </div>
-                </div>
-
-                <!-- OPTION 2 -->
-                <div class="border rounded-xl p-4 flex justify-between items-center">
-                  <div>
-                    <h5 class="font-semibold">Regular Offer</h5>
-                    <ul class="text-sm text-gray-500 mt-2">
-                      <li>✔ Breakfast</li>
-                      <li>✔ Free Cancel</li>
-                    </ul>
-                  </div>
-
-                  <div class="text-right">
-                    <p class="text-xl font-bold text-teal-700">Rp 1.100.000</p>
-                    <button class="mt-2 bg-teal-700 text-white px-4 py-2 rounded">
-                      Select
-                    </button>
-                  </div>
-                </div>
-
-                <!-- OPTION 3 -->
-                <div class="border rounded-xl p-4 flex justify-between items-center">
-                  <div>
-                    <h5 class="font-semibold">Promo Hemat</h5>
-                    <ul class="text-sm text-gray-500 mt-2">
-                      <li>✔ No Breakfast</li>
-                      <li>✔ Non-refundable</li>
-                    </ul>
-                  </div>
-
-                  <div class="text-right">
-                    <p class="text-xl font-bold text-teal-700">Rp 850.000</p>
-                    <button class="mt-2 bg-teal-700 text-white px-4 py-2 rounded">
-                      Select
-                    </button>
-                  </div>
-                </div>
-
-                <!-- OPTION 4 -->
-                <div class="border rounded-xl p-4 flex justify-between items-center">
-                  <div>
-                    <h5 class="font-semibold">Flexible Stay</h5>
-                    <ul class="text-sm text-gray-500 mt-2">
-                      <li>✔ Breakfast</li>
-                      <li>✔ Free Cancel Anytime</li>
-                    </ul>
-                  </div>
-
-                  <div class="text-right">
-                    <p class="text-xl font-bold text-teal-700">Rp 1.250.000</p>
-                    <button class="mt-2 bg-teal-700 text-white px-4 py-2 rounded">
-                      Select
-                    </button>
-                  </div>
-                </div>
-
-              </div>
-
-            </div>
-
+            @endforeach
 
           </div>
         </div>
 
       </div>
+    </div>
+  @endforeach
 
+</div>
 
     </div>
     </div>
