@@ -1,53 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <meta charset="UTF-8">
     <title>Profil</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100">
 
-<div class="flex justify-center items-center min-h-screen">
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
 
-    <div class="w-full max-w-md bg-white rounded-2xl shadow-lg p-6">
+<div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md">
 
-        <!-- Avatar -->
-        <div class="flex flex-col items-center">
-            <img class="w-24 h-24 mb-3 rounded-full shadow-lg"
-                src="https://flowbite.com/docs/images/people/profile-picture-5.jpg" alt="User"/>
+    <h2 class="text-2xl font-bold text-center mb-6 text-gray-700">
+        Profil Pengguna
+    </h2>
 
-            <h5 class="mb-1 text-xl font-medium text-gray-900">
-                {{ auth()->user()->name ?? 'Guest' }}
-            </h5>
+    <!-- FOTO -->
+    <div class="flex justify-center mb-6">
+        <img src="https://ui-avatars.com/api/?name={{ $user->name }}"
+            class="w-24 h-24 rounded-full shadow-md">
+    </div>
 
-            <span class="text-sm text-gray-500">
-                {{ auth()->user()->email ?? '-' }}
-            </span>
+    <!-- DATA -->
+    <div class="space-y-4">
+
+        <div>
+            <h5 class="text-sm text-gray-500">Nama</h5>
+            <p class="text-lg font-semibold text-gray-700">
+                {{ $user->name }}
+            </p>
         </div>
 
-        <!-- Info -->
-        <div class="mt-6 space-y-3">
-
-            <div class="p-3 bg-gray-50 rounded-lg">
-                <p class="text-sm text-gray-500">Email</p>
-                <p class="font-semibold">{{ auth()->user()->email ?? '-' }}</p>
-            </div>
-
-            <div class="p-3 bg-gray-50 rounded-lg">
-                <p class="text-sm text-gray-500">Status</p>
-                <p class="font-semibold text-green-600">Active</p>
-            </div>
-
+        <div>
+            <h5 class="text-sm text-gray-500">Email</h5>
+            <p class="text-lg font-semibold text-gray-700">
+                {{ $user->email }}
+            </p>
         </div>
 
-        <!-- Button -->
-        <div class="mt-6 flex justify-center">
-            <a href="/logout"
-                class="text-white bg-red-500 hover:bg-red-600 font-medium rounded-lg text-sm px-5 py-2.5">
-                Logout
-            </a>
-        </div>
+    </div>
 
+    <!-- BUTTON -->
+    <div class="mt-6 flex flex-col gap-3">
+        <a href="/home"
+            class="w-full text-center bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600">
+            Kembali ke Home
+        </a>
+
+        <a href="/login"
+            class="w-full text-center bg-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-400">
+            Logout
+        </a>
     </div>
 
 </div>

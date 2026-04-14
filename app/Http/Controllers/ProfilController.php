@@ -3,13 +3,18 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class ProfilController extends Controller
 {
     public function index()
     {
-        $user = Auth::user();
+        // sementara dummy data biar sesuai login kamu
+        $user = (object)[
+            'name' => 'Admin',
+            'email' => 'admin@gmail.com',
+            'phone' => '08123456789'
+        ];
+
         return view('profil', compact('user'));
     }
 }
