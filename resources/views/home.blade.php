@@ -9,7 +9,7 @@
 
 </head>
 
-<body class="bg-gray-100">
+<body class="bg-gray-100 scroll-smooth">
 
   <!-- Navbar -->
 
@@ -22,37 +22,90 @@
         <span class="self-center text-xl text-heading font-semibold whitespace-nowrap">Flowbite</span>
       </a>
       <div class="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-        <button type="button" class="flex text-sm bg-neutral-primary rounded-full md:me-0 focus:ring-4 focus:ring-neutral-tertiary" id="user-menu-button" aria-expanded="false" data-dropdown-toggle="user-dropdown" data-dropdown-placement="bottom">
-          <span class="sr-only">Open user menu</span>
-          <img class="w-8 h-8 rounded-full" src="/docs/images/people/profile-picture-5.jpg" alt="user photo">
-        </button>
-        <!-- Dropdown menu -->
-        <div class="z-50 hidden bg-neutral-primary-medium border border-default-medium rounded-base shadow-lg w-44" id="user-dropdown">
-          <div class="px-4 py-3 text-sm border-b border-default">
-            <span class="block text-heading font-medium">Joseph McFall</span>
-            <span class="block text-body truncate">name@flowbite.com</span>
+        <button type="button"
+          class="relative group focus:outline-none"
+          id="user-menu-button"
+          data-dropdown-toggle="user-dropdown">
+
+          <!-- Avatar -->
+          <div class="w-10 h-10 rounded-full overflow-hidden 
+                ring-2 ring-blue-500 
+                group-hover:ring-blue-600 
+                transition duration-200">
+
+            <img
+              src="https://ui-avatars.com/api/?name={{ session('user_name') ?? 'Guest' }}&background=0D8ABC&color=fff&bold=true"
+              alt="user"
+              class="w-full h-full object-cover">
           </div>
-          <ul class="p-2 text-sm text-body font-medium" aria-labelledby="user-menu-button">
+
+          <!-- Online dot (optional keren) -->
+          <span class="absolute bottom-0 right-0 w-3 h-3 bg-green-400 border-2 border-white rounded-full"></span>
+
+        </button>
+
+        <!-- Dropdown menu -->
+        <!-- Dropdown menu -->
+        <div id="user-dropdown"
+          class="hidden absolute right-4 top-16 w-56 
+           bg-white rounded-2xl shadow-xl 
+           border border-gray-100 overflow-hidden z-50">
+
+          <!-- HEADER -->
+          <div class="px-4 py-4 bg-gradient-to-r from-blue-500 to-blue-600 text-black">
+
+            <p class="font-semibold text-base tracking-wide">
+              {{ session('user_name') ?? 'Guest' }}
+            </p>
+
+            <p class="text-sm text-blue-100 truncate">
+              {{ session('email') ?? '-' }}
+            </p>
+
+          </div>
+
+
+          <!-- MENU -->
+          <ul class="py-2 text-sm text-gray-700">
+
             <li>
-              <a href="#" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">Dashboard</a>
+              <a href="/profil"
+                class="flex items-center gap-2 px-4 py-2 hover:bg-blue-50 transition">
+                👤 Profil
+              </a>
             </li>
+
             <li>
-              <a href="#" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">Settings</a>
+              <a href="#"
+                class="flex items-center gap-2 px-4 py-2 hover:bg-blue-50 transition">
+                ⚙️ Settings
+              </a>
             </li>
+
             <li>
-              <a href="#" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">Earnings</a>
+              <a href="#"
+                class="flex items-center gap-2 px-4 py-2 hover:bg-blue-50 transition">
+                💳 Transaksi
+              </a>
             </li>
+
+            <!-- Divider -->
+            <div class="border-t my-2"></div>
+
             <li>
-              <a href="#" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">Sign out</a>
+              <a href="/logout"
+                class="flex items-center gap-2 px-4 py-2 text-red-500 hover:bg-red-50 transition">
+                🚪 Logout
+              </a>
             </li>
+
           </ul>
         </div>
-        <button data-collapse-toggle="navbar-user" type="button" class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-body rounded-base md:hidden hover:bg-neutral-secondary-soft hover:text-heading focus:outline-none focus:ring-2 focus:ring-neutral-tertiary" aria-controls="navbar-user" aria-expanded="false">
-          <span class="sr-only">Open main menu</span>
-          <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-            <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M5 7h14M5 12h14M5 17h14" />
-          </svg>
-        </button>
+
+
+
+
+
       </div>
       <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-user">
         <ul class="font-medium flex flex-col p-4 md:p-0 mt-4 border border-default rounded-base bg-neutral-secondary-soft md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-neutral-primary">
@@ -76,88 +129,87 @@
     </div>
   </nav>
 
+  <div class="pt-20">
+    <!-- HERO -->
+    <!-- HERO CAROUSEL -->
+    <div id="default-carousel" class="relative w-full">
 
-  <!-- HERO -->
-  <!-- HERO CAROUSEL -->
-  <div id="default-carousel" class="relative w-full mt-16" data-carousel="slide">
+      <!-- Carousel wrapper -->
+      <div class="relative h-[90vh] overflow-hidden">
 
-    <!-- Carousel wrapper -->
-    <div class="relative h-[90vh] overflow-hidden">
+        <!-- Item 1 -->
+        <div class="duration-700 ease-in-out absolute inset-0" data-carousel-item="active">
+          <img src="https://source.unsplash.com/1600x900/?hotel" class="absolute block w-full h-full object-cover">
 
-      <!-- Item 1 -->
-      <div class="duration-700 ease-in-out absolute inset-0" data-carousel-item="active">
-        <img src="https://source.unsplash.com/1600x900/?hotel" class="absolute block w-full h-full object-cover">
-
-        <div class="absolute inset-0 bg-black/50 flex items-center justify-center text-center z-10">
-          <div class="text-white">
-            <h1 class="text-5xl font-bold">Selamat Datang</h1>
-            <p>Nikmati pengalaman menginap terbaik</p>
+          <div class="absolute inset-0 bg-black/50 flex items-center justify-center text-center z-10">
+            <div class="text-white">
+              <h1 class="text-5xl font-bold">Selamat Datang</h1>
+              <p>Nikmati pengalaman menginap terbaik</p>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Item 2 -->
-      <div class="hidden duration-700 ease-in-out absolute inset-0" data-carousel-item>
-        <img src="https://source.unsplash.com/1600x900/?luxury-hotel"
-          class="absolute block w-full h-full object-cover">
+        <!-- Item 2 -->
+        <div class="hidden duration-700 ease-in-out absolute inset-0" data-carousel-item>
+          <img src="https://source.unsplash.com/1600x900/?luxury-hotel"
+            class="absolute block w-full h-full object-cover">
 
-        <div class="absolute inset-0 bg-black/50 flex items-center justify-center text-center">
-          <div class="text-white">
-            <h1 class="text-5xl font-bold">Hotel Mewah</h1>
-            <p>Fasilitas lengkap & nyaman</p>
+          <div class="absolute inset-0 bg-black/50 flex items-center justify-center text-center">
+            <div class="text-white">
+              <h1 class="text-5xl font-bold">Hotel Mewah</h1>
+              <p>Fasilitas lengkap & nyaman</p>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Item 3 -->
-      <div class="hidden duration-700 ease-in-out absolute inset-0" data-carousel-item>
-        <img src="https://source.unsplash.com/1600x900/?resort"
-          class="absolute block w-full h-full object-cover">
+        <!-- Item 3 -->
+        <div class="hidden duration-700 ease-in-out absolute inset-0" data-carousel-item>
+          <img src="https://source.unsplash.com/1600x900/?resort"
+            class="absolute block w-full h-full object-cover">
 
-        <div class="absolute inset-0 bg-black/50 flex items-center justify-center text-center">
-          <div class="text-white">
-            <h1 class="text-5xl font-bold">Liburan Sempurna</h1>
-            <p>Rasakan pengalaman terbaik</p>
+          <div class="absolute inset-0 bg-black/50 flex items-center justify-center text-center">
+            <div class="text-white">
+              <h1 class="text-5xl font-bold">Liburan Sempurna</h1>
+              <p>Rasakan pengalaman terbaik</p>
+            </div>
           </div>
         </div>
+
       </div>
+
+      <!-- Slider indicators -->
+      <div class="absolute z-30 flex space-x-3 -translate-x-1/2 bottom-5 left-1/2">
+        <button type="button" class="w-3 h-3 rounded-full bg-white" data-carousel-slide-to="0"></button>
+        <button type="button" class="w-3 h-3 rounded-full bg-white/50" data-carousel-slide-to="1"></button>
+        <button type="button" class="w-3 h-3 rounded-full bg-white/50" data-carousel-slide-to="2"></button>
+      </div>
+
+      <!-- Controls -->
+      <button type="button" class="absolute top-0 left-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer" data-carousel-prev>
+        ❮
+      </button>
+      <button type="button" class="absolute top-0 right-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer" data-carousel-next>
+        ❯
+      </button>
 
     </div>
 
-    <!-- Slider indicators -->
-    <div class="absolute z-30 flex space-x-3 -translate-x-1/2 bottom-5 left-1/2">
-      <button type="button" class="w-3 h-3 rounded-full bg-white" data-carousel-slide-to="0"></button>
-      <button type="button" class="w-3 h-3 rounded-full bg-white/50" data-carousel-slide-to="1"></button>
-      <button type="button" class="w-3 h-3 rounded-full bg-white/50" data-carousel-slide-to="2"></button>
+    <!-- BOOKING -->
+    <div class="container mx-auto px-6 relative z-30">
+      <div class="bg-white rounded-xl shadow-lg p-6 -mt-20">
+        <form class="grid md:grid-cols-5 gap-4">
+          <input type="date" class="border p-2 rounded-lg">
+          <input type="date" class="border p-2 rounded-lg">
+          <input type="number" placeholder="Tamu" class="border p-2 rounded-lg">
+          <input type="number" placeholder="Kamar" class="border p-2 rounded-lg">
+
+          <button class="bg-blue-600 text-white rounded-lg">
+            Cari
+          </button>
+        </form>
+      </div>
     </div>
 
-    <!-- Controls -->
-    <button type="button" class="absolute top-0 left-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer" data-carousel-prev>
-      ❮
-    </button>
-    <button type="button" class="absolute top-0 right-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer" data-carousel-next>
-      ❯
-    </button>
-
-  </div>
-
-  <!-- BOOKING -->
-  <div class="container mx-auto px-6 relative z-30">
-    <div class="bg-white rounded-xl shadow-lg p-6 -mt-20">
-      <form class="grid md:grid-cols-5 gap-4">
-        <input type="date" class="border p-2 rounded-lg">
-        <input type="date" class="border p-2 rounded-lg">
-        <input type="number" placeholder="Tamu" class="border p-2 rounded-lg">
-        <input type="number" placeholder="Kamar" class="border p-2 rounded-lg">
-
-        <button class="bg-blue-600 text-white rounded-lg">
-          Cari
-        </button>
-      </form>
-    </div>
-  </div>
-
-  <body class="scroll-smooth">
 
     <!-- TABS -->
     <div class="container mx-auto px-6 mt-10 sticky top-16 z-40">
@@ -269,89 +321,89 @@
       <!-- ROOMS -->
       <div id="rooms" class="scroll-mt-24 mt-16 container mx-auto px-6">
 
-  <h2 class="text-3xl font-bold mb-8">Stay Choices</h2>
+        <h2 class="text-3xl font-bold mb-8">Stay Choices</h2>
 
-  @foreach ($rooms as $room)
-    <div class="bg-white rounded-xl shadow-md mb-8 p-4">
-      <div class="grid md:grid-cols-3 gap-6">
+        @foreach ($rooms as $room)
+        <div class="bg-white rounded-xl shadow-md mb-8 p-4">
+          <div class="grid md:grid-cols-3 gap-6">
 
-        <!-- LEFT -->
-        <div>
-          <img src="{{ $room['image'] }}" class="rounded-lg w-full h-48 object-cover">
+            <!-- LEFT -->
+            <div>
+              <img src="{{ $room['image'] }}" class="rounded-lg w-full h-48 object-cover">
 
-          <h4 class="mt-3 font-semibold text-lg">{{ $room['name'] }}</h4>
-          <p class="text-sm text-gray-500">
-            {{ $room['bed'] }} • {{ $room['guest'] }}
-          </p>
+              <h4 class="mt-3 font-semibold text-lg">{{ $room['name'] }}</h4>
+              <p class="text-sm text-gray-500">
+                {{ $room['bed'] }} • {{ $room['guest'] }}
+              </p>
 
-          <div class="mt-3 text-sm grid grid-cols-2 gap-2 text-gray-600">
-            @foreach ($room['amenities'] as $item)
-              <span>{{ $item }}</span>
-            @endforeach
-          </div>
+              <div class="mt-3 text-sm grid grid-cols-2 gap-2 text-gray-600">
+                @foreach ($room['amenities'] as $item)
+                <span>{{ $item }}</span>
+                @endforeach
+              </div>
 
-          <button class="mt-4 w-full bg-teal-700 text-white py-2 rounded-lg">
-            See Room Detail
-          </button>
-        </div>
+              <button class="mt-4 w-full bg-teal-700 text-white py-2 rounded-lg">
+                See Room Detail
+              </button>
+            </div>
 
-        <!-- RIGHT -->
-        <div class="md:col-span-2">
-          <div class="max-h-[260px] overflow-y-auto space-y-4 pr-2">
+            <!-- RIGHT -->
+            <div class="md:col-span-2">
+              <div class="max-h-[260px] overflow-y-auto space-y-4 pr-2">
 
-            @foreach ($room['prices'] as $price)
-              <div class="border rounded-xl p-4 flex justify-between items-center">
+                @foreach ($room['prices'] as $price)
+                <div class="border rounded-xl p-4 flex justify-between items-center">
 
-                <div>
-                  <h5 class="font-semibold">{{ $price['title'] }}</h5>
+                  <div>
+                    <h5 class="font-semibold">{{ $price['title'] }}</h5>
 
-                  <ul class="text-sm text-gray-500 mt-2">
-                    @foreach ($price['features'] as $f)
+                    <ul class="text-sm text-gray-500 mt-2">
+                      @foreach ($price['features'] as $f)
                       <li>✔ {{ $f }}</li>
-                    @endforeach
-                  </ul>
-                </div>
+                      @endforeach
+                    </ul>
+                  </div>
 
-                <div class="text-right">
+                  <div class="text-right">
 
-                  @if(isset($price['old_price']))
+                    @if(isset($price['old_price']))
                     <p class="line-through text-gray-400 text-sm">
                       Rp {{ number_format($price['old_price'], 0, ',', '.') }}
                     </p>
-                  @endif
+                    @endif
 
-                  <p class="text-xl font-bold text-teal-700">
-                    Rp {{ number_format($price['price'], 0, ',', '.') }}
-                  </p>
+                    <p class="text-xl font-bold text-teal-700">
+                      Rp {{ number_format($price['price'], 0, ',', '.') }}
+                    </p>
 
-                  <button class="mt-2 px-4 py-2 rounded text-white 
+                    <button class="mt-2 px-4 py-2 rounded text-white 
                     {{ isset($price['highlight']) ? 'bg-orange-500' : 'bg-teal-700' }}">
-                    Select
-                  </button>
+                      Select
+                    </button>
+
+                  </div>
 
                 </div>
+                @endforeach
 
               </div>
-            @endforeach
+            </div>
 
           </div>
         </div>
+        @endforeach
 
       </div>
-    </div>
-  @endforeach
-
-</div>
 
     </div>
-    </div>
+  </div>
+  </div>
 
+  <!-- FOOTER -->
+  <footer class="bg-gray-900 text-white text-center py-4 mt-16">
+    © 2026 HotelKu
+  </footer>
 
-    <!-- FOOTER -->
-    <footer class="bg-gray-900 text-white text-center py-4 mt-16">
-      © 2026 HotelKu
-    </footer>
-
-  </body>
+</body>
 
 </html>
