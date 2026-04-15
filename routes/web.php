@@ -33,6 +33,7 @@ Route::get('/about', [AboutController::class, 'index']);
 
 Route::get('/registrasi', [RegistrasiController::class, 'showRegistrasi']);
 Route::post('/registrasi', [RegistrasiController::class, 'registrasi']);
+Route::get('/login', [LoginController::class, 'index'])->name('login');
 Route::post('/login', [LoginController::class, 'authenticate']);
 Route::get('/lupapassword', [LupaPasswrodController::class, 'index']);
 Route::post('/lupapassword', [LupaPasswrodController::class, 'resetPassword']);

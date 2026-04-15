@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\User;
+use Illuminate\Support\Facades\Session;
 
 class LoginController extends Controller
 {
@@ -13,13 +15,18 @@ class LoginController extends Controller
 
     public function authenticate(Request $request)
     {
-        $username = $request->username;
-        $password = $request->password;
+        $user = User::where('email', $request->email)->first();
 
-        if($username == "admin" && $password == "12345"){
-            return redirect('/home');
+        // kalau user ditemukan & password cocok
+        if ($user && $user->password === $request->password) {
+
+            // simpan session login
+            Session::put('user_id', $user->id);
+            Session::put('user_name', $user->name);
+
+            return redirect('/home')->with('success', 'Login berhasil!');
         }
 
-        return back()->with('error','Username atau password salah');
+        return back()->with('error', 'Email atau password salah!');
     }
 }
