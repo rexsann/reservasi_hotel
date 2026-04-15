@@ -53,22 +53,27 @@
                     class="w-full px-3 py-3 border text-lg  rounded-lg focus:ring-2 focus:ring-blue-400 text-gray-700">
             </div>
 
-<div class="flex flex-col gap-1">
-    <h5 class="text-lg font-bold text-left text-gray-900">Password</h5>
+            <div class="flex flex-col gap-1">
+                <h5 class="text-lg font-bold text-left text-gray-900">Password</h5>
 
-    <!-- Wrapper jadi border -->
-    <div class="flex items-center border rounded-lg px-3 focus-within:ring-2 focus-within:ring-blue-400">
+                <div class="relative">
+                    <input
+                        id="password"
+                        type="password"
+                        name="password"
+                        placeholder="Enter your password"
+                        class="block w-full px-3 py-3 pr-12 border border-gray-300 rounded-lg text-lg text-gray-700 
+                   focus:outline-none focus:ring-2 focus:ring-blue-400">
 
-        <input id="password" type="password" name="password" placeholder="Enter your password"
-            class="w-full py-3 text-lg text-gray-700 outline-none">
-
-        <!-- Icon Mata -->
-        <button type="button" onclick="togglePassword()" class="text-gray-500">
-            👀
-        </button>
-
-    </div>
-</div>
+                    <button
+                        type="button"
+                        onclick="togglePassword()"
+                        id="eyeIcon"
+                        class="absolute top-0 right-0 h-full px-3 flex items-center text-gray-500">
+                        👀
+                    </button>
+                </div>
+            </div>
 
             <button class="w-full bg-blue-500 text-white py-2 text-lg rounded-lg hover:bg-blue-600">
                 Sign In
