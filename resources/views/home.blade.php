@@ -12,7 +12,7 @@
 
 <body class="bg-gradient-to-br from-[#f5f1eb] via-[#ece3d9] to-[#e6dccf] scroll-smooth">
   <!-- Navbar -->
-  <nav class="bg-[#C8A96A]/80 backdrop-blur-md fixed w-full z-50 top-0 border-b border-[#14afc7] shadow-sm">
+  <nav class="bg-[#C8A96A]/80 backdrop-blur-md fixed w-full z-50 top-0 shadow-sm">
     <div class="max-w-screen-xl mx-auto flex items-center justify-between p-4">
 
       <!-- LEFT: Logo -->
@@ -115,7 +115,7 @@
 
 
 
-  <div class="pt-20">
+  <div class="pt-16">
     <!-- HERO -->
     <!-- HERO CAROUSEL -->
     <div id="default-carousel" class="relative w-full" data-carousel="slide" data-carousel-interval="3000">
@@ -125,7 +125,7 @@
 
         <!-- Item 1 -->
         <div class="duration-700 ease-in-out absolute inset-0" data-carousel-item="active">
-          <img src="https://source.unsplash.com/1600x900/?hotel" class="absolute block w-full h-full object-cover">
+          <img src="https://picsum.photos/800/600" class="absolute block w-full h-full object-cover">
 
           <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent flex items-center justify-center text-center z-10">
             <div class="text-white">
@@ -139,7 +139,7 @@
 
         <!-- Item 2 -->
         <div class="hidden duration-700 ease-in-out absolute inset-0" data-carousel-item>
-          <img src="https://source.unsplash.com/1600x900/?luxury-hotel"
+          <img src="https://picsum.photos/800/500"
             class="absolute block w-full h-full object-cover">
 
           <div class="absolute inset-0 bg-black/50 flex items-center justify-center text-center">
@@ -152,7 +152,7 @@
 
         <!-- Item 3 -->
         <div class="hidden duration-700 ease-in-out absolute inset-0" data-carousel-item>
-          <img src="https://source.unsplash.com/1600x900/?resort"
+          <img src="https://picsum.photos/800/700"
             class="absolute block w-full h-full object-cover">
 
           <div class="absolute inset-0 bg-black/50 flex items-center justify-center text-center">
@@ -229,10 +229,6 @@
 
     </div>
 
-
-
-
-
     <!-- CONTENT -->
     <div id="tab-content" class="bg-[#cfc7c7] p-6">
 
@@ -240,33 +236,63 @@
       <div class="bg-white rounded-2xl shadow-xl p-6 md:p-10 space-y-16">
 
         <!-- OVERVIEW -->
-        <div id="overview" class="scroll-mt-32">
-          <h3 class="text-xl font-bold mb-4 text-gray-800">About Our Hotel</h3>
+        <div id="overview" class="scroll-mt-32 mt-16">
 
-          <p class="text-gray-600 leading-relaxed">
-            Stayzy Hotel adalah hotel modern yang menawarkan kenyamanan dan kemewahan di pusat kota.
-            Dengan desain elegan dan pelayanan terbaik, kami memastikan pengalaman menginap Anda
-            menjadi tak terlupakan.
-          </p>
+          <!-- TITLE -->
+          <div class="max-w-screen-xl mx-auto px-4 mb-6">
+            <h3 class="text-3xl font-bold text-gray-800">About Our Hotel</h3>
+            <p class="text-sm text-gray-500 mt-1">
+              Discover comfort, elegance, and premium hospitality
+            </p>
+          </div>
 
-          <div class="grid md:grid-cols-3 gap-6 mt-6">
+          <!-- DESCRIPTION -->
+          <div class="max-w-screen-xl mx-auto px-4">
 
-            <div class="bg-gray-50 p-4 rounded-xl text-center shadow-sm hover:shadow-md transition">
-              <h4 class="font-bold text-lg">⭐ 4.8 Rating</h4>
-              <p class="text-sm text-gray-500">Dari 1.000+ review</p>
-            </div>
+            <div class="bg-white/70 backdrop-blur-xl border border-gray-100 shadow-sm rounded-3xl p-6 md:p-8">
 
-            <div class="bg-gray-50 p-4 rounded-xl text-center shadow-sm hover:shadow-md transition">
-              <h4 class="font-bold text-lg">🏨 60 Rooms</h4>
-              <p class="text-sm text-gray-500">5 Lantai</p>
-            </div>
+              <p class="text-gray-600 leading-relaxed text-base md:text-lg">
+                Stayzy Hotel adalah hotel modern yang menawarkan kenyamanan dan kemewahan di pusat kota.
+                Dengan desain elegan dan pelayanan terbaik, kami memastikan pengalaman menginap Anda
+                menjadi tak terlupakan.
+              </p>
 
-            <div class="bg-gray-50 p-4 rounded-xl text-center shadow-sm hover:shadow-md transition">
-              <h4 class="font-bold text-lg">📍 Lokasi Strategis</h4>
-              <p class="text-sm text-gray-500">Dekat pusat kota</p>
             </div>
 
           </div>
+
+          <!-- STATS -->
+          <div class="max-w-screen-xl mx-auto px-4 mt-10 grid md:grid-cols-3 gap-6">
+
+            <!-- CARD 1 -->
+            <div class="bg-white rounded-3xl p-6 text-center shadow-sm hover:shadow-xl transition border border-gray-100">
+
+              <div class="text-3xl mb-2">⭐</div>
+              <h4 class="text-2xl font-bold text-gray-800">4.8</h4>
+              <p class="text-sm text-gray-500 mt-1">Rating from 1.000+ reviews</p>
+
+            </div>
+
+            <!-- CARD 2 -->
+            <div class="bg-white rounded-3xl p-6 text-center shadow-sm hover:shadow-xl transition border border-gray-100">
+
+              <div class="text-3xl mb-2">🏨</div>
+              <h4 class="text-2xl font-bold text-gray-800">60 Rooms</h4>
+              <p class="text-sm text-gray-500 mt-1">5 Floors Premium Building</p>
+
+            </div>
+
+            <!-- CARD 3 -->
+            <div class="bg-white rounded-3xl p-6 text-center shadow-sm hover:shadow-xl transition border border-gray-100">
+
+              <div class="text-3xl mb-2">📍</div>
+              <h4 class="text-2xl font-bold text-gray-800">Strategic Location</h4>
+              <p class="text-sm text-gray-500 mt-1">Near city center & attractions</p>
+
+            </div>
+
+          </div>
+
         </div>
 
 
@@ -275,27 +301,77 @@
 
 
         <!-- FACILITIES -->
-        <div id="facilities" class="scroll-mt-32">
-          <h3 class="text-lg font-semibold mb-4 text-gray-800">Facilities</h3>
+        <div id="facilities" class="scroll-mt-32 mt-16">
 
-          <div class="grid md:grid-cols-3 gap-6 text-sm">
+          <!-- TITLE -->
+          <div class="max-w-screen-xl mx-auto px-4 mb-6">
+            <h3 class="text-3xl font-bold text-gray-800">Facilities</h3>
+            <p class="text-sm text-gray-500 mt-1">
+              Premium amenities for your comfort and safety
+            </p>
+          </div>
 
-            <div class="bg-gray-50 p-4 rounded-xl">
-              <p>Fire Safety System</p>
-              <p class="mt-3">GYM/Fitness Center</p>
-              <p class="mt-3">Smoke Alarm in Public Area</p>
+          <!-- GRID -->
+          <div class="max-w-screen-xl mx-auto px-4 grid md:grid-cols-3 gap-6 text-sm">
+
+            <!-- COL 1 -->
+            <div class="bg-white shadow-sm hover:shadow-lg transition p-6 rounded-2xl border border-gray-100 space-y-4">
+
+              <div class="flex items-center gap-3">
+                <span class="text-xl">🔥</span>
+                <p>Fire Safety System</p>
+              </div>
+
+              <div class="flex items-center gap-3">
+                <span class="text-xl">🏋️</span>
+                <p>GYM / Fitness Center</p>
+              </div>
+
+              <div class="flex items-center gap-3">
+                <span class="text-xl">🚨</span>
+                <p>Smoke Alarm in Public Area</p>
+              </div>
+
             </div>
 
-            <div class="bg-gray-50 p-4 rounded-xl">
-              <p>Dry Cleaning</p>
-              <p class="mt-3">Meeting Room</p>
-              <p class="mt-3">Outdoor Pool</p>
+            <!-- COL 2 -->
+            <div class="bg-white shadow-sm hover:shadow-lg transition p-6 rounded-2xl border border-gray-100 space-y-4">
+
+              <div class="flex items-center gap-3">
+                <span class="text-xl">🧺</span>
+                <p>Dry Cleaning</p>
+              </div>
+
+              <div class="flex items-center gap-3">
+                <span class="text-xl">🏢</span>
+                <p>Meeting Room</p>
+              </div>
+
+              <div class="flex items-center gap-3">
+                <span class="text-xl">🏊</span>
+                <p>Outdoor Pool</p>
+              </div>
+
             </div>
 
-            <div class="bg-gray-50 p-4 rounded-xl">
-              <p>Restaurant</p>
-              <p class="mt-3">Elevator</p>
-              <p class="mt-3">Laundry Service</p>
+            <!-- COL 3 -->
+            <div class="bg-white shadow-sm hover:shadow-lg transition p-6 rounded-2xl border border-gray-100 space-y-4">
+
+              <div class="flex items-center gap-3">
+                <span class="text-xl">🍽️</span>
+                <p>Restaurant</p>
+              </div>
+
+              <div class="flex items-center gap-3">
+                <span class="text-xl">🛗</span>
+                <p>Elevator</p>
+              </div>
+
+              <div class="flex items-center gap-3">
+                <span class="text-xl">🧼</span>
+                <p>Laundry Service</p>
+              </div>
+
             </div>
 
           </div>
@@ -307,23 +383,76 @@
 
 
         <!-- LOCATION -->
-        <div id="location" class="scroll-mt-32">
-          <h3 class="text-lg font-semibold mb-4 text-gray-800">Our Location</h3>
+        <div id="location" class="scroll-mt-32 mt-16">
 
-          <p class="text-gray-600 mb-4">
-            HotelKu berada di lokasi strategis yang mudah diakses dari berbagai tempat penting.
-          </p>
-
-          <iframe
-            src="https://maps.google.com/maps?q=batam&t=&z=13&ie=UTF8&iwloc=&output=embed"
-            class="w-full h-80 rounded-xl border">
-          </iframe>
-
-          <div class="mt-4 grid md:grid-cols-3 gap-4 text-sm">
-            <div class="bg-gray-50 p-4 rounded-lg">✈️ 20 menit dari Bandara</div>
-            <div class="bg-gray-50 p-4 rounded-lg">🛍️ Dekat Mall</div>
-            <div class="bg-gray-50 p-4 rounded-lg">🚕 Akses transportasi mudah</div>
+          <!-- TITLE -->
+          <div class="max-w-screen-xl mx-auto px-4 mb-6">
+            <h3 class="text-3xl font-bold text-gray-800">Our Location</h3>
+            <p class="text-sm text-gray-500 mt-1">
+              Strategically located for your convenience and comfort
+            </p>
           </div>
+
+          <!-- DESCRIPTION -->
+          <div class="max-w-screen-xl mx-auto px-4 mb-6">
+
+            <div class="bg-white/70 backdrop-blur-xl border border-gray-100 shadow-sm rounded-3xl p-6 md:p-8">
+
+              <p class="text-gray-600 leading-relaxed">
+                HotelKu berada di lokasi strategis yang mudah diakses dari berbagai tempat penting,
+                menjadikan perjalanan Anda lebih nyaman dan efisien.
+              </p>
+
+            </div>
+
+          </div>
+
+          <!-- MAP -->
+          <div class="max-w-screen-xl mx-auto px-4">
+
+            <div class="rounded-3xl overflow-hidden shadow-xl border border-gray-100 hover:shadow-2xl transition">
+
+              <iframe
+                src="https://maps.google.com/maps?q=batam&t=&z=13&ie=UTF8&iwloc=&output=embed"
+                class="w-full h-96">
+              </iframe>
+
+            </div>
+
+          </div>
+
+          <!-- FEATURES -->
+          <div class="max-w-screen-xl mx-auto px-4 mt-10 grid md:grid-cols-3 gap-6 text-sm">
+
+            <!-- CARD 1 -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-xl transition border border-gray-100 text-center">
+
+              <div class="text-3xl mb-2">✈️</div>
+              <h4 class="font-semibold text-gray-800">20 Minutes</h4>
+              <p class="text-gray-500 mt-1">From Airport</p>
+
+            </div>
+
+            <!-- CARD 2 -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-xl transition border border-gray-100 text-center">
+
+              <div class="text-3xl mb-2">🛍️</div>
+              <h4 class="font-semibold text-gray-800">Nearby Mall</h4>
+              <p class="text-gray-500 mt-1">Shopping & Entertainment</p>
+
+            </div>
+
+            <!-- CARD 3 -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-xl transition border border-gray-100 text-center">
+
+              <div class="text-3xl mb-2">🚕</div>
+              <h4 class="font-semibold text-gray-800">Easy Transport</h4>
+              <p class="text-gray-500 mt-1">Taxi & Ride Available</p>
+
+            </div>
+
+          </div>
+
         </div>
 
       </div>
@@ -334,133 +463,211 @@
     <!-- ROOMS -->
     <!-- BOOKING FILTER -->
     <!-- ROOMS SECTION -->
-    <div id="rooms" class="scroll-mt-32 mt-20">
+    <div id="rooms" class="scroll-mt-32 mt-24">
 
-      <!-- Title -->
-      <div class="max-w-screen-xl mx-auto px-4 mb-6">
-        <h3 class="text-2xl font-bold text-gray-800">Our Rooms</h3>
-        <p class="text-gray-500 text-sm">Choose the best room for your stay</p>
+      <!-- TITLE -->
+      <!-- TITLE -->
+      <div class="max-w-screen-xl mx-auto px-4 mb-10">
+        <h3 class="text-4xl font-bold text-gray-800 tracking-tight">
+          Our Rooms
+        </h3>
+        <p class="text-gray-500 text-sm mt-2">
+          Choose the best room for your stay
+        </p>
       </div>
 
       <!-- BOOKING FILTER -->
-      <div class="max-w-screen-xl mx-auto px-4 mb-10">
-        <div class="bg-white shadow-lg rounded-2xl p-6 grid md:grid-cols-5 gap-4 items-end">
+      <div class="max-w-screen-xl mx-auto px-4 -mt-8 relative z-20 mb-14">
 
-          <div>
-            <label class="text-sm text-gray-500">Check-in</label>
-            <input type="date" class="w-full mt-1 border rounded-lg p-2 focus:ring-2 focus:ring-blue-400">
+        <div class="bg-white/70 backdrop-blur-2xl shadow-xl rounded-3xl p-6 md:p-8 border border-white/50">
+
+          <div class="mb-6">
+            <h2 class="text-2xl font-semibold text-gray-800">
+              Book Your Stay
+            </h2>
+            <p class="text-sm text-gray-500 mt-1">
+              Find the best rooms for your comfort
+            </p>
           </div>
 
-          <div>
-            <label class="text-sm text-gray-500">Check-out</label>
-            <input type="date" class="w-full mt-1 border rounded-lg p-2 focus:ring-2 focus:ring-blue-400">
-          </div>
+          <div class="grid md:grid-cols-5 gap-4 items-end">
 
-          <div>
-            <label class="text-sm text-gray-500">Guests</label>
-            <input type="number" placeholder="2" class="w-full mt-1 border rounded-lg p-2 focus:ring-2 focus:ring-blue-400">
-          </div>
+            <div>
+              <label class="text-xs text-gray-500">Check-in</label>
+              <input type="date"
+                class="w-full mt-1 px-3 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+            </div>
 
-          <div>
-            <label class="text-sm text-gray-500">Rooms</label>
-            <input type="number" placeholder="1" class="w-full mt-1 border rounded-lg p-2 focus:ring-2 focus:ring-blue-400">
-          </div>
+            <div>
+              <label class="text-xs text-gray-500">Check-out</label>
+              <input type="date"
+                class="w-full mt-1 px-3 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+            </div>
 
-          <button class="bg-blue-600 text-white rounded-lg py-2 mt-5 hover:bg-blue-700 transition">
-            Search
-          </button>
+            <div>
+              <label class="text-xs text-gray-500">Guests</label>
+              <input type="number" placeholder="2"
+                class="w-full mt-1 px-3 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+            </div>
+
+            <div>
+              <label class="text-xs text-gray-500">Rooms</label>
+              <input type="number" placeholder="1"
+                class="w-full mt-1 px-3 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+            </div>
+
+            <button
+              class="h-[48px] bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-semibold shadow-md hover:shadow-xl hover:scale-[1.02] transition-all">
+              Search
+            </button>
+
+          </div>
 
         </div>
       </div>
 
       <!-- ROOM LIST -->
-      <div class="max-w-screen-xl mx-auto px-4 space-y-8">
+      <div class="max-w-screen-xl mx-auto px-4 space-y-12">
 
         @foreach ($rooms as $room)
-        <div class="bg-white rounded-2xl shadow-md hover:shadow-xl transition p-5">
+        <div class="bg-white rounded-3xl shadow-sm hover:shadow-2xl transition overflow-hidden border border-gray-100">
 
-          <div class="grid md:grid-cols-3 gap-6">
+          <div class="grid md:grid-cols-3 gap-0">
 
             <!-- LEFT -->
-            <div>
-              <img src="{{ $room['image'] }}"
-                class="rounded-xl w-full h-52 object-cover">
+            <div class="p-6 md:border-r border-gray-100">
 
-              <h4 class="mt-4 font-semibold text-lg text-gray-800">
+              <img src="{{ $room['image'] }}"
+                class="rounded-2xl w-full h-56 object-cover hover:scale-105 transition duration-500">
+
+              <h4 class="mt-5 font-semibold text-2xl text-gray-800">
                 {{ $room['name'] }}
               </h4>
 
-              <p class="text-sm text-gray-500">
+              <p class="text-sm text-gray-500 mt-1">
                 {{ $room['bed'] }} • {{ $room['guest'] }}
               </p>
 
-              <div class="mt-3 text-sm grid grid-cols-2 gap-2 text-gray-600">
+              <div class="mt-5 grid grid-cols-2 gap-2 text-sm text-gray-600">
                 @foreach ($room['amenities'] as $item)
-                <span>✔ {{ $item }}</span>
+                <span class="flex items-center gap-1">✔ {{ $item }}</span>
                 @endforeach
               </div>
 
-              <button class="mt-4 w-full bg-gray-800 text-white py-2 rounded-lg hover:bg-black transition">
+              <button
+                class="mt-6 w-full bg-gray-900 text-white py-3 rounded-xl hover:bg-black transition font-medium">
                 See Details
               </button>
+
             </div>
 
             <!-- RIGHT -->
-            <div class="md:col-span-2">
-              <div class="space-y-4">
+            <div class="md:col-span-2 p-6 space-y-5 bg-gray-50/40">
 
-                @foreach ($room['prices'] as $price)
-                <div class="border rounded-xl p-4 flex justify-between items-center hover:shadow-md transition">
+              @foreach ($room['prices'] as $price)
+              <div class="bg-white border border-gray-100 rounded-2xl p-5 flex justify-between items-center hover:shadow-md transition">
 
-                  <!-- INFO -->
-                  <div>
-                    <h5 class="font-semibold text-gray-800">
-                      {{ $price['title'] }}
-                    </h5>
+                <!-- INFO -->
+                <div>
+                  <h5 class="font-semibold text-gray-800 text-lg">
+                    {{ $price['title'] }}
+                  </h5>
 
-                    <ul class="text-sm text-gray-500 mt-2 space-y-1">
-                      @foreach ($price['features'] as $f)
-                      <li>✔ {{ $f }}</li>
-                      @endforeach
-                    </ul>
-                  </div>
-
-                  <!-- PRICE -->
-                  <div class="text-right">
-
-                    @if(isset($price['old_price']))
-                    <p class="line-through text-gray-400 text-sm">
-                      Rp {{ number_format($price['old_price'], 0, ',', '.') }}
-                    </p>
-                    @endif
-
-                    <p class="text-xl font-bold text-blue-600">
-                      Rp {{ number_format($price['price'], 0, ',', '.') }}
-                    </p>
-
-                    <button class="mt-2 px-4 py-2 rounded-lg text-white 
-                  {{ isset($price['highlight']) ? 'bg-orange-500' : 'bg-blue-600' }} hover:opacity-90 transition">
-                      Select
-                    </button>
-
-                  </div>
+                  <ul class="text-sm text-gray-500 mt-2 space-y-1">
+                    @foreach ($price['features'] as $f)
+                    <li>✔ {{ $f }}</li>
+                    @endforeach
+                  </ul>
                 </div>
-                @endforeach
+
+                <!-- PRICE -->
+                <div class="text-right">
+
+                  @if(isset($price['old_price']))
+                  <p class="line-through text-gray-400 text-sm">
+                    Rp {{ number_format($price['old_price'], 0, ',', '.') }}
+                  </p>
+                  @endif
+
+                  <p class="text-2xl font-bold text-blue-600">
+                    Rp {{ number_format($price['price'], 0, ',', '.') }}
+                  </p>
+
+                  <button
+                    class="mt-3 px-6 py-2 rounded-xl text-white text-sm font-semibold
+              {{ isset($price['highlight']) ? 'bg-orange-500' : 'bg-blue-600' }}
+              hover:opacity-90 transition shadow-sm">
+                    Select
+                  </button>
+
+                </div>
+
               </div>
+              @endforeach
+
             </div>
+
           </div>
         </div>
         @endforeach
 
       </div>
-
     </div>
-  </div>
   </div>
 
   <!-- FOOTER -->
-  <footer class="bg-gray-900 text-white text-center py-4 mt-16">
-    © 2026 HotelKu
+  <footer class="bg-gray-900 text-gray-300 pt-12 pb-6 mt-10">
+
+    <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-4 gap-10">
+
+      <!-- 🏨 ABOUT HOTEL -->
+      <div>
+        <h2 class="text-xl font-semibold text-white mb-4">🏨 Stayzy Hotel</h2>
+        <p class="text-sm leading-relaxed">
+          Hotel modern dengan kenyamanan terbaik di pusat kota Batam.
+          Cocok untuk bisnis maupun liburan bersama keluarga.
+        </p>
+      </div>
+
+      <!-- 📍 CONTACT -->
+      <div>
+        <h3 class="text-lg font-semibold text-white mb-4">Contact Us</h3>
+        <ul class="space-y-2 text-sm">
+          <li>📍 Jl. XYZ No.123, Batam</li>
+          <li>📞 +62 812 3456 7890</li>
+          <li>✉️ info@stayzyhotel.com</li>
+        </ul>
+      </div>
+
+      <!-- 🔗 QUICK LINKS -->
+      <div>
+        <h3 class="text-lg font-semibold text-white mb-4">Quick Links</h3>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#overview" class="hover:text-white">Overview</a></li>
+          <li><a href="#facilities" class="hover:text-white">Facilities</a></li>
+          <li><a href="#location" class="hover:text-white">Location</a></li>
+          <li><a href="#rooms" class="hover:text-white">Rooms</a></li>
+        </ul>
+      </div>
+
+      <!-- 📲 SOCIAL MEDIA -->
+      <div>
+        <h3 class="text-lg font-semibold text-white mb-4">Follow Us</h3>
+        <div class="flex space-x-4 text-lg">
+          <a href="#" class="hover:text-white">🌐</a>
+          <a href="#" class="hover:text-white">📘</a>
+          <a href="#" class="hover:text-white">📸</a>
+          <a href="#" class="hover:text-white">🐦</a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 🔻 BOTTOM -->
+    <div class="border-t border-gray-700 mt-10 pt-6 text-center text-sm text-gray-400">
+      © 2026 Stayzy Hotel. All rights reserved.
+    </div>
+
   </footer>
 
 </body>
