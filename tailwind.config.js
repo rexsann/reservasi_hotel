@@ -3,7 +3,7 @@ module.exports = {
     "./resources/**/*.blade.php",
     "./resources/**/*.js",
     "./resources/**/*.vue",
-    "./node.modules/flowbite/**/*.js"
+    "./node_modules/flowbite/**/*.js" // ✅ FIX
   ],
   theme: {
     extend: {},
