@@ -9,28 +9,28 @@ use Illuminate\Support\Facades\Hash;
 
 class LoginController extends Controller
 {
-    // tampilkan halaman login
+    // ini untuk mengambil halaman login
     public function index()
     {
         return view('login');
     }
 
-    // proses login
+    // ini proses login
     public function authenticate(Request $request)
     {
-        // validasi input
+        // ini validasi inputan
         $request->validate([
             'email' => 'required|email',
             'password' => 'required'
         ]);
 
-        // cari user berdasarkan email
+        // ini untuk mencari user berdasarkan email
         $user = User::where('email', $request->email)->first();
 
-        // cek user + password (WAJIB pakai Hash::check)
+        // ini untuk mengecek user + password (WAJIB pakai Hash::check)
         if ($user && Hash::check($request->password, $user->password)) {
 
-            // simpan session
+            // ini buat simpan session
             Session::put('user_id', $user->id);
             Session::put('user_name', $user->name);
 
