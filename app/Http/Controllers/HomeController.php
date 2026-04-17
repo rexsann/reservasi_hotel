@@ -72,6 +72,6 @@ class HomeController extends Controller
             ],
         ];
 
-        return view('home', compact('rooms'));
+        return view('/pages/home', compact('rooms'));
     }
 }

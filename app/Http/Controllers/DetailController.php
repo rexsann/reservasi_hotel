@@ -1,13 +1,12 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class ContactController extends Controller
+class DetailController extends Controller
 {
     public function index()
     {
-        return view('Pages.contact');
+        return view('pages.detail');
     }
 }

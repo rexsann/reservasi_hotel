@@ -15,6 +15,6 @@ class ProfilController extends Controller
             'phone' => '08123456789'
         ];
 
-        return view('profil', compact('user'));
+        return view('pages.profil', compact('user'));
     }
 }

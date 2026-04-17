@@ -15,6 +15,7 @@ use App\Http\Controllers\LupaPasswrodController;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\DetailController;
 
 //Route::get('/', function () {
 // return view('welcome');
@@ -30,6 +31,7 @@ Route::get('/welcome', function () {
 Route::get('/app', function () {
     return view('app');
 });
+Route::get('/detail', [DetailController::class, 'index']);
 
 Route::get('/home', [HomeController::class, 'index']);
 Route::get('/about', [AboutController::class, 'index']);
@@ -53,7 +55,7 @@ Route::get('/profil', [ProfilController::class, 'index'])->name('profil');
 Route::get('/list_barang/{id}/{nama}', [ListBarangController::class, 'tampilkan']);
 Route::get('/dashboard', [DashboardController::class, 'tampilkan']);
 Route::get('/reservation', function () {
-    return view('reservation');
+    return view('pages.reservation');
 });
 Route::post('/reservation/check', [ReservationController::class, 'check'])
     ->name('reservation.check');
