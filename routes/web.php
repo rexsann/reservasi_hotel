@@ -49,7 +49,7 @@ Route::get('/profil', [ProfilController::class, 'index'])->name('profil');
 Route::get('/list_barang/{id}/{nama}', [ListBarangController::class, 'tampilkan']);
 Route::get('/dashboard', [DashboardController::class, 'tampilkan']);
 Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
-
+Route::post('/reservation/check', [ReservationController::class, 'check'])->name('reservation.check');
 
 Route::get('/kamar', [KamarController::class, 'index']);
 
