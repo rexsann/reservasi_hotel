@@ -6,6 +6,8 @@
   <meta charset="UTF-8">
   <title>Stayzy Hotel</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 </head>
@@ -492,16 +494,13 @@
 
           <div class="grid md:grid-cols-5 gap-4 items-end">
 
-            <div>
-              <label class="text-xs text-gray-500">Check-in</label>
-              <input type="date"
-                class="w-full mt-1 px-3 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
-            </div>
+            <div class="max-w-md">
+              <label class="text-xs text-gray-500 mb-1 block">Stay Date</label>
 
-            <div>
-              <label class="text-xs text-gray-500">Check-out</label>
-              <input type="date"
-                class="w-full mt-1 px-3 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+              <input type="text" id="dateRange"
+                placeholder="Select check-in - check-out"
+                class="w-full px-4 py-3 border border-gray-200 rounded-2xl bg-white shadow-sm
+    focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all">
             </div>
 
             <div>
@@ -673,3 +672,19 @@
 </body>
 
 </html>
+
+<script>
+  flatpickr("#dateRange", {
+    mode: "range",
+    dateFormat: "d M Y",
+    minDate: "today",
+    showMonths: 2,
+    disableMobile: true,
+    onClose: function(selectedDates, dateStr, instance) {
+      if (selectedDates.length === 2) {
+        console.log("Check-in:", selectedDates[0]);
+        console.log("Check-out:", selectedDates[1]);
+      }
+    }
+  });
+</script>
