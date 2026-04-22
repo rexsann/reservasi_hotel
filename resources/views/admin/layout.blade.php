@@ -10,7 +10,7 @@
 
 <body class="bg-gray-100">
 
-<!-- 🔥 NAVBAR -->
+<!--NAVBAR -->
 <nav class="bg-white border-b shadow-sm">
     <div class="max-w-screen-xl mx-auto flex justify-between items-center p-4">
         
