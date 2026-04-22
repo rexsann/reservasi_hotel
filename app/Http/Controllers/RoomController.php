@@ -3,80 +3,42 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Room;
 
 class RoomController extends Controller
 {
-    // tampilkan semua room
+    // 🔹 tampilkan halaman rooms (data di-handle JS)
     public function index()
     {
-        $rooms = Room::all();
-        return view('admin.rooms', compact('rooms'));
+        return view('admin.rooms');
     }
 
-    // form tambah
+    // 🔹 tampilkan halaman create room
     public function create()
     {
         return view('admin.create_room');
     }
 
-    // simpan data
+    // 🔹 fake store (biar route ga error aja)
     public function store(Request $request)
     {
-        $request->validate([
-            'room_number' => 'required',
-            'floor' => 'required',
-            'type' => 'required',
-            'price' => 'required|numeric',
-            'status' => 'required'
-        ]);
-
-        Room::create([
-            'room_number' => $request->room_number,
-            'floor' => $request->floor,
-            'type' => $request->type,
-            'price' => $request->price,
-            'status' => $request->status
-        ]);
-
-        return redirect('/admin/rooms');
+        return redirect('/admin/rooms')->with('success', 'Room added (frontend only)');
     }
 
-    // form edit
+    // 🔹 fake edit (optional, kalau mau halaman edit)
     public function edit($id)
     {
-        $room = Room::findOrFail($id);
-        return view('admin.edit_room', compact('room'));
+        return view('admin.edit_room');
     }
 
-    // update data
+    // 🔹 fake update
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'room_number' => 'required',
-            'floor' => 'required',
-            'type' => 'required',
-            'price' => 'required|numeric',
-            'status' => 'required'
-        ]);
-
-        $room = Room::findOrFail($id);
-
-        $room->update([
-            'room_number' => $request->room_number,
-            'floor' => $request->floor,
-            'type' => $request->type,
-            'price' => $request->price,
-            'status' => $request->status
-        ]);
-
-        return redirect('/admin/rooms');
+        return redirect('/admin/rooms')->with('success', 'Room updated (frontend only)');
     }
 
-    // hapus
+    // 🔹 fake delete
     public function destroy($id)
     {
-        Room::destroy($id);
-        return redirect('/admin/rooms');
+        return redirect('/admin/rooms')->with('success', 'Room deleted (frontend only)');
     }
 }
