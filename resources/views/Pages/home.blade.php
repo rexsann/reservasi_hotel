@@ -13,9 +13,9 @@
 
       <!-- Item 1 -->
       <div class="duration-700 ease-in-out absolute inset-0" data-carousel-item="active">
-        <img src="https://picsum.photos/800/600" class="absolute block w-full h-full object-cover">
-
-        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent flex items-center justify-center text-center z-10">
+        <img src="/images/logopdi.jpg" class="absolute block w-full h-full object-cover">
+        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent *
+        flex items-center justify-center text-center z-10">
           <div class="text-white">
             <h1 class="text-3xl md:text-5xl font-bold">
               Selamat Datang di Stayzy Hotel
