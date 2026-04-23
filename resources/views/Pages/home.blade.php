@@ -78,41 +78,41 @@
   <div class="w-full sticky top-16 z-40">
 
     <div class="w-full bg-white/90 backdrop-blur-md border-b shadow-sm">
-      <ul class="grid grid-cols-4 text-center font-medium text-gray-600">
+      <ul class="grid grid-cols-4 text-center font-medium text-gray-600" style="height: 75px;">
 
-        <li>
-          <a href="#overview"
-            class="block py-4 hover:text-blue-600 hover:bg-blue-50 transition relative">
-            Overview
-            <span class="block h-0.5 bg-blue-600 w-0 hover:w-full transition-all mx-auto mt-1"></span>
-          </a>
-        </li>
+  <li class="flex h-full">
+    <a href="#overview"
+      class="flex flex-1 h-full items-center justify-center hover:text-blue-600 hover:bg-blue-50 transition relative">
+      Overview
+      <span class="absolute bottom-0 left-0 h-0.5 bg-blue-600 w-0 hover:w-full transition-all"></span>
+    </a>
+  </li>
 
-        <li>
-          <a href="#facilities"
-            class="block py-4 hover:text-blue-600 hover:bg-blue-50 transition relative">
-            Facilities
-            <span class="block h-0.5 bg-blue-600 w-0 hover:w-full transition-all mx-auto mt-1"></span>
-          </a>
-        </li>
+  <li class="flex h-full">
+    <a href="#facilities"
+      class="flex flex-1 h-full items-center justify-center hover:text-blue-600 hover:bg-blue-50 transition relative">
+      Facilities
+      <span class="absolute bottom-0 left-0 h-0.5 bg-blue-600 w-0 hover:w-full transition-all"></span>
+    </a>
+  </li>
 
-        <li>
-          <a href="#location"
-            class="block py-4 hover:text-blue-600 hover:bg-blue-50 transition relative">
-            Location
-            <span class="block h-0.5 bg-blue-600 w-0 hover:w-full transition-all mx-auto mt-1"></span>
-          </a>
-        </li>
+  <li class="flex h-full">
+    <a href="#location"
+      class="flex flex-1 h-full items-center justify-center hover:text-blue-600 hover:bg-blue-50 transition relative">
+      Location
+      <span class="absolute bottom-0 left-0 h-0.5 bg-blue-600 w-0 hover:w-full transition-all"></span>
+    </a>
+  </li>
 
-        <li>
-          <a href="#rooms"
-            class="block py-4 hover:text-blue-600 hover:bg-blue-50 transition relative">
-            Rooms
-            <span class="block h-0.5 bg-blue-600 w-0 hover:w-full transition-all mx-auto mt-1"></span>
-          </a>
-        </li>
+  <li class="flex h-full">
+    <a href="#rooms"
+      class="flex flex-1 h-full items-center justify-center hover:text-blue-600 hover:bg-blue-50 transition relative">
+      Rooms
+      <span class="absolute bottom-0 left-0 h-0.5 bg-blue-600 w-0 hover:w-full transition-all"></span>
+    </a>
+  </li>
 
-      </ul>
+</ul>
     </div>
 
   </div>
@@ -124,7 +124,8 @@
     <div class="bg-white rounded-2xl shadow-xl p-6 md:p-10 space-y-16">
 
       <!-- OVERVIEW -->
-      <div id="overview" class="scroll-mt-32 mt-16">
+      <div id="overview" class="scroll-mt-40 mt-16">
+      
 
         <!-- TITLE -->
         <div class="max-w-screen-xl mx-auto px-4 mb-6">
@@ -190,8 +191,8 @@
 
 
       <!-- FACILITIES -->
-      <div id="facilities" class="scroll-mt-32 mt-16">
-
+      <div id="facilities" class="scroll-mt-40 mt-16">
+  
         <!-- TITLE -->
         <div class="max-w-screen-xl mx-auto px-4 mb-6">
           <h3 class="text-3xl font-bold text-gray-800">Facilities</h3>
@@ -272,7 +273,7 @@
 
 
       <!-- LOCATION -->
-      <div id="location" class="scroll-mt-32 mt-16">
+      <div id="location" class="scroll-mt-40 mt-16">
 
         <!-- TITLE -->
         <div class="max-w-screen-xl mx-auto px-4 mb-6">
@@ -352,7 +353,7 @@
   <!-- ROOMS -->
   <!-- BOOKING FILTER -->
   <!-- ROOMS SECTION -->
-  <div id="rooms" class="scroll-mt-32 mt-24">
+  <div id="rooms" class="scroll-mt-40 mt-24">
 
     <!-- TITLE -->
     <!-- TITLE -->
