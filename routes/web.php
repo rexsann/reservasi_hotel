@@ -16,6 +16,8 @@ use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\AdminReservationController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 // ─── PUBLIC ROUTES ────────────────────────────────────────────
 Route::get('/',            [HomeController::class, 'index']);
@@ -31,6 +33,24 @@ Route::get('/app',     fn() => view('app'));
 
 Route::get('/list_barang/{id}/{nama}', [ListBarangController::class, 'tampilkan']);
 Route::get('/user/{id}', fn($id) => 'User dengan ID ' . $id);
+
+Route::post('/cart/add', function (Request $request) {
+
+    $cart = session()->get('cart', []);
+
+    $cart[] = [
+        'room_name' => $request->room_name,
+        'package' => $request->package,
+        'price' => $request->price,
+    ];
+
+    session()->put('cart', $cart);
+
+    return back();
+
+})->name('cart.add');
+
+
 
 // ─── AUTH ROUTES ──────────────────────────────────────────────
 Route::get('/registrasi',  [RegistrasiController::class, 'showRegistrasi']);
