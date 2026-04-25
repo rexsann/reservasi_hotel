@@ -1,9 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\ListBarangController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\KamarController;
 use App\Http\Controllers\AboutController;
@@ -28,13 +26,11 @@ Route::get('/home',        [HomeController::class, 'index']);
 Route::get('/about',       [AboutController::class, 'index']);
 Route::get('/contact',     [ContactController::class, 'index']);
 Route::get('/detail',      [DetailController::class, 'index']);
-Route::get('/kamar',       [KamarController::class, 'index']);
-Route::get('/dashboard',   [DashboardController::class, 'tampilkan']);
+
 
 Route::get('/welcome', fn() => view('welcome'));
 Route::get('/app',     fn() => view('app'));
 
-Route::get('/list_barang/{id}/{nama}', [ListBarangController::class, 'tampilkan']);
 Route::get('/user/{id}', fn($id) => 'User dengan ID ' . $id);
 
 Route::post('/cart/add', function (Request $request) {
