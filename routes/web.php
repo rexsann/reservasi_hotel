@@ -18,6 +18,8 @@ use App\Http\Controllers\RoomController;
 use App\Http\Controllers\AdminReservationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use App\Http\Controllers\FacilityController;
+use App\Http\Controllers\OfferController;
 
 // ─── PUBLIC ROUTES ────────────────────────────────────────────
 Route::get('/',            [HomeController::class, 'index']);
@@ -76,7 +78,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
 
     // Users (placeholder)
-    Route::get('/users', fn() => 'Admin Users')->name('users');
+Route::get('/users', function () {
+    return view('admin.user_management');
+})->name('users');
 
     // Room Management
     Route::get('/rooms',           [RoomController::class, 'index'])  ->name('rooms.index');
@@ -85,6 +89,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/rooms/{id}/edit', [RoomController::class, 'edit'])   ->name('rooms.edit');
     Route::put('/rooms/{id}',      [RoomController::class, 'update']) ->name('rooms.update');
     Route::delete('/rooms/{id}',   [RoomController::class, 'destroy'])->name('rooms.destroy');
+    Route::get('/rooms', [RoomController::class, 'index']);
 
     // Reservation Management
     Route::get('/reservations',           [AdminReservationController::class, 'index'])  ->name('reservations.index');
@@ -94,4 +99,17 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/reservations/{id}/edit', [AdminReservationController::class, 'edit'])   ->name('reservations.edit');
     Route::put('/reservations/{id}',      [AdminReservationController::class, 'update']) ->name('reservations.update');
     Route::delete('/reservations/{id}',   [AdminReservationController::class, 'destroy'])->name('reservations.destroy');
+
+
+// 🔹 FACILITY MANAGEMENT ⭐
+    Route::prefix('facilities')->name('facilities.')->group(function () {
+        Route::get('/', [FacilityController::class, 'index'])->name('index');
+    });
+
+
+    // 🔹 OFFER MANAGEMENT ⭐
+    Route::prefix('offers')->name('offers.')->group(function () {
+        Route::get('/', [OfferController::class, 'index'])->name('index');
+    });
+
 });
