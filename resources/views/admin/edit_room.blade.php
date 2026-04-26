@@ -1,4 +1,4 @@
-@extends('admin.layout')
+<!-- @extends('admin.layout')
 
 @section('content')
 
@@ -35,4 +35,4 @@
 
 </form>
 
-@endsection
+@endsection -->
