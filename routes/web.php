@@ -1,9 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\ListBarangController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\KamarController;
 use App\Http\Controllers\AboutController;
@@ -11,6 +9,9 @@ use App\Http\Controllers\RegistrasiController;
 use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\LupaPasswrodController;
+use App\Http\Controllers\LupaPasswordController;
+use App\Http\Controllers\CodeVerificationController;
+use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\DetailController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\AdminDashboardController;
@@ -27,13 +28,11 @@ Route::get('/home',        [HomeController::class, 'index']);
 Route::get('/about',       [AboutController::class, 'index']);
 Route::get('/contact',     [ContactController::class, 'index']);
 Route::get('/detail',      [DetailController::class, 'index']);
-Route::get('/kamar',       [KamarController::class, 'index']);
-Route::get('/dashboard',   [DashboardController::class, 'tampilkan']);
+
 
 Route::get('/welcome', fn() => view('welcome'));
 Route::get('/app',     fn() => view('app'));
 
-Route::get('/list_barang/{id}/{nama}', [ListBarangController::class, 'tampilkan']);
 Route::get('/user/{id}', fn($id) => 'User dengan ID ' . $id);
 
 Route::post('/cart/add', function (Request $request) {
@@ -62,8 +61,12 @@ Route::get('/login',       [LoginController::class, 'index'])->name('login');
 Route::post('/login',      [LoginController::class, 'authenticate']);
 Route::get('/logout',      [LoginController::class, 'logout'])->name('logout');
 
-Route::get('/lupapassword',  [LupaPasswrodController::class, 'index']);
-Route::post('/lupapassword', [LupaPasswrodController::class, 'resetPassword']);
+Route::get('/lupapassword', [LupaPasswordController::class, 'index']);
+Route::post('/lupapassword', [LupaPasswordController::class, 'sendOtp'])->name('lupapassword');
+Route::get('/verification', [CodeVerificationController::class, 'index'])->name('verification');
+Route::post('/verification', [CodeVerificationController::class, 'verify'])->name('verification.post');
+Route::get('/resetpassword', [ResetPasswordController::class, 'index'])->name('resetpassword');
+Route::post('/resetpassword', [ResetPasswordController::class, 'update'])->name('resetpassword.post');
 
 Route::get('/profil', [ProfilController::class, 'index'])->name('profil');
 

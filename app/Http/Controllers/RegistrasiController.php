@@ -19,6 +19,7 @@ class RegistrasiController extends Controller
             'name'     => 'required|string|max:50',
             'email'    => 'required|email|unique:users,email',
             'password' => 'required|string|min:6|confirmed',
+            'password_confirmation' => 'required|string|min:6',
         ], [
             'name.required'      => 'Nama lengkap wajib diisi.',
             'email.required'     => 'Email wajib diisi.',
@@ -27,6 +28,9 @@ class RegistrasiController extends Controller
             'password.required'  => 'Password wajib diisi.',
             'password.min'       => 'Password minimal 6 karakter.',
             'password.confirmed' => 'Konfirmasi password tidak cocok.',
+            'password_confirmation.required' => 'Konfirmasi password wajib diisi.',
+            'password_confirmation.min' => 'Konfirmasi password minimal 6 karakter.',
+            'password_confirmation.confirmed' => 'Konfirmasi password tidak cocok.',
         ]);
 
         User::create([

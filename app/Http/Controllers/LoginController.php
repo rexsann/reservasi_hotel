@@ -12,6 +12,7 @@ class LoginController extends Controller
     // ini untuk mengambil halaman login
     public function index()
     {
+        Session::put('user_id', null);
         return view('login');
     }
 
@@ -20,8 +21,13 @@ class LoginController extends Controller
     {
         // ini validasi inputan
         $request->validate([
-            'email' => 'required|email',
-            'password' => 'required'
+            'email'    => 'required|email|unique:users,email',
+            'password' => 'required|string|min:6|confirmed',
+        ], [
+            'email.required'     => 'The email field is required.',
+            'email.email'        => 'The email must be a valid email address.',
+            'password.required'  => 'The password field is required.',
+            'password.min'       => 'The password must be at least 6 characters.',
         ]);
 
         // ini untuk mencari user berdasarkan email
@@ -33,13 +39,21 @@ class LoginController extends Controller
             // ini buat simpan session
             Session::put('user_id', $user->id);
             Session::put('user_name', $user->name);
+            Session::put('user_role', $user->role);
+
+            // redirect berdasarkan role
+            if ($user->role === 'admin') {
+                return redirect('/admin/dashboard')->with('success', 'Selamat datang Admin!');
+            }
 
             // redirect ke home
-            return redirect('/home')->with('success', 'Login berhasil!');
+            return redirect('/home')->with('success', 'success!');
         }
 
         // kalau gagal
-        return back()->with('error', 'Email atau password salah!');
+        return back()->withErrors([
+            'email' => 'The email or password is incorrect.'
+        ])->withInput();
     }
 
     // logout

@@ -80,39 +80,39 @@
     <div class="w-full bg-white/90 backdrop-blur-md border-b shadow-sm">
       <ul class="grid grid-cols-4 text-center font-medium text-gray-600" style="height: 75px;">
 
-  <li class="flex h-full">
-    <a href="#overview"
-      class="flex flex-1 h-full items-center justify-center hover:text-blue-600 hover:bg-blue-50 transition relative">
-      Overview
-      <span class="absolute bottom-0 left-0 h-0.5 bg-blue-600 w-0 hover:w-full transition-all"></span>
-    </a>
-  </li>
+        <li class="flex h-full">
+          <a href="#overview"
+            class="flex flex-1 h-full items-center justify-center hover:text-blue-600 hover:bg-blue-50 transition relative">
+            Overview
+            <span class="absolute bottom-0 left-0 h-0.5 bg-blue-600 w-0 hover:w-full transition-all"></span>
+          </a>
+        </li>
 
-  <li class="flex h-full">
-    <a href="#facilities"
-      class="flex flex-1 h-full items-center justify-center hover:text-blue-600 hover:bg-blue-50 transition relative">
-      Facilities
-      <span class="absolute bottom-0 left-0 h-0.5 bg-blue-600 w-0 hover:w-full transition-all"></span>
-    </a>
-  </li>
+        <li class="flex h-full">
+          <a href="#facilities"
+            class="flex flex-1 h-full items-center justify-center hover:text-blue-600 hover:bg-blue-50 transition relative">
+            Facilities
+            <span class="absolute bottom-0 left-0 h-0.5 bg-blue-600 w-0 hover:w-full transition-all"></span>
+          </a>
+        </li>
 
-  <li class="flex h-full">
-    <a href="#location"
-      class="flex flex-1 h-full items-center justify-center hover:text-blue-600 hover:bg-blue-50 transition relative">
-      Location
-      <span class="absolute bottom-0 left-0 h-0.5 bg-blue-600 w-0 hover:w-full transition-all"></span>
-    </a>
-  </li>
+        <li class="flex h-full">
+          <a href="#location"
+            class="flex flex-1 h-full items-center justify-center hover:text-blue-600 hover:bg-blue-50 transition relative">
+            Location
+            <span class="absolute bottom-0 left-0 h-0.5 bg-blue-600 w-0 hover:w-full transition-all"></span>
+          </a>
+        </li>
 
-  <li class="flex h-full">
-    <a href="#rooms"
-      class="flex flex-1 h-full items-center justify-center hover:text-blue-600 hover:bg-blue-50 transition relative">
-      Rooms
-      <span class="absolute bottom-0 left-0 h-0.5 bg-blue-600 w-0 hover:w-full transition-all"></span>
-    </a>
-  </li>
+        <li class="flex h-full">
+          <a href="#rooms"
+            class="flex flex-1 h-full items-center justify-center hover:text-blue-600 hover:bg-blue-50 transition relative">
+            Rooms
+            <span class="absolute bottom-0 left-0 h-0.5 bg-blue-600 w-0 hover:w-full transition-all"></span>
+          </a>
+        </li>
 
-</ul>
+      </ul>
     </div>
 
   </div>
@@ -125,7 +125,7 @@
 
       <!-- OVERVIEW -->
       <div id="overview" class="scroll-mt-40 mt-16">
-      
+
 
         <!-- TITLE -->
         <div class="max-w-screen-xl mx-auto px-4 mb-6">
@@ -192,7 +192,7 @@
 
       <!-- FACILITIES -->
       <div id="facilities" class="scroll-mt-40 mt-16">
-  
+
         <!-- TITLE -->
         <div class="max-w-screen-xl mx-auto px-4 mb-6">
           <h3 class="text-3xl font-bold text-gray-800">Facilities</h3>
@@ -429,15 +429,13 @@
     <div class="max-w-screen-xl mx-auto px-4 space-y-12">
 
       @foreach ($rooms as $room)
-      <div class="bg-white rounded-3xl shadow-sm hover:shadow-2xl transition overflow-hidden border border-gray-100">
-
+      <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
         <div class="grid md:grid-cols-3 gap-0">
 
           <!-- LEFT -->
           <div class="p-6 md:border-r border-gray-100">
-
             <img src="https://picsum.photos/800/500"
-              class="rounded-2xl w-full h-56 object-cover hover:scale-105 transition duration-500">
+              class="rounded-2xl w-full h-56 object-cover">
 
             <h4 class="mt-5 font-semibold text-2xl text-gray-800">
               {{ $room['name'] }}
@@ -447,26 +445,22 @@
               {{ $room['bed'] }} • {{ $room['guest'] }}
             </p>
 
-            <div class="mt-5 grid grid-cols-2 gap-2 text-sm text-gray-600">
-              @foreach ($room['amenities'] as $item)
-              <span class="flex items-center gap-1">✔ {{ $item }}</span>
-              @endforeach
-            </div>
-
+            <!-- SEE DETAIL -->
             <button
+              data-name="{{ $room['name'] }}"
+              data-bed="{{ $room['bed'] }}"
+              data-guest="{{ $room['guest'] }}"
+              onclick="openModal(this)"
               class="mt-6 w-full bg-gray-900 text-white py-3 rounded-xl hover:bg-black transition font-medium">
               See Details
             </button>
-
           </div>
 
           <!-- RIGHT -->
           <div class="md:col-span-2 p-6 space-y-5 bg-gray-50/40">
-
             @foreach ($room['prices'] as $price)
-            <div class="bg-white border border-gray-100 rounded-2xl p-5 flex justify-between items-center hover:shadow-md transition">
+            <div class="bg-white border border-gray-100 rounded-2xl p-5 flex justify-between items-center">
 
-              <!-- INFO -->
               <div>
                 <h5 class="font-semibold text-gray-800 text-lg">
                   {{ $price['title'] }}
@@ -479,39 +473,228 @@
                 </ul>
               </div>
 
-              <!-- PRICE -->
               <div class="text-right">
-
-                @if(isset($price['old_price']))
-                <p class="line-through text-gray-400 text-sm">
-                  Rp {{ number_format($price['old_price'], 0, ',', '.') }}
-                </p>
-                @endif
-
                 <p class="text-2xl font-bold text-blue-600">
                   Rp {{ number_format($price['price'], 0, ',', '.') }}
                 </p>
 
+                <!-- SELECT = ADD TO ORDER LIST -->
                 <button
-                  class="mt-3 px-6 py-2 rounded-xl text-white text-sm font-semibold
-              {{ isset($price['highlight']) ? 'bg-orange-500' : 'bg-blue-600' }}
-              hover:opacity-90 transition shadow-sm">
+                  data-room="{{ $room['name'] }}"
+                  data-package="{{ $price['title'] }}"
+                  data-price="{{ number_format($price['price'], 0, ',', '.') }}"
+                  onclick="addToOrder(this)"
+                  class="mt-3 px-6 py-2 rounded-xl text-white text-sm font-semibold bg-blue-600 hover:opacity-90 transition shadow-sm">
                   Select
                 </button>
-
               </div>
 
             </div>
             @endforeach
-
           </div>
 
         </div>
       </div>
       @endforeach
 
-    </div>
-  </div>
-</div>
+      <!-- VIEW ORDER BUTTON -->
+      <div class="fixed bottom-8 right-8 z-40">
+        <button
+          id="viewOrderBtn"
+          onclick="openOrderSidebar()"
+          class="hidden bg-[#2d6d73] text-white px-8 py-4 rounded-2xl shadow-xl text-lg font-semibold hover:opacity-90 transition">
+          View Order (<span id="orderCount">0</span>)
+        </button>
+      </div>
 
-@endsection
+
+      <!-- DETAIL POPUP -->
+      <div id="roomModal"
+        class="fixed top-0 left-0 w-full h-screen bg-black/60 hidden items-center justify-center z-[9999]">
+        <div class="bg-white rounded-2xl p-8 w-full max-w-2xl min-h-[420px] max-h-[80vh] overflow-y-auto relative shadow-2xl">
+          <button onclick="closeModal()" class="absolute top-4 right-4 text-2xl">×</button>
+
+          <h2 id="modalTitle" class="text-2xl font-bold mb-4"></h2>
+          <p id="modalBed" class="mb-2"></p>
+          <p id="modalGuest" class="mb-4"></p>
+
+          <p class="text-sm text-gray-500">
+            Premium room facilities, breakfast included, flexible cancellation,
+            and exclusive hotel services.
+          </p>
+        </div>
+      </div>
+
+
+      <!-- ORDER SIDEBAR RIGHT (STYLE LIKE SANTIKA) -->
+      <div id="orderSidebar"
+        class="fixed top-0 right-0 h-screen w-[420px] bg-white shadow-2xl translate-x-full transition duration-300 z-[999] flex flex-col overflow-hidden">
+
+        <!-- HEADER -->
+        <div class="bg-[#2f2d28] text-white px-6 py-5 flex justify-between items-center">
+          <h2 class="text-xl font-semibold">Price Details</h2>
+          <button onclick="closeOrderSidebar()" class="text-4xl">×</button>
+        </div>
+
+        <!-- CONTENT -->
+        <div class="flex-1 overflow-y-auto p-5 bg-[#fafafa] min-h-0">
+
+          <div id="orderList" class="bg-[#f3f3f3] rounded-3xl p-6 space-y-6">
+
+            <p class="text-gray-700 text-lg">Room</p>
+
+            <div class="flex justify-between items-start">
+              <div>
+                <h3 id="sidebarRoom" class="text-3xl font-semibold text-slate-700"></h3>
+              </div>
+
+              <button class="w-10 h-10 rounded-full bg-teal-100 flex items-center justify-center text-teal-700">
+                🗑
+              </button>
+            </div>
+
+            <div class="flex justify-between items-start">
+              <div>
+                <p class="font-semibold text-2xl text-slate-700">Staycation Offer</p>
+                <p class="text-gray-500 mt-2">25 Apr 2026 - 26 Apr 2026</p>
+                <p class="text-gray-500">1 room, 1 night</p>
+              </div>
+
+              <div class="text-right">
+                <p id="sidebarPrice" class="text-3xl font-bold text-[#0f5f75]"></p>
+              </div>
+            </div>
+
+            <button class="text-[#0f5f75] font-medium">
+              See Detail ▼
+            </button>
+
+            <div class="border-t pt-5 text-center">
+              <button class="text-xl text-slate-600 font-medium">
+                + Add On
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="border-t border-dashed p-5 bg-white space-y-4">
+
+          <div class="flex justify-between items-center">
+            <h3 class="text-l font-semibold text-gray-600">Total Price</h3>
+            <p id="sidebarTotal" class="text-3xl font-bold text-[#0f5f75]"></p>
+          </div>
+
+          <div class="text-right text-gray-500 text-sm">
+            Earn up to <span class="font-bold">4% points</span>
+          </div>
+
+          <button
+            class="w-full bg-[#2d6d73] hover:opacity-90 text-white py-2 rounded-2xl text-2xl font-semibold">
+            Create Reservation
+          </button>
+
+          <p class="text-center text-gray-400 text-sm">
+            Room rates may differ per night for multi night stays.
+          </p>
+        </div>
+      </div>
+
+
+      <script>
+        let selectedOrders = [];
+
+        function addToOrder(button) {
+          const room = button.dataset.room;
+          const packageName = button.dataset.package;
+          const price = button.dataset.price;
+
+          let numericPrice = parseInt(price.replace(/\./g, ''));
+
+          selectedOrders.push({
+            room: room,
+            package: packageName,
+            price: numericPrice
+          });
+
+          renderOrders();
+
+          document.getElementById('orderCount').innerText = selectedOrders.length;
+          document.getElementById('viewOrderBtn').classList.remove('hidden');
+        }
+
+        function renderOrders() {
+          let orderList = document.getElementById('orderList');
+          let total = 0;
+          let html = '';
+
+          selectedOrders.forEach((item) => {
+            total += item.price;
+
+            html += `
+            <div class="border-b pb-5 mb-5">
+                <p class="text-gray-700 text-lg">Room</p>
+
+                <div class="flex justify-between items-start mt-2">
+                    <div>
+                        <h3 class="text-2xl font-semibold text-slate-700">
+                            ${item.room}
+                        </h3>
+
+                        <p class="font-medium text-slate-600 mt-2">
+                            ${item.package}
+                        </p>
+
+                        <p class="text-gray-500 text-sm mt-1">
+                            1 room • 1 night
+                        </p>
+                    </div>
+
+                    <div class="text-right">
+                        <p class="text-xl font-bold text-[#0f5f75]">
+                            Rp ${item.price.toLocaleString('id-ID')}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        `;
+          });
+
+          orderList.innerHTML = html;
+
+          document.getElementById('sidebarTotal').innerText =
+            'Rp ' + total.toLocaleString('id-ID');
+        }
+
+        function openOrderSidebar() {
+          document.getElementById('orderSidebar')
+            .classList.remove('translate-x-full');
+        }
+
+        function closeOrderSidebar() {
+          document.getElementById('orderSidebar')
+            .classList.add('translate-x-full');
+        }
+
+        function openModal(button) {
+          const name = button.dataset.name;
+          const bed = button.dataset.bed;
+          const guest = button.dataset.guest;
+
+          document.getElementById('modalTitle').innerText = name;
+          document.getElementById('modalBed').innerText = 'Bed Type: ' + bed;
+          document.getElementById('modalGuest').innerText = 'Guest Capacity: ' + guest;
+
+          document.getElementById('roomModal').classList.remove('hidden');
+          document.getElementById('roomModal').classList.add('flex');
+        }
+
+        function closeModal() {
+          document.getElementById('roomModal').classList.add('hidden');
+          document.getElementById('roomModal').classList.remove('flex');
+        }
+      </script>
+
+
+      @endsection

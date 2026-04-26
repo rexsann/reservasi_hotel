@@ -22,14 +22,14 @@
     @include('components.footer')
 
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            flatpickr("#dateRange", {
-                mode: "range",
-                dateFormat: "d M Y",
-                minDate: "today"
-            });
+        flatpickr("#dateRange", {
+            mode: "range",
+            minDate: "today",
+            dateFormat: "d M Y",
+            showMonths: 2, // ini bikin 2 kalender sekaligus
+            inline: false
         });
-    </script>   
+    </script>
 
 </body>
 
