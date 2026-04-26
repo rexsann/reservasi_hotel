@@ -1,474 +1,570 @@
-@extends('admin.layout')
+@extends('Layouts.layout')
 
 @section('content')
 
-<style>
-    .badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-        padding: 4px 12px;
-        border-radius: 20px;
-        font-size: 11.5px;
-        font-weight: 600;
-        letter-spacing: .02em;
-    }
-    .badge-confirmed { background: #dcfce7; color: #15803d; }
-    .badge-pending   { background: #fef9c3; color: #a16207; }
-    .badge-canceled  { background: #fee2e2; color: #b91c1c; }
+@php
+$harga = ['Standard' => 350000, 'Superior' => 500000, 'Deluxe' => 750000];
 
-    .stat-card { transition: box-shadow .2s; }
-    .stat-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,.08); }
+$reservations = collect([
+    (object)[
+        'id' => 1,
+        'user' => (object)['name' => 'Nareen', 'email' => 'nareen@mail.com'],
+        'room' => (object)['nomor_kamar' => '01', 'lantai' => 1, 'tipe' => 'Standard'],
+        'check_in' => '2026-04-20', 'check_out' => '2026-04-22', 'status' => 'confirmed'
+    ],
+    (object)[
+        'id' => 2,
+        'user' => (object)['name' => 'Kevin', 'email' => 'kevin@mail.com'],
+        'room' => (object)['nomor_kamar' => '02', 'lantai' => 2, 'tipe' => 'Superior'],
+        'check_in' => '2026-04-25', 'check_out' => '2026-04-27', 'status' => 'pending'
+    ],
+    (object)[
+        'id' => 3,
+        'user' => (object)['name' => 'Alicia', 'email' => 'alicia@mail.com'],
+        'room' => (object)['nomor_kamar' => '01', 'lantai' => 3, 'tipe' => 'Deluxe'],
+        'check_in' => '2026-04-28', 'check_out' => '2026-05-01', 'status' => 'canceled'
+    ],
+    (object)[
+        'id' => 4,
+        'user' => (object)['name' => 'Budi', 'email' => 'budi@mail.com'],
+        'room' => (object)['nomor_kamar' => '01', 'lantai' => 1, 'tipe' => 'Standard'],
+        'check_in' => '2026-03-10', 'check_out' => '2026-03-13', 'status' => 'checked_out'
+    ],
+    (object)[
+        'id' => 5,
+        'user' => (object)['name' => 'Sari', 'email' => 'sari@mail.com'],
+        'room' => (object)['nomor_kamar' => '02', 'lantai' => 2, 'tipe' => 'Superior'],
+        'check_in' => '2026-03-15', 'check_out' => '2026-03-17', 'status' => 'checked_out'
+    ],
+]);
 
-    .btn-edit {
-        background: #1e293b;
-        color: white;
-        padding: 5px 14px;
-        border-radius: 8px;
-        font-size: 12px;
-        font-weight: 600;
-        transition: background .2s;
-        border: none;
-        cursor: pointer;
-    }
-    .btn-edit:hover { background: #334155; }
+$aktif   = $reservations->whereIn('status', ['pending', 'confirmed']);
+$riwayat = $reservations->whereIn('status', ['checked_out', 'canceled']);
 
-    .btn-detail {
-        background: transparent;
-        border: 1.5px solid #e2e8f0;
-        color: #64748b;
-        padding: 5px 9px;
-        border-radius: 8px;
-        cursor: pointer;
-        transition: all .2s;
-    }
-    .btn-detail:hover { border-color: #3b82f6; color: #3b82f6; }
+$income = $riwayat->where('status', 'checked_out')->sum(function($r) use ($harga) {
+    $nights = \Carbon\Carbon::parse($r->check_in)->diffInDays($r->check_out);
+    return $nights * $harga[$r->room->tipe];
+});
+$lost = $riwayat->where('status', 'canceled')->sum(function($r) use ($harga) {
+    $nights = \Carbon\Carbon::parse($r->check_in)->diffInDays($r->check_out);
+    return $nights * $harga[$r->room->tipe];
+});
+@endphp
 
-    .btn-hapus {
-        background: transparent;
-        border: 1.5px solid #fecaca;
-        color: #ef4444;
-        padding: 5px 9px;
-        border-radius: 8px;
-        cursor: pointer;
-        transition: all .2s;
-        font-size: 12px;
-        font-weight: 600;
-    }
-    .btn-hapus:hover { background: #fee2e2; }
-</style>
-
-{{-- ===== HEADER ===== --}}
-<div class="flex items-center justify-between mb-6">
+{{-- HEADER --}}
+<div class="flex justify-between items-center mb-6">
     <div>
-        <h2 class="text-xl font-bold text-gray-800">Reservations Management</h2>
-        <p class="text-sm text-gray-400 mt-0.5">Kelola semua data reservasi tamu hotel</p>
+        <h2 class="text-xl font-semibold text-gray-800">Reservations Management</h2>
+        <p class="text-sm text-gray-400">Kelola reservasi hotel</p>
     </div>
-    <button
-        data-modal-target="modal-tambah"
-        data-modal-toggle="modal-tambah"
-        class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm px-5 py-2.5 rounded-xl transition shadow-sm">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+    <button data-modal-target="modal-tambah" data-modal-toggle="modal-tambah"
+        class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
         </svg>
         Tambah Reservasi
     </button>
 </div>
 
-{{-- ===== FLASH MESSAGE ===== --}}
-@if(session('success'))
-    <div id="alert-success" class="flex items-center p-4 mb-5 text-green-800 bg-green-50 rounded-xl border border-green-200 text-sm" role="alert">
-        <svg class="w-4 h-4 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-        </svg>
-        {{ session('success') }}
+{{-- STAT CARDS --}}
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+    <div class="bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
+        <p class="text-xs text-gray-400 mb-1">Total Aktif</p>
+        <p class="text-2xl font-semibold text-gray-800">{{ $aktif->count() }}</p>
     </div>
-@endif
-
-{{-- ===== STAT CARDS ===== --}}
-<div class="grid grid-cols-4 gap-4 mb-6">
-    <div class="stat-card bg-white rounded-xl border border-gray-200 p-5">
-        <p class="text-xs text-gray-400 font-medium uppercase tracking-wide">Total Reservasi</p>
-        <p class="text-3xl font-bold text-gray-800 mt-1">{{ $total }}</p>
-        <p class="text-xs text-gray-400 mt-1">Semua waktu</p>
+    <div class="bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
+        <p class="text-xs text-gray-400 mb-1 flex items-center gap-1">
+            <span class="w-2 h-2 rounded-full bg-green-500 inline-block"></span> Confirmed
+        </p>
+        <p class="text-2xl font-semibold text-green-600">{{ $aktif->where('status','confirmed')->count() }}</p>
     </div>
-    <div class="stat-card bg-white rounded-xl border border-gray-200 p-5">
-        <p class="text-xs text-gray-400 font-medium uppercase tracking-wide">Confirmed</p>
-        <p class="text-3xl font-bold text-green-600 mt-1">{{ $confirmed }}</p>
-        <p class="text-xs text-green-400 mt-1">Aktif</p>
+    <div class="bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
+        <p class="text-xs text-gray-400 mb-1 flex items-center gap-1">
+            <span class="w-2 h-2 rounded-full bg-yellow-400 inline-block"></span> Pending
+        </p>
+        <p class="text-2xl font-semibold text-yellow-500">{{ $aktif->where('status','pending')->count() }}</p>
     </div>
-    <div class="stat-card bg-white rounded-xl border border-gray-200 p-5">
-        <p class="text-xs text-gray-400 font-medium uppercase tracking-wide">Pending</p>
-        <p class="text-3xl font-bold text-yellow-500 mt-1">{{ $pending }}</p>
-        <p class="text-xs text-yellow-400 mt-1">Menunggu konfirmasi</p>
-    </div>
-    <div class="stat-card bg-white rounded-xl border border-gray-200 p-5">
-        <p class="text-xs text-gray-400 font-medium uppercase tracking-wide">Canceled</p>
-        <p class="text-3xl font-bold text-red-500 mt-1">{{ $canceled }}</p>
-        <p class="text-xs text-red-400 mt-1">Dibatalkan</p>
+    <div class="bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
+        <p class="text-xs text-gray-400 mb-1 flex items-center gap-1">
+            <span class="w-2 h-2 rounded-full bg-blue-400 inline-block"></span> Total Riwayat
+        </p>
+        <p class="text-2xl font-semibold text-blue-500">{{ $riwayat->count() }}</p>
     </div>
 </div>
 
-{{-- ===== TABLE CARD ===== --}}
-<div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
-
-    {{-- Filter Bar --}}
-    <div class="px-6 py-4 border-b border-gray-100 flex flex-wrap gap-3 items-center">
-        <form method="GET" action="{{ route('admin.reservations.index') }}"
-              class="flex flex-wrap gap-3 items-center w-full">
-
-            {{-- Search --}}
-            <div class="relative flex-1 min-w-[200px]">
-                <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
-                     fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                </svg>
-                <input type="text" name="search" value="{{ request('search') }}"
-                       placeholder="Search Customer..."
-                       class="w-full pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-xl bg-gray-50 focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition" />
-            </div>
-
-            {{-- Status --}}
-            <select name="status"
-                    class="py-2 px-3 text-sm border border-gray-200 rounded-xl bg-gray-50 focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition min-w-[140px]">
-                <option value="">All Status</option>
-                <option value="confirmed" {{ request('status') === 'confirmed' ? 'selected' : '' }}>Confirmed</option>
-                <option value="pending"   {{ request('status') === 'pending'   ? 'selected' : '' }}>Pending</option>
-                <option value="canceled"  {{ request('status') === 'canceled'  ? 'selected' : '' }}>Canceled</option>
-            </select>
-
-            {{-- Date --}}
-            <input type="date" name="date" value="{{ request('date') }}"
-                   class="py-2 px-3 text-sm border border-gray-200 rounded-xl bg-gray-50 focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition min-w-[160px]" />
-
-            {{-- Buttons --}}
-            <button type="submit"
-                    class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-5 py-2 rounded-xl transition">
-                Filter
+{{-- TABS --}}
+<div class="mb-4 border-b border-gray-200">
+    <ul class="flex gap-1 text-sm font-medium">
+        <li>
+            <button onclick="switchTab('aktif')" id="tab-aktif"
+                class="tab-btn px-4 py-2.5 border-b-2 border-blue-600 text-blue-600 transition">
+                Aktif
+                <span class="ml-1.5 bg-blue-100 text-blue-600 text-xs px-1.5 py-0.5 rounded-full">{{ $aktif->count() }}</span>
             </button>
-            <a href="{{ route('admin.reservations.index') }}"
-               class="text-sm text-gray-400 hover:text-gray-600 font-medium transition">
-                Reset
-            </a>
-        </form>
-    </div>
+        </li>
+        <li>
+            <button onclick="switchTab('riwayat')" id="tab-riwayat"
+                class="tab-btn px-4 py-2.5 border-b-2 border-transparent text-gray-400 hover:text-gray-600 transition">
+                Riwayat
+                <span class="ml-1.5 bg-gray-100 text-gray-500 text-xs px-1.5 py-0.5 rounded-full">{{ $riwayat->count() }}</span>
+            </button>
+        </li>
+    </ul>
+</div>
 
-    {{-- Table --}}
-    <div class="overflow-x-auto">
-        <table class="w-full">
+{{-- TAB: AKTIF --}}
+<div id="panel-aktif">
+    <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+
+        <table class="w-full text-sm">
             <thead class="bg-gray-50">
                 <tr>
-                    <th class="px-5 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">ID</th>
-                    <th class="px-5 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Customers</th>
-                    <th class="px-5 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Rooms</th>
-                    <th class="px-5 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Floor</th>
-                    <th class="px-5 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Check In</th>
-                    <th class="px-5 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Check Out</th>
-                    <th class="px-5 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Status</th>
-                    <th class="px-5 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Action</th>
+                    <th class="px-6 py-3 text-left text-xs font-bold text-black-500 uppercase">ID</th>
+                    <th class="px-6 py-3 text-left text-xs font-bold text-black-500 uppercase">Customer</th>
+                    <th class="px-6 py-3 text-left text-xs font-bold text-black-500 uppercase">Room</th>
+                    <th class="px-6 py-3 text-left text-xs font-bold text-black-500 uppercase">Check In</th>
+                    <th class="px-6 py-3 text-left text-xs font-bold text-black-500 uppercase">Check Out</th>
+                    <th class="px-6 py-3 text-left text-xs font-bold text-black-500 uppercase">Status</th>
+                    <th class="px-6 py-3 text-left text-xs font-bold text-black-500 uppercase">Action</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-gray-100">
 
-                @forelse($reservations as $res)
+            <tbody id="aktif-table-body" class="divide-y divide-gray-100">
+                @forelse($aktif as $res)
                 <tr class="hover:bg-gray-50 transition">
-
-                    {{-- ID --}}
-                    <td class="px-5 py-4">
-                        <span class="text-gray-400 font-mono text-xs">#{{ str_pad($res->id, 3, '0', STR_PAD_LEFT) }}</span>
+                    
+                    <td class="px-6 py-4 text-gray-600 text-sm font-medium">
+                        {{ $res->id }}
                     </td>
 
-                    {{-- Customer --}}
-                    <td class="px-5 py-4">
-                        <div class="flex items-center gap-2">
-                            <div class="w-7 h-7 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-bold flex-shrink-0">
-                            </div>
-                            <span class="text-sm font-medium text-gray-700">{{ $res->user->name ?? '-' }}</span>
-                        </div>
+                    <td class="px-6 py-4">
+                        <p class="font-semibold text-gray-800">{{ $res->user->name }}</p>
+                        <p class="text-xs text-gray-400">{{ $res->user->email }}</p>
                     </td>
 
-                    {{-- Room Number --}}
-                    <td class="px-5 py-4">
-                        <span class="font-mono font-semibold text-gray-700 text-sm">{{ $res->room->nomor_kamar ?? '-' }}</span>
+                    <td class="px-6 py-4">
+                        <p class="text-gray-700 font-medium">
+                            Room {{ $res->room->nomor_kamar }} • Floor {{ $res->room->lantai }}
+                        </p>
+                        <p class="text-xs text-gray-400">{{ $res->room->tipe }}</p>
                     </td>
 
-                    {{-- Floor --}}
-                    <td class="px-5 py-4 text-sm text-gray-500">
-                        Lt. {{ $res->room->lantai ?? '-' }}
-                    </td>
+                    <td class="px-6 py-4 text-gray-700">{{ $res->check_in }}</td>
+                    <td class="px-6 py-4 text-gray-700">{{ $res->check_out }}</td>
 
-                    {{-- Check In --}}
-                    <td class="px-5 py-4 text-sm text-gray-600">
-                        {{ \Carbon\Carbon::parse($res->check_in)->format('Y-m-d') }}
-                    </td>
-
-                    {{-- Check Out --}}
-                    <td class="px-5 py-4 text-sm text-gray-600">
-                        {{ \Carbon\Carbon::parse($res->check_out)->format('Y-m-d') }}
-                    </td>
-
-                    {{-- Status Badge --}}
-                    <td class="px-5 py-4">
-                        @if($res->status === 'confirmed')
-                            <span class="badge badge-confirmed">
-                                <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Confirmed
+                    <td class="px-6 py-4">
+                        @if($res->status == 'confirmed')
+                            <span class="px-3 py-1 text-xs rounded-full bg-green-100 text-green-700 font-medium">
+                                Confirmed
                             </span>
-                        @elseif($res->status === 'pending')
-                            <span class="badge badge-pending">
-                                <span class="w-1.5 h-1.5 rounded-full bg-yellow-400"></span> Pending
-                            </span>
-                        @elseif($res->status === 'canceled')
-                            <span class="badge badge-canceled">
-                                <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> Canceled
+                        @else
+                            <span class="px-3 py-1 text-xs rounded-full bg-yellow-100 text-yellow-700 font-medium">
+                                Pending
                             </span>
                         @endif
                     </td>
 
-                    {{-- Actions --}}
-                    <td class="px-5 py-4">
-                        <div class="flex items-center gap-2">
-
-                            {{-- Tombol Detail --}}
-                            <button class="btn-detail"
-                                    title="Lihat Detail"
-                                    data-modal-target="modal-detail-{{ $res->id }}"
-                                    data-modal-toggle="modal-detail-{{ $res->id }}">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                </svg>
+                    <td class="px-6 py-4">
+                        <div class="flex gap-2">
+                            <button
+                                onclick="openEdit({{ $res->id }}, '{{ $res->user->name }}', '{{ $res->user->email }}', '{{ $res->room->lantai }}', '{{ $res->check_in }}', '{{ $res->check_out }}', '{{ $res->status }}')"
+                                class="text-xs px-3 py-1.5 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition">
+                                Edit
                             </button>
 
-                            {{-- Tombol Edit --}}
-                            <a href="{{ route('admin.reservations.edit', $res->id) }}"
-                               class="btn-edit">Edit</a>
-
-                            {{-- Tombol Hapus --}}
-                            <form method="POST" action="{{ route('admin.reservations.destroy', $res->id) }}"
-                                  onsubmit="return confirm('Yakin ingin menghapus reservasi ini?')">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn-hapus">Hapus</button>
-                            </form>
-
+                            <button
+                                onclick="checkoutRow(this)"
+                                class="text-xs px-3 py-1.5 rounded-lg bg-gray-700 text-white hover:bg-gray-800 transition">
+                                Check Out
+                            </button>
                         </div>
                     </td>
+
                 </tr>
-
-                {{-- Modal Detail per baris --}}
-                <div id="modal-detail-{{ $res->id }}" tabindex="-1" aria-hidden="true"
-                    class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-modal md:h-full">
-                    <div class="relative p-4 w-full max-w-md h-full md:h-auto">
-                        <div class="relative bg-white rounded-2xl shadow-2xl">
-                            <div class="flex items-center justify-between p-5 border-b border-gray-100">
-                                <h3 class="text-base font-bold text-gray-800">Detail Reservasi #{{ str_pad($res->id, 3, '0', STR_PAD_LEFT) }}</h3>
-                                <button type="button" data-modal-hide="modal-detail-{{ $res->id }}" class="text-gray-400 hover:text-gray-600">
-                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
-                                    </svg>
-                                </button>
-                            </div>
-                            <div class="p-5 grid grid-cols-2 gap-3 text-sm">
-                                <div class="bg-gray-50 rounded-xl p-3">
-                                    <p class="text-xs text-gray-400 mb-0.5">Customer</p>
-                                    <p class="font-semibold text-gray-700">{{ $res->user->name ?? '-' }}</p>
-                                </div>
-                                <div class="bg-gray-50 rounded-xl p-3">
-                                    <p class="text-xs text-gray-400 mb-0.5">Email</p>
-                                    <p class="font-semibold text-gray-700 text-xs">{{ $res->user->email ?? '-' }}</p>
-                                </div>
-                                <div class="bg-gray-50 rounded-xl p-3">
-                                    <p class="text-xs text-gray-400 mb-0.5">No. Kamar</p>
-                                    <p class="font-semibold text-gray-700">{{ $res->room->nomor_kamar ?? '-' }} — Lt. {{ $res->room->lantai ?? '-' }}</p>
-                                </div>
-                                <div class="bg-gray-50 rounded-xl p-3">
-                                    <p class="text-xs text-gray-400 mb-0.5">Tipe Kamar</p>
-                                    <p class="font-semibold text-gray-700">{{ $res->room->tipe ?? '-' }}</p>
-                                </div>
-                                <div class="bg-gray-50 rounded-xl p-3">
-                                    <p class="text-xs text-gray-400 mb-0.5">Check In</p>
-                                    <p class="font-semibold text-gray-700">{{ \Carbon\Carbon::parse($res->check_in)->format('d M Y') }}</p>
-                                </div>
-                                <div class="bg-gray-50 rounded-xl p-3">
-                                    <p class="text-xs text-gray-400 mb-0.5">Check Out</p>
-                                    <p class="font-semibold text-gray-700">{{ \Carbon\Carbon::parse($res->check_out)->format('d M Y') }}</p>
-                                </div>
-                                <div class="bg-gray-50 rounded-xl p-3">
-                                    <p class="text-xs text-gray-400 mb-0.5">Status</p>
-                                    @if($res->status === 'confirmed')
-                                        <span class="badge badge-confirmed mt-1">Confirmed</span>
-                                    @elseif($res->status === 'pending')
-                                        <span class="badge badge-pending mt-1">Pending</span>
-                                    @elseif($res->status === 'canceled')
-                                        <span class="badge badge-canceled mt-1">Canceled</span>
-                                    @endif
-                                </div>
-                                <div class="bg-gray-50 rounded-xl p-3">
-                                    <p class="text-xs text-gray-400 mb-0.5">Durasi</p>
-                                    <p class="font-semibold text-gray-700">
-                                        {{ \Carbon\Carbon::parse($res->check_in)->diffInDays($res->check_out) }} malam
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="flex gap-3 px-5 pb-5">
-                                <button data-modal-hide="modal-detail-{{ $res->id }}"
-                                    class="flex-1 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-500 hover:bg-gray-50 transition font-medium">
-                                    Tutup
-                                </button>
-                                <a href="{{ route('admin.reservations.edit', $res->id) }}"
-                                   class="flex-1 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold transition text-center">
-                                    Edit Reservasi
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
                 @empty
                 <tr>
-                    <td colspan="8" class="text-center py-16 text-gray-400 text-sm">
-                        <svg class="w-10 h-10 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
-                        </svg>
-                        Belum ada data reservasi.
+                    <td colspan="7" class="px-6 py-10 text-center text-gray-400">
+                        Tidak ada reservasi aktif
                     </td>
                 </tr>
                 @endforelse
+            </tbody>
+        </table>
 
+    </div>
+</div>
+
+{{-- TAB: RIWAYAT --}}
+<div id="panel-riwayat" class="hidden">
+
+    <div class="grid grid-cols-2 gap-4 mb-4">
+        <div class="bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
+            <p class="text-xs text-gray-400 mb-1 flex items-center gap-1">
+                <span class="w-2 h-2 rounded-full bg-green-500 inline-block"></span> Pemasukan Masuk
+            </p>
+            <p class="text-xl font-semibold text-green-600">Rp {{ number_format($income, 0, ',', '.') }}</p>
+        </div>
+        <div class="bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
+            <p class="text-xs text-gray-400 mb-1 flex items-center gap-1">
+                <span class="w-2 h-2 rounded-full bg-red-400 inline-block"></span> Potensi Hilang (Canceled)
+            </p>
+            <p class="text-xl font-semibold text-red-500">Rp {{ number_format($lost, 0, ',', '.') }}</p>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+        <table class="w-full text-sm">
+            <thead>
+                <tr class="bg-gray-800">
+                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">ID</th>
+                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Customer</th>
+                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Kamar & Tipe</th>
+                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Check In</th>
+                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Check Out</th>
+                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Total Bayar</th>
+                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Status</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+                @forelse($riwayat as $res)
+                @php
+                    $nights = \Carbon\Carbon::parse($res->check_in)->diffInDays($res->check_out);
+                    $total  = $nights * $harga[$res->room->tipe];
+                @endphp
+                <tr class="hover:bg-gray-50 transition">
+                    <td class="px-4 py-3 text-gray-400 text-xs font-medium">#{{ $res->id }}</td>
+                    <td class="px-4 py-3">
+                        <p class="font-semibold text-gray-800">{{ $res->user->name }}</p>
+                        <p class="text-xs text-gray-400">{{ $res->user->email }}</p>
+                    </td>
+                    <td class="px-4 py-3">
+                        <p class="text-gray-700 font-medium">Kamar {{ $res->room->nomor_kamar }} &middot; Lt {{ $res->room->lantai }}</p>
+                        <p class="text-xs text-gray-400">{{ $res->room->tipe }} &middot; Rp {{ number_format($harga[$res->room->tipe], 0, ',', '.') }}/malam</p>
+                    </td>
+                    <td class="px-4 py-3 text-gray-700 font-medium">{{ $res->check_in }}</td>
+                    <td class="px-4 py-3">
+                        <p class="text-gray-700 font-medium">{{ $res->check_out }}</p>
+                        <p class="text-xs text-gray-400">{{ $nights }} malam</p>
+                    </td>
+                    <td class="px-4 py-3">
+                        @if($res->status === 'canceled')
+                            <span class="text-xs text-red-400 line-through">Rp {{ number_format($total, 0, ',', '.') }}</span>
+                        @else
+                            <span class="font-semibold text-green-700">Rp {{ number_format($total, 0, ',', '.') }}</span>
+                        @endif
+                    </td>
+                    <td class="px-4 py-3">
+                        @if($res->status === 'checked_out')
+                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700 border border-green-200">
+                                <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Checked Out
+                            </span>
+                        @else
+                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700 border border-red-200">
+                                <span class="w-1.5 h-1.5 rounded-full bg-red-400"></span> Canceled
+                            </span>
+                        @endif
+                    </td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="7" class="px-4 py-8 text-center text-sm text-gray-400">Belum ada riwayat reservasi</td>
+                </tr>
+                @endforelse
             </tbody>
         </table>
     </div>
-
-    {{-- Pagination --}}
-    <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-between">
-        <p class="text-xs text-gray-400">
-            Menampilkan <span class="font-semibold text-gray-600">{{ $reservations->firstItem() ?? 0 }}</span>–<span class="font-semibold text-gray-600">{{ $reservations->lastItem() ?? 0 }}</span>
-            dari <span class="font-semibold text-gray-600">{{ $reservations->total() }}</span> reservasi
-        </p>
-        <div>
-            {{ $reservations->links() }}
-        </div>
-    </div>
+    <p class="text-xs text-gray-400 mt-3">* Pemasukan hanya dihitung dari reservasi berstatus <strong>Checked Out</strong>.</p>
 </div>
 
-
-{{-- ===== MODAL TAMBAH RESERVASI ===== --}}
+{{-- MODAL TAMBAH --}}
 <div id="modal-tambah" tabindex="-1" aria-hidden="true"
-    class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-modal md:h-full">
-    <div class="relative p-4 w-full max-w-lg h-full md:h-auto">
-        <div class="relative bg-white rounded-2xl shadow-2xl">
+    class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative p-4 w-full max-w-md max-h-full">
+        <div class="relative bg-white rounded-2xl shadow-lg border border-gray-100">
             <div class="flex items-center justify-between p-5 border-b border-gray-100">
-                <h3 class="text-base font-bold text-gray-800">Tambah Reservasi Baru</h3>
-                <button type="button" data-modal-hide="modal-tambah" class="text-gray-400 hover:text-gray-600">
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                <h3 class="text-base font-semibold text-gray-800">Tambah Reservasi</h3>
+                <button type="button" data-modal-hide="modal-tambah"
+                    class="text-gray-400 hover:bg-gray-100 rounded-lg p-1.5 transition">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
                 </button>
             </div>
-
-            <form method="POST" action="{{ route('admin.reservations.store') }}" class="p-5 space-y-4">
-                @csrf
-
-                {{-- Nama Tamu --}}
-<div>
-    <label class="block text-xs font-semibold text-gray-500 mb-1.5">Nama Tamu</label>
-    <input type="text" name="guest_name" required
-        class="w-full py-2 px-3 text-sm border border-gray-200 rounded-xl bg-gray-50 focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition" />
-</div>
-
-{{-- Email --}}
-<div>
-    <label class="block text-xs font-semibold text-gray-500 mb-1.5">Email</label>
-    <input type="email" name="guest_email" required
-        class="w-full py-2 px-3 text-sm border border-gray-200 rounded-xl bg-gray-50 focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition" />
-</div>
-
-   {{-- ROOM ID --}}
-<div>
-    <label class="block text-xs font-semibold text-gray-500 mb-1.5">Room ID</label>
-    <select name="room_id" id="room_id"
-        class="w-full py-2 px-3 text-sm border border-gray-200 rounded-xl bg-gray-50"
-        required>
-        <option value="">-- Pilih Room ID --</option>
-        @for ($i = 1; $i <= 10; $i++)
-            <option value="{{ $i }}">
-                {{ str_pad($i, 2, '0', STR_PAD_LEFT) }}
-            </option>
-        @endfor
-    </select>
-</div>
-
-{{-- FLOOR --}}
-<div>
-    <label class="block text-xs font-semibold text-gray-500 mb-1.5">Floor</label>
-    <select name="floor" id="floor"
-        class="w-full py-2 px-3 text-sm border border-gray-200 rounded-xl bg-gray-50"
-        required>
-        <option value="">-- Pilih Floor --</option>
-        <option value="1">Floor 1</option>
-        <option value="2">Floor 2</option>
-        <option value="3">Floor 3</option>
-    </select>
-</div>
-
-{{-- TYPE AUTO --}}
-<div>
-    <label class="block text-xs font-semibold text-gray-500 mb-1.5">Room Type</label>
-    <input type="text" id="room_type"
-        class="w-full py-2 px-3 text-sm border border-gray-200 rounded-xl bg-gray-100"
-        readonly>
-</div>
+            <div class="p-5 space-y-4">
+                <div>
+                    <label class="block text-xs font-medium text-gray-500 mb-1">Nama Lengkap</label>
+                    <input id="f-name" type="text" placeholder="Masukkan nama"
+                        class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-500 mb-1">Email</label>
+                    <input id="f-email" type="email" placeholder="email@contoh.com"
+                        class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-xs font-semibold text-gray-500 mb-1.5">Check In</label>
-                        <input type="date" name="check_in" required
-                               class="w-full py-2 px-3 text-sm border border-gray-200 rounded-xl bg-gray-50 focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition" />
+                        <label class="block text-xs font-medium text-gray-500 mb-1">Lantai</label>
+                        <select id="f-floor"
+                            class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="">Pilih lantai</option>
+                            <option value="1">Lantai 1</option>
+                            <option value="2">Lantai 2</option>
+                            <option value="3">Lantai 3</option>
+                        </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-gray-500 mb-1.5">Check Out</label>
-                        <input type="date" name="check_out" required
-                               class="w-full py-2 px-3 text-sm border border-gray-200 rounded-xl bg-gray-50 focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition" />
+                        <label class="block text-xs font-medium text-gray-500 mb-1">Tipe Kamar</label>
+                        <div id="f-type-display"
+                            class="w-full border border-gray-100 bg-gray-50 rounded-lg px-3 py-2 text-sm text-gray-400">—</div>
                     </div>
                 </div>
-
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-500 mb-1">Check In</label>
+                        <input id="f-checkin" type="date"
+                            class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-500 mb-1">Check Out</label>
+                        <input id="f-checkout" type="date"
+                            class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                </div>
                 <div>
-                    <label class="block text-xs font-semibold text-gray-500 mb-1.5">Status</label>
-                    <select name="status" required class="w-full py-2 px-3 text-sm border border-gray-200 rounded-xl bg-gray-50 focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition">
+                    <label class="block text-xs font-medium text-gray-500 mb-1">Status</label>
+                    <select id="f-status"
+                        class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <option value="pending">Pending</option>
                         <option value="confirmed">Confirmed</option>
                         <option value="canceled">Canceled</option>
                     </select>
                 </div>
+            </div>
+            <div class="px-5 pb-5">
+                <button onclick="saveReservation()"
+                    class="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2.5 rounded-lg transition">
+                    Simpan Reservasi
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 
-                <div class="flex gap-3 pt-2">
-                    <button type="button" data-modal-hide="modal-tambah"
-                        class="flex-1 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-500 hover:bg-gray-50 transition font-medium">
-                        Batal
-                    </button>
-                    <button type="submit"
-                        class="flex-1 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold transition">
-                        Simpan Reservasi
-                    </button>
+{{-- MODAL EDIT --}}
+<div id="modal-edit" tabindex="-1" aria-hidden="true"
+    class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative p-4 w-full max-w-md max-h-full">
+        <div class="relative bg-white rounded-2xl shadow-lg border border-gray-100">
+            <div class="flex items-center justify-between p-5 border-b border-gray-100">
+                <h3 class="text-base font-semibold text-gray-800" id="edit-modal-title">Edit Reservasi</h3>
+                <button type="button" data-modal-hide="modal-edit"
+                    class="text-gray-400 hover:bg-gray-100 rounded-lg p-1.5 transition">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="p-5 space-y-4">
+                <div>
+                    <label class="block text-xs font-medium text-gray-500 mb-1">Nama Lengkap</label>
+                    <input id="e-name" type="text"
+                        class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
-            </form>
+                <div>
+                    <label class="block text-xs font-medium text-gray-500 mb-1">Email</label>
+                    <input id="e-email" type="email"
+                        class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-500 mb-1">Lantai</label>
+                        <select id="e-floor"
+                            class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="1">Lantai 1</option>
+                            <option value="2">Lantai 2</option>
+                            <option value="3">Lantai 3</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-500 mb-1">Tipe Kamar</label>
+                        <div id="e-type-display"
+                            class="w-full border border-blue-100 bg-blue-50 rounded-lg px-3 py-2 text-sm text-blue-700 font-medium">—</div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-500 mb-1">Check In</label>
+                        <input id="e-checkin" type="date"
+                            class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-500 mb-1">Check Out</label>
+                        <input id="e-checkout" type="date"
+                            class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                </div>
+                <div class="bg-blue-50 border border-blue-100 rounded-lg px-3 py-2.5">
+                    <p class="text-xs font-medium text-blue-700 mb-0.5">Penambahan Malam</p>
+                    <p class="text-xs text-blue-500">Ubah tanggal Check Out untuk memperpanjang masa menginap tamu.</p>
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-500 mb-1">Status</label>
+                    <select id="e-status"
+                        class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="pending">Pending</option>
+                        <option value="confirmed">Confirmed</option>
+                        <option value="canceled">Canceled</option>
+                    </select>
+                </div>
+            </div>
+            <div class="px-5 pb-5">
+                <button onclick="saveEdit()"
+                    class="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2.5 rounded-lg transition">
+                    Simpan Perubahan
+                </button>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
-document.getElementById('floor').addEventListener('change', function () {
-    let floor = this.value;
-    let typeInput = document.getElementById('room_type');
+const roomMap = {
+    '1': { room: '01', tipe: 'Standard' },
+    '2': { room: '02', tipe: 'Superior' },
+    '3': { room: '03', tipe: 'Deluxe'  }
+};
 
-    if (floor == 1) {
-        typeInput.value = 'Standard';
-    } else if (floor == 2) {
-        typeInput.value = 'Superior';
-    } else if (floor == 3) {
-        typeInput.value = 'Deluxe';
-    } else {
-        typeInput.value = '';
-    }
+let currentEditId = null;
+
+// ── TAB SWITCH ──────────────────────────────────────────
+function switchTab(tab) {
+    const isAktif = tab === 'aktif';
+    document.getElementById('panel-aktif').classList.toggle('hidden', !isAktif);
+    document.getElementById('panel-riwayat').classList.toggle('hidden', isAktif);
+
+    document.getElementById('tab-aktif').className = isAktif
+        ? 'tab-btn px-4 py-2.5 border-b-2 border-blue-600 text-blue-600 transition'
+        : 'tab-btn px-4 py-2.5 border-b-2 border-transparent text-gray-400 hover:text-gray-600 transition';
+
+    document.getElementById('tab-riwayat').className = !isAktif
+        ? 'tab-btn px-4 py-2.5 border-b-2 border-blue-600 text-blue-600 transition'
+        : 'tab-btn px-4 py-2.5 border-b-2 border-transparent text-gray-400 hover:text-gray-600 transition';
+}
+
+// ── MODAL TAMBAH ─────────────────────────────────────────
+document.getElementById('f-floor').addEventListener('change', function () {
+    const typeEl = document.getElementById('f-type-display');
+    typeEl.textContent = this.value ? roomMap[this.value].tipe : '—';
+    typeEl.className = this.value
+        ? 'w-full border border-blue-100 bg-blue-50 rounded-lg px-3 py-2 text-sm text-blue-700 font-medium'
+        : 'w-full border border-gray-100 bg-gray-50 rounded-lg px-3 py-2 text-sm text-gray-400';
 });
+
+function saveReservation() {
+    const name     = document.getElementById('f-name').value.trim();
+    const email    = document.getElementById('f-email').value.trim();
+    const floor    = document.getElementById('f-floor').value;
+    const checkin  = document.getElementById('f-checkin').value;
+    const checkout = document.getElementById('f-checkout').value;
+    const status   = document.getElementById('f-status').value;
+
+    if (!name || !email || !floor || !checkin || !checkout) {
+        alert('Harap lengkapi semua field!'); return;
+    }
+    if (checkout <= checkin) {
+        alert('Check Out harus setelah Check In!'); return;
+    }
+
+    const rm    = roomMap[floor];
+    const tbody = document.getElementById('aktif-table-body');
+    const id    = tbody.querySelectorAll('tr').length + 1;
+
+    const badgeMap = {
+        confirmed: 'bg-green-100 text-green-700 border border-green-200',
+        pending:   'bg-yellow-100 text-yellow-700 border border-yellow-200',
+        canceled:  'bg-red-100 text-red-700 border border-red-200',
+    };
+    const dotMap = {
+        confirmed: 'bg-green-500',
+        pending:   'bg-yellow-400',
+        canceled:  'bg-red-400',
+    };
+
+    const row = `
+    <tr class="hover:bg-gray-50 transition">
+        <td class="px-4 py-3 text-gray-400 text-xs font-medium">#${id}</td>
+        <td class="px-4 py-3">
+            <p class="font-semibold text-gray-800">${name}</p>
+            <p class="text-xs text-gray-400">${email}</p>
+        </td>
+        <td class="px-4 py-3">
+            <p class="text-gray-700 font-medium">Kamar ${rm.room} &middot; Lt ${floor}</p>
+            <p class="text-xs text-gray-400">${rm.tipe}</p>
+        </td>
+        <td class="px-4 py-3 text-gray-700 font-medium">${checkin}</td>
+        <td class="px-4 py-3 text-gray-700 font-medium">${checkout}</td>
+        <td class="px-4 py-3">
+            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold ${badgeMap[status]}">
+                <span class="w-1.5 h-1.5 rounded-full ${dotMap[status]}"></span>
+                ${status.charAt(0).toUpperCase() + status.slice(1)}
+            </span>
+        </td>
+        <td class="px-4 py-3">
+            <div class="flex gap-2">
+                <button onclick="openEdit(${id},'${name}','${email}','${floor}','${checkin}','${checkout}','${status}')"
+                    class="text-xs px-3 py-1.5 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition font-medium">Edit</button>
+                <button onclick="checkoutRow(this)"
+                    class="text-xs px-3 py-1.5 rounded-lg bg-gray-700 text-white hover:bg-gray-800 transition font-medium">Check Out</button>
+            </div>
+        </td>
+    </tr>`;
+
+    tbody.insertAdjacentHTML('beforeend', row);
+
+    ['f-name','f-email','f-checkin','f-checkout'].forEach(el => document.getElementById(el).value = '');
+    document.getElementById('f-floor').value  = '';
+    document.getElementById('f-status').value = 'pending';
+    document.getElementById('f-type-display').textContent = '—';
+    document.getElementById('f-type-display').className   = 'w-full border border-gray-100 bg-gray-50 rounded-lg px-3 py-2 text-sm text-gray-400';
+
+    FlowbiteInstances.getInstance('Modal', 'modal-tambah')?.hide();
+}
+
+// ── MODAL EDIT ───────────────────────────────────────────
+document.getElementById('e-floor').addEventListener('change', function () {
+    document.getElementById('e-type-display').textContent = roomMap[this.value]?.tipe ?? '—';
+});
+
+function openEdit(id, name, email, lantai, checkin, checkout, status) {
+    currentEditId = id;
+    document.getElementById('edit-modal-title').textContent = 'Edit Reservasi #' + id;
+    document.getElementById('e-name').value     = name;
+    document.getElementById('e-email').value    = email;
+    document.getElementById('e-floor').value    = lantai;
+    document.getElementById('e-checkin').value  = checkin;
+    document.getElementById('e-checkout').value = checkout;
+    document.getElementById('e-status').value   = status;
+    document.getElementById('e-type-display').textContent = roomMap[lantai]?.tipe ?? '—';
+
+    const modal = FlowbiteInstances.getInstance('Modal', 'modal-edit')
+        ?? new Modal(document.getElementById('modal-edit'));
+    modal.show();
+}
+
+function saveEdit() {
+    const checkin  = document.getElementById('e-checkin').value;
+    const checkout = document.getElementById('e-checkout').value;
+    if (checkout <= checkin) { alert('Check Out harus setelah Check In!'); return; }
+
+    alert('Perubahan reservasi #' + currentEditId + ' disimpan!');
+    FlowbiteInstances.getInstance('Modal', 'modal-edit')?.hide();
+}
+
+// ── CHECK OUT ────────────────────────────────────────────
+function checkoutRow(btn) {
+    if (!confirm('Tandai tamu ini sebagai sudah Check Out?')) return;
+    btn.closest('tr').remove();
+}
 </script>
 
 @endsection
