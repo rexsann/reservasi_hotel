@@ -3,7 +3,7 @@
     <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-4 gap-10"> <!-- 🏨 ABOUT HOTEL -->
         <div>
             <h2 class="text-xl font-semibold text-white mb-4">🏨 Stayzy Hotel</h2>
-            <p class="text-sm leading-relaxed"> Hotel modern dengan kenyamanan terbaik di pusat kota Batam. Cocok untuk bisnis maupun liburan bersama keluarga. </p>
+            <p class="text-sm leading-relaxed">A modern hotel with the utmost comfort in downtown Batam. Perfect for business or family vacations. </p>
         </div> <!-- 📍 CONTACT -->
         <div>
             <h3 class="text-lg font-semibold text-white mb-4">Contact Us</h3>
