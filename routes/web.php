@@ -21,6 +21,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use App\Http\Controllers\FacilityController;
 use App\Http\Controllers\OfferController;
+use App\Http\Controllers\HistoryController;
 
 // ─── PUBLIC ROUTES ────────────────────────────────────────────
 Route::get('/',            [HomeController::class, 'index']);
@@ -50,6 +51,9 @@ Route::post('/cart/add', function (Request $request) {
     return back();
 
 })->name('cart.add');
+
+Route::get('/history', [HistoryController::class, 'index'])
+    ->name('Pages.history');
 
 
 
