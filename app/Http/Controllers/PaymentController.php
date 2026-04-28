@@ -21,7 +21,7 @@ class PaymentController extends Controller
     // Step 2 – Tampilkan halaman payment
     public function showPayment()
     {
-        return view('payment');
+        return view('booking.payment');
     }
 
     // Step 2 – Tombol Order → ke confirmation
@@ -40,7 +40,7 @@ class PaymentController extends Controller
     public function confirmation()
 {
     $status = session('status', 'pending'); // default pending
-    return view('confirmation', compact('status'));
+    return view('booking.confirmation', compact('status'));
 }
 
 public function checkStatus()
