@@ -87,9 +87,8 @@
 
 </div>
 
-<!-- 🔥 UI SCRIPT (AMAN, TANPA SIMPAN DATA) -->
 <script>
-// AUTO TYPE (boleh, ini cuma visual)
+// AUTO TYPE 
 const floorSelect = document.getElementById('floorSelect');
 const typeInput = document.getElementById('typeInput');
 
@@ -101,7 +100,7 @@ function setType() {
 floorSelect.addEventListener('change', setType);
 setType();
 
-// FORMAT RUPIAH (UI aja)
+// FORMAT RUPIAH
 const priceInput = document.getElementById('priceInput');
 
 priceInput.addEventListener('input', function(e) {
