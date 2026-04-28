@@ -1,4 +1,3 @@
-
 @extends('layouts.app')
 
 @section('title', 'About Us - Stayzy Hotel')
@@ -14,53 +13,56 @@
     <div class="md:col-span-2 bg-white rounded-2xl shadow-xl p-6">
 
       <!-- STEP -->
-      <div class="flex justify-between text-sm font-medium mb-6">
-        <span class="text-blue-600">1. Fill in data</span>
+      <div class="border-b font-medium px-6 py-3 flex items-center gap-2 text-sm">
+
+        <span class="font-semibold text-gray-700">1. Fill in data</span>
+        <div class="flex-1 border-t border-dashed border-gray-300"></div>
         <span class="text-gray-400">2. Payment</span>
       </div>
 
-      <div class="border-b mb-6"></div>
+      <form method="POST" action="{{ route('payment.index') }}" class="p-6 space-y-5">
+        @csrf
 
-      <!-- CHECKBOX -->
-      <label class="flex items-center gap-2 mb-6">
-        <input type="checkbox" class="w-5 h-5">
-        <span>I am booking for myself</span>
-      </label>
+        <!-- CHECKBOX -->
+        <label class="flex items-center gap-2 mb-6">
+          <input type="checkbox" class="w-5 h-5">
+          <span>I am booking for myself</span>
+        </label>
 
-      <!-- CONTACT -->
-      <h2 class="font-semibold mb-1">Contact Detail</h2>
-      <p class="text-sm text-gray-500 mb-4">
-        Reservation information will be sent to this contact detail
-      </p>
+        <!-- CONTACT -->
+        <h2 class="font-semibold mb-1">Contact Detail</h2>
+        <p class="text-sm text-gray-500 mb-4">
+          Reservation information will be sent to this contact detail
+        </p>
 
-      <!-- EMAIL -->
-      <input type="email" placeholder="Email Address"
-        class="w-full mb-4 px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+        <!-- EMAIL -->
+        <input type="email" placeholder="Email Address"
+          class="w-full mb-4 px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
 
-      <!-- NAME -->
-      <div class="grid grid-cols-2 gap-4 mb-4">
-        <input type="text" placeholder="First Name"
-          class="px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+        <!-- NAME -->
+        <div class="grid grid-cols-2 gap-4 mb-4">
+          <input type="text" placeholder="First Name"
+            class="px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
 
-        <input type="text" placeholder="Last Name"
-          class="px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
-      </div>
-
-      <!-- PHONE -->
-      <div class="flex gap-2 mb-6">
-        <div class="w-24 px-3 py-3 border rounded-xl text-center bg-gray-50">
-          +62
+          <input type="text" placeholder="Last Name"
+            class="px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
         </div>
-        <input type="text" placeholder="Phone Number"
-          class="flex-1 px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
-      </div>
 
-      <!-- BUTTON -->
-      <button
-        class="w-full bg-black text-white py-3 rounded-full font-semibold hover:bg-gray-800 transition">
-        Review Reservation
-      </button>
+        <!-- PHONE -->
+        <div class="flex gap-2 mb-6">
+          <div class="w-24 px-3 py-3 border rounded-xl text-center bg-gray-50">
+            +62
+          </div>
+          <input type="text" placeholder="Phone Number"
+            class="flex-1 px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+        </div>
 
+        <!-- BUTTON -->
+        <button type="submit"
+          class="w-full bg-black text-white py-3 rounded-full font-semibold hover:bg-gray-800 transition">
+          Review Reservation
+        </button>
+      </form>
     </div>
 
     <!-- RIGHT: SUMMARY -->
