@@ -2,117 +2,92 @@
 
 @section('content')
 
-<h1 class="text-2xl font-bold mb-6">Facility Management</h1>
+<div class="flex justify-between items-center mb-6">
+    <div>
+        <h1 class="text-xl font-semibold text-gray-800">Facility Management</h1>
+        <p class="text-sm text-gray-400">Kelola fasilitas kamar hotel</p>
+    </div>
+</div>
 
-<div class="grid md:grid-cols-2 gap-6">
+<div class="grid lg:grid-cols-3 gap-6">
 
-    <!-- 🔥 FORM -->
-    <div class="bg-white p-6 rounded-2xl shadow">
-
-        <h2 class="font-semibold mb-4">Add Facility</h2>
-
-        <div class="flex gap-2 mb-4">
-            <input id="facilityInput"
-                class="border p-2 rounded w-full focus:ring-2 focus:ring-blue-400"
-                placeholder="Enter facility (e.g: Hair Dryer)">
-
-            <button onclick="addFacility()"
-                class="bg-blue-600 text-white px-4 rounded hover:bg-blue-700 transition">
-                Add
-            </button>
+    {{-- FORM --}}
+    <div class="lg:col-span-1">
+        <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 sticky top-4">
+            <h2 class="text-sm font-semibold text-gray-700 mb-4">Tambah Fasilitas</h2>
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-medium text-gray-500 mb-1">Nama Fasilitas</label>
+                    <input id="facilityInput" type="text" placeholder="e.g. Hair Dryer"
+                        onkeydown="if(event.key==='Enter') addFacility()"
+                        class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <button onclick="addFacility()"
+                    class="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2.5 rounded-lg transition">
+                    + Tambah
+                </button>
+            </div>
         </div>
-
-        <p class="text-sm text-gray-400">
-            Example: WiFi, AC, TV, Breakfast, Hair Dryer
-        </p>
-
     </div>
 
-
-    <!-- 🔥 LIST -->
-    <div class="bg-white p-6 rounded-2xl shadow">
-
-        <h2 class="font-semibold mb-4">Facility List</h2>
-
-        <div id="facilityList" class="space-y-2"></div>
-
+    {{-- LIST --}}
+    <div class="lg:col-span-2">
+        <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+            <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+                <p class="text-sm font-semibold text-gray-700">Daftar Fasilitas</p>
+                <span class="text-xs text-gray-400" id="stat-total">0 fasilitas</span>
+            </div>
+            <div id="facilityList" class="divide-y divide-gray-100"></div>
+        </div>
     </div>
 
 </div>
 
-
 <script>
+let facilities = ['WiFi', 'AC', 'TV', 'Mini Fridge', 'Shower', 'Handuk', 'Air Panas'];
 
-// 🔥 STATE (UI ONLY)
-let facilities = [
-    'WiFi',
-    'AC',
-    'TV',
-    'Breakfast'
-];
-
-
-// 🔥 RENDER
 function renderFacilities() {
+    document.getElementById('stat-total').textContent = facilities.length + ' fasilitas';
 
-    let container = document.getElementById('facilityList');
+    const container = document.getElementById('facilityList');
 
-    if (facilities.length === 0) {
-        container.innerHTML = `
-            <div class="text-gray-400 text-center">No facilities yet</div>
-        `;
+    if (!facilities.length) {
+        container.innerHTML = `<p class="px-5 py-10 text-center text-sm text-gray-400">Belum ada fasilitas</p>`;
         return;
     }
 
     container.innerHTML = facilities.map((f, i) => `
-        <div class="flex justify-between items-center border p-3 rounded-lg hover:bg-gray-50">
-
-            <div class="flex items-center gap-2">
-                <span class="bg-blue-100 text-blue-600 text-xs px-2 py-1 rounded">
-                    ${f}
-                </span>
+        <div class="flex items-center justify-between px-5 py-3 hover:bg-gray-50 transition">
+            <div class="flex items-center gap-3">
+                <span class="w-2 h-2 rounded-full bg-blue-400 flex-shrink-0"></span>
+                <span class="text-sm font-medium text-gray-800">${f}</span>
             </div>
-
             <button onclick="deleteFacility(${i})"
-                class="text-red-500 text-sm hover:underline">
-                Delete
+                class="text-xs px-3 py-1.5 rounded-lg bg-red-50 text-red-600 border border-red-100 hover:bg-red-100 transition font-medium">
+                Hapus
             </button>
-
         </div>
     `).join('');
 }
 
-
-// 🔥 ADD
 function addFacility() {
-    let val = document.getElementById('facilityInput').value.trim();
-
+    const val = document.getElementById('facilityInput').value.trim();
     if (!val) return;
-
-    // biar ga double
-    if (facilities.includes(val)) {
-        alert('Facility already exists');
-        return;
+    if (facilities.find(f => f.toLowerCase() === val.toLowerCase())) {
+        alert('Fasilitas sudah ada!'); return;
     }
-
     facilities.push(val);
-
     document.getElementById('facilityInput').value = '';
-
     renderFacilities();
 }
 
-
-// 🔥 DELETE
 function deleteFacility(index) {
+    if (!confirm(`Hapus "${facilities[index]}"?`)) return;
     facilities.splice(index, 1);
     renderFacilities();
 }
 
-
-// INIT
 renderFacilities();
-
 </script>
 
 @endsection

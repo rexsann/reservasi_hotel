@@ -4,53 +4,53 @@
 
 <h1 class="text-3xl font-bold mb-8 text-gray-800">Dashboard Admin</h1>
 
-<!-- 🔥 STATS CARDS -->
+<!-- STATS CARDS -->
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
 
     <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition">
         <p class="text-sm opacity-80">Total Rooms</p>
-        <p class="text-4xl font-bold mt-2">30</p>
+        <p class="text-4xl font-bold mt-2">45</p>
     </div>
 
     <div class="bg-gradient-to-r from-green-500 to-green-600 text-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition">
         <p class="text-sm opacity-80">Reservations</p>
-        <p class="text-4xl font-bold mt-2">17</p>
+        <p class="text-4xl font-bold mt-2">23</p>
     </div>
 
     <div class="bg-gradient-to-r from-purple-500 to-purple-600 text-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition">
         <p class="text-sm opacity-80">Customers</p>
-        <p class="text-4xl font-bold mt-2">3</p>
+        <p class="text-4xl font-bold mt-2">6</p>
     </div>
 
 </div>
 
-<!-- 🔥 QUICK INFO -->
+<!-- QUICK INFO -->
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
 
     <div class="bg-white p-6 rounded-2xl shadow-md hover:shadow-lg transition border border-gray-100">
         <p class="text-gray-400 text-sm">Available Rooms</p>
-        <p class="text-3xl font-bold mt-2 text-green-600">20</p>
+        <p class="text-3xl font-bold mt-2 text-green-600">24</p>
     </div>
 
     <div class="bg-white p-6 rounded-2xl shadow-md hover:shadow-lg transition border border-gray-100">
         <p class="text-gray-400 text-sm">Occupied Rooms</p>
-        <p class="text-3xl font-bold mt-2 text-red-500">10</p>
+        <p class="text-3xl font-bold mt-2 text-red-500">21</p>
     </div>
 
     <div class="bg-white p-6 rounded-2xl shadow-md hover:shadow-lg transition border border-gray-100">
         <p class="text-gray-400 text-sm">Today Check-ins</p>
-        <p class="text-3xl font-bold mt-2 text-blue-500">7</p>
+        <p class="text-3xl font-bold mt-2 text-blue-500">19</p>
     </div>
 
 </div>
 
-<!-- 🔥 RESERVATIONS -->
+<!-- RESERVATIONS -->
 <h2 class="text-xl font-semibold mb-4 text-gray-800">Latest Reservations</h2>
 
 <div class="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden">
 
     <!-- HEADER -->
-    <div class="grid grid-cols-6 bg-gray-50 px-6 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wide">
+    <div class="grid grid-cols-6 bg-gray-800 px-6 py-3 text-xs font-bold text-gray-300 uppercase tracking-wide">
         <div>ID</div>
         <div>Name</div>
         <div>Room</div>

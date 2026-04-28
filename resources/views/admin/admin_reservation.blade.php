@@ -3,36 +3,49 @@
 @section('content')
 
 @php
-$harga = ['Standard' => 350000, 'Superior' => 500000, 'Deluxe' => 750000];
+// Simulasi data offers — nanti dari DB tabel offers
+$offers = collect([
+    (object)['id' => 1, 'name' => 'Basic Deal',     'tipe' => 'Standard', 'lantai' => 1, 'harga' => 200000, 'benefits' => ['No Breakfast', 'Free WiFi']],
+    (object)['id' => 2, 'name' => 'Standard Plus',  'tipe' => 'Standard', 'lantai' => 1, 'harga' => 280000, 'benefits' => ['Breakfast', 'Free WiFi']],
+    (object)['id' => 3, 'name' => 'Family Package',  'tipe' => 'Superior', 'lantai' => 2, 'harga' => 350000, 'benefits' => ['Breakfast', 'Free WiFi', 'Extra Bed']],
+    (object)['id' => 4, 'name' => 'Business Stay',   'tipe' => 'Superior', 'lantai' => 2, 'harga' => 420000, 'benefits' => ['Breakfast', 'Free WiFi', 'Meeting Room']],
+    (object)['id' => 5, 'name' => 'Luxury Stay',     'tipe' => 'Deluxe',   'lantai' => 3, 'harga' => 650000, 'benefits' => ['Breakfast', 'Spa', 'VIP Service']],
+    (object)['id' => 6, 'name' => 'Honeymoon Suite', 'tipe' => 'Deluxe',   'lantai' => 3, 'harga' => 750000, 'benefits' => ['Breakfast', 'Spa', 'Flowers', 'Late Checkout']],
+]);
 
 $reservations = collect([
     (object)[
         'id' => 1,
-        'user' => (object)['name' => 'Nareen', 'email' => 'nareen@mail.com'],
+        'user' => (object)['name' => 'Moonlight', 'email' => 'moon@gmail.com'],
+        'offer' => (object)['name' => 'Basic Deal', 'harga' => 200000],
         'room' => (object)['nomor_kamar' => '01', 'lantai' => 1, 'tipe' => 'Standard'],
         'check_in' => '2026-04-20', 'check_out' => '2026-04-22', 'status' => 'confirmed'
     ],
     (object)[
         'id' => 2,
-        'user' => (object)['name' => 'Kevin', 'email' => 'kevin@mail.com'],
-        'room' => (object)['nomor_kamar' => '02', 'lantai' => 2, 'tipe' => 'Superior'],
+        'user' => (object)['name' => 'Sunshine', 'email' => 'shine@gmail.com'],
+        'offer' => (object)['name' => 'Family Package', 'harga' => 350000],
+        'room' => (object)['nomor_kamar' => null, 'lantai' => 2, 'tipe' => 'Superior'],
         'check_in' => '2026-04-25', 'check_out' => '2026-04-27', 'status' => 'pending'
     ],
     (object)[
         'id' => 3,
-        'user' => (object)['name' => 'Alicia', 'email' => 'alicia@mail.com'],
-        'room' => (object)['nomor_kamar' => '01', 'lantai' => 3, 'tipe' => 'Deluxe'],
+        'user' => (object)['name' => 'Facha', 'email' => 'chacha@gmail.com'],
+        'offer' => (object)['name' => 'Luxury Stay', 'harga' => 650000],
+        'room' => (object)['nomor_kamar' => null, 'lantai' => 3, 'tipe' => 'Deluxe'],
         'check_in' => '2026-04-28', 'check_out' => '2026-05-01', 'status' => 'canceled'
     ],
     (object)[
         'id' => 4,
-        'user' => (object)['name' => 'Budi', 'email' => 'budi@mail.com'],
+        'user' => (object)['name' => 'Allysum', 'email' => 'ally@gmail.com'],
+        'offer' => (object)['name' => 'Basic Deal', 'harga' => 200000],
         'room' => (object)['nomor_kamar' => '01', 'lantai' => 1, 'tipe' => 'Standard'],
         'check_in' => '2026-03-10', 'check_out' => '2026-03-13', 'status' => 'checked_out'
     ],
     (object)[
         'id' => 5,
-        'user' => (object)['name' => 'Sari', 'email' => 'sari@mail.com'],
+        'user' => (object)['name' => 'Baobao', 'email' => 'baobao@gmail.com'],
+        'offer' => (object)['name' => 'Business Stay', 'harga' => 420000],
         'room' => (object)['nomor_kamar' => '02', 'lantai' => 2, 'tipe' => 'Superior'],
         'check_in' => '2026-03-15', 'check_out' => '2026-03-17', 'status' => 'checked_out'
     ],
@@ -41,13 +54,13 @@ $reservations = collect([
 $aktif   = $reservations->whereIn('status', ['pending', 'confirmed']);
 $riwayat = $reservations->whereIn('status', ['checked_out', 'canceled']);
 
-$income = $riwayat->where('status', 'checked_out')->sum(function($r) use ($harga) {
+$income = $riwayat->where('status', 'checked_out')->sum(function($r) {
     $nights = \Carbon\Carbon::parse($r->check_in)->diffInDays($r->check_out);
-    return $nights * $harga[$r->room->tipe];
+    return $nights * $r->offer->harga;
 });
-$lost = $riwayat->where('status', 'canceled')->sum(function($r) use ($harga) {
+$lost = $riwayat->where('status', 'canceled')->sum(function($r) {
     $nights = \Carbon\Carbon::parse($r->check_in)->diffInDays($r->check_out);
-    return $nights * $harga[$r->room->tipe];
+    return $nights * $r->offer->harga;
 });
 @endphp
 
@@ -115,88 +128,86 @@ $lost = $riwayat->where('status', 'canceled')->sum(function($r) use ($harga) {
 {{-- TAB: AKTIF --}}
 <div id="panel-aktif">
     <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-
         <table class="w-full text-sm">
-            <thead class="bg-gray-50">
-                <tr>
-                    <th class="px-6 py-3 text-left text-xs font-bold text-black-500 uppercase">ID</th>
-                    <th class="px-6 py-3 text-left text-xs font-bold text-black-500 uppercase">Customer</th>
-                    <th class="px-6 py-3 text-left text-xs font-bold text-black-500 uppercase">Room</th>
-                    <th class="px-6 py-3 text-left text-xs font-bold text-black-500 uppercase">Check In</th>
-                    <th class="px-6 py-3 text-left text-xs font-bold text-black-500 uppercase">Check Out</th>
-                    <th class="px-6 py-3 text-left text-xs font-bold text-black-500 uppercase">Status</th>
-                    <th class="px-6 py-3 text-left text-xs font-bold text-black-500 uppercase">Action</th>
+            <thead>
+                <tr class="bg-gray-800">
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">ID</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Customer</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Offer</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">No. Kamar</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Check In</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Check Out</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Status</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Aksi</th>
                 </tr>
             </thead>
-
             <tbody id="aktif-table-body" class="divide-y divide-gray-100">
                 @forelse($aktif as $res)
                 <tr class="hover:bg-gray-50 transition">
-                    
-                    <td class="px-6 py-4 text-gray-600 text-sm font-medium">
-                        {{ $res->id }}
-                    </td>
-
+                    <<td class="px-6 py-4 text-gray-400 text-xs font-medium">{{ str_pad($res->id, 3, '0', STR_PAD_LEFT) }}</td>
                     <td class="px-6 py-4">
                         <p class="font-semibold text-gray-800">{{ $res->user->name }}</p>
                         <p class="text-xs text-gray-400">{{ $res->user->email }}</p>
                     </td>
-
                     <td class="px-6 py-4">
-                        <p class="text-gray-700 font-medium">
-                            Room {{ $res->room->nomor_kamar }} • Floor {{ $res->room->lantai }}
-                        </p>
-                        <p class="text-xs text-gray-400">{{ $res->room->tipe }}</p>
+                        <p class="text-gray-800 font-semibold">{{ $res->offer->name }}</p>
+                        <p class="text-xs text-gray-400">{{ $res->room->tipe }} · Rp {{ number_format($res->offer->harga, 0, ',', '.') }}/malam</p>
                     </td>
-
-                    <td class="px-6 py-4 text-gray-700">{{ $res->check_in }}</td>
-                    <td class="px-6 py-4 text-gray-700">{{ $res->check_out }}</td>
-
                     <td class="px-6 py-4">
-                        @if($res->status == 'confirmed')
-                            <span class="px-3 py-1 text-xs rounded-full bg-green-100 text-green-700 font-medium">
-                                Confirmed
+                        @if($res->room->nomor_kamar)
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold bg-gray-100 text-gray-700 border border-gray-200">
+                                Kamar {{ $res->room->nomor_kamar }}
                             </span>
                         @else
-                            <span class="px-3 py-1 text-xs rounded-full bg-yellow-100 text-yellow-700 font-medium">
-                                Pending
+                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-orange-50 text-orange-600 border border-orange-100">
+                                <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M12 3a9 9 0 100 18A9 9 0 0012 3z"/>
+                                </svg>
+                                Belum di-assign
                             </span>
                         @endif
                     </td>
-
+                    <td class="px-6 py-4 text-gray-700">{{ $res->check_in }}</td>
+                    <td class="px-6 py-4 text-gray-700">{{ $res->check_out }}</td>
+                    <td class="px-6 py-4">
+                        @if($res->status == 'confirmed')
+                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700 border border-green-200">
+                                <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Confirmed
+                            </span>
+                        @else
+                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-700 border border-yellow-200">
+                                <span class="w-1.5 h-1.5 rounded-full bg-yellow-400"></span> Pending
+                            </span>
+                        @endif
+                    </td>
                     <td class="px-6 py-4">
                         <div class="flex gap-2">
                             <button
-                                onclick="openEdit({{ $res->id }}, '{{ $res->user->name }}', '{{ $res->user->email }}', '{{ $res->room->lantai }}', '{{ $res->check_in }}', '{{ $res->check_out }}', '{{ $res->status }}')"
-                                class="text-xs px-3 py-1.5 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition">
+                                onclick="openEdit({{ $res->id }}, '{{ $res->user->name }}', '{{ $res->user->email }}', {{ $res->offer->id ?? 0 }}, '{{ $res->offer->name }}', 
+                                '{{ $res->room->tipe }}', {{ $res->room->lantai }}, '{{ $res->room->nomor_kamar }}', '{{ $res->check_in }}', '{{ $res->check_out }}', '{{ $res->status }}')"
+                                class="text-xs px-3 py-1.5 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition font-medium">
                                 Edit
                             </button>
-
                             <button
                                 onclick="checkoutRow(this)"
-                                class="text-xs px-3 py-1.5 rounded-lg bg-gray-700 text-white hover:bg-gray-800 transition">
+                                class="text-xs px-3 py-1.5 rounded-lg bg-gray-700 text-white hover:bg-gray-800 transition font-medium">
                                 Check Out
                             </button>
                         </div>
                     </td>
-
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="7" class="px-6 py-10 text-center text-gray-400">
-                        Tidak ada reservasi aktif
-                    </td>
+                    <td colspan="8" class="px-6 py-10 text-center text-gray-400">Tidak ada reservasi aktif</td>
                 </tr>
                 @endforelse
             </tbody>
         </table>
-
     </div>
 </div>
 
 {{-- TAB: RIWAYAT --}}
 <div id="panel-riwayat" class="hidden">
-
     <div class="grid grid-cols-2 gap-4 mb-4">
         <div class="bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
             <p class="text-xs text-gray-400 mb-1 flex items-center gap-1">
@@ -211,14 +222,13 @@ $lost = $riwayat->where('status', 'canceled')->sum(function($r) use ($harga) {
             <p class="text-xl font-semibold text-red-500">Rp {{ number_format($lost, 0, ',', '.') }}</p>
         </div>
     </div>
-
     <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
         <table class="w-full text-sm">
             <thead>
                 <tr class="bg-gray-800">
                     <th class="px-4 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">ID</th>
                     <th class="px-4 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Customer</th>
-                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Kamar & Tipe</th>
+                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Offer & Kamar</th>
                     <th class="px-4 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Check In</th>
                     <th class="px-4 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Check Out</th>
                     <th class="px-4 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Total Bayar</th>
@@ -229,7 +239,7 @@ $lost = $riwayat->where('status', 'canceled')->sum(function($r) use ($harga) {
                 @forelse($riwayat as $res)
                 @php
                     $nights = \Carbon\Carbon::parse($res->check_in)->diffInDays($res->check_out);
-                    $total  = $nights * $harga[$res->room->tipe];
+                    $total  = $nights * $res->offer->harga;
                 @endphp
                 <tr class="hover:bg-gray-50 transition">
                     <td class="px-4 py-3 text-gray-400 text-xs font-medium">#{{ $res->id }}</td>
@@ -238,8 +248,8 @@ $lost = $riwayat->where('status', 'canceled')->sum(function($r) use ($harga) {
                         <p class="text-xs text-gray-400">{{ $res->user->email }}</p>
                     </td>
                     <td class="px-4 py-3">
-                        <p class="text-gray-700 font-medium">Kamar {{ $res->room->nomor_kamar }} &middot; Lt {{ $res->room->lantai }}</p>
-                        <p class="text-xs text-gray-400">{{ $res->room->tipe }} &middot; Rp {{ number_format($harga[$res->room->tipe], 0, ',', '.') }}/malam</p>
+                        <p class="text-gray-800 font-semibold">{{ $res->offer->name }}</p>
+                        <p class="text-xs text-gray-400">Kamar {{ $res->room->nomor_kamar }} · {{ $res->room->tipe }} · Rp {{ number_format($res->offer->harga, 0, ',', '.') }}/malam</p>
                     </td>
                     <td class="px-4 py-3 text-gray-700 font-medium">{{ $res->check_in }}</td>
                     <td class="px-4 py-3">
@@ -279,10 +289,12 @@ $lost = $riwayat->where('status', 'canceled')->sum(function($r) use ($harga) {
 {{-- MODAL TAMBAH --}}
 <div id="modal-tambah" tabindex="-1" aria-hidden="true"
     class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-    <div class="relative p-4 w-full max-w-md max-h-full">
+    <div class="relative p-4 w-full max-w-lg max-h-full">
         <div class="relative bg-white rounded-2xl shadow-lg border border-gray-100">
             <div class="flex items-center justify-between p-5 border-b border-gray-100">
-                <h3 class="text-base font-semibold text-gray-800">Tambah Reservasi</h3>
+                <div>
+                    <h3 class="text-base font-semibold text-gray-800">Tambah Reservasi</h3>
+                </div>
                 <button type="button" data-modal-hide="modal-tambah"
                     class="text-gray-400 hover:bg-gray-100 rounded-lg p-1.5 transition">
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -291,53 +303,76 @@ $lost = $riwayat->where('status', 'canceled')->sum(function($r) use ($harga) {
                 </button>
             </div>
             <div class="p-5 space-y-4">
+
+                {{-- Data Tamu --}}
+                <div class="pb-3 border-b border-gray-100">
+                    <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Data Tamu</p>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-500 mb-1">Nama Lengkap</label>
+                            <input id="f-name" type="text" placeholder="Masukkan nama tamu"
+                                class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-500 mb-1">Email</label>
+                            <input id="f-email" type="email" placeholder="email@contoh.com"
+                                class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Pilih Offer --}}
+                <div class="pb-3 border-b border-gray-100">
+                    <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Pilih Offer</p>
+                    <div id="f-offer-list" class="space-y-2">
+                        @foreach($offers as $offer)
+                        <label class="flex items-start gap-3 border border-gray-200 rounded-lg p-3 cursor-pointer hover:border-blue-300 hover:bg-blue-50 transition offer-option"
+                            data-offer-id="{{ $offer->id }}"
+                            data-tipe="{{ $offer->tipe }}"
+                            data-lantai="{{ $offer->lantai }}"
+                            data-harga="{{ $offer->harga }}">
+                            <input type="radio" name="f-offer" value="{{ $offer->id }}" class="mt-0.5 accent-blue-600">
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center justify-between">
+                                    <p class="text-sm font-semibold text-gray-800">{{ $offer->name }}</p>
+                                    <p class="text-sm font-bold text-blue-600">Rp {{ number_format($offer->harga, 0, ',', '.') }}<span class="text-xs font-normal text-gray-400">/malam</span></p>
+                                </div>
+                                <p class="text-xs text-gray-400 mt-0.5">{{ $offer->tipe }} · Lantai {{ $offer->lantai }}</p>
+                                <div class="flex flex-wrap gap-1 mt-1.5">
+                                    @foreach($offer->benefits as $b)
+                                    <span class="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">{{ $b }}</span>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </label>
+                        @endforeach
+                    </div>
+                </div>
+
+                {{-- Tanggal --}}
                 <div>
-                    <label class="block text-xs font-medium text-gray-500 mb-1">Nama Lengkap</label>
-                    <input id="f-name" type="text" placeholder="Masukkan nama"
-                        class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                </div>
-                <div>
-                    <label class="block text-xs font-medium text-gray-500 mb-1">Email</label>
-                    <input id="f-email" type="email" placeholder="email@contoh.com"
-                        class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-medium text-gray-500 mb-1">Lantai</label>
-                        <select id="f-floor"
-                            class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <option value="">Pilih lantai</option>
-                            <option value="1">Lantai 1</option>
-                            <option value="2">Lantai 2</option>
-                            <option value="3">Lantai 3</option>
-                        </select>
+                    <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Tanggal Menginap</p>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-500 mb-1">Check In</label>
+                            <input id="f-checkin" type="date"
+                                class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-500 mb-1">Check Out</label>
+                            <input id="f-checkout" type="date"
+                                class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
                     </div>
-                    <div>
-                        <label class="block text-xs font-medium text-gray-500 mb-1">Tipe Kamar</label>
-                        <div id="f-type-display"
-                            class="w-full border border-gray-100 bg-gray-50 rounded-lg px-3 py-2 text-sm text-gray-400">—</div>
+                    {{-- Estimasi total --}}
+                    <div id="f-estimasi" class="hidden mt-3 bg-blue-50 border border-blue-100 rounded-lg px-3 py-2.5">
+                        <p class="text-xs text-blue-600">Estimasi total: <span id="f-estimasi-nilai" class="font-bold text-blue-700"></span></p>
                     </div>
                 </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-medium text-gray-500 mb-1">Check In</label>
-                        <input id="f-checkin" type="date"
-                            class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-gray-500 mb-1">Check Out</label>
-                        <input id="f-checkout" type="date"
-                            class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-xs font-medium text-gray-500 mb-1">Status</label>
-                    <select id="f-status"
-                        class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <option value="pending">Pending</option>
-                        <option value="confirmed">Confirmed</option>
-                        <option value="canceled">Canceled</option>
-                    </select>
+
+                <div class="bg-yellow-50 border border-yellow-100 rounded-lg px-3 py-2.5">
+                    <p class="text-xs font-medium text-yellow-700">Status awal: Pending</p>
+                    <p class="text-xs text-yellow-600 mt-0.5">Nomor kamar akan di-assign saat konfirmasi.</p>
                 </div>
             </div>
             <div class="px-5 pb-5">
@@ -375,22 +410,28 @@ $lost = $riwayat->where('status', 'canceled')->sum(function($r) use ($harga) {
                     <input id="e-email" type="email"
                         class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-medium text-gray-500 mb-1">Lantai</label>
-                        <select id="e-floor"
-                            class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <option value="1">Lantai 1</option>
-                            <option value="2">Lantai 2</option>
-                            <option value="3">Lantai 3</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-gray-500 mb-1">Tipe Kamar</label>
-                        <div id="e-type-display"
-                            class="w-full border border-blue-100 bg-blue-50 rounded-lg px-3 py-2 text-sm text-blue-700 font-medium">—</div>
-                    </div>
+
+                {{-- Offer info — readonly, tidak bisa diubah --}}
+                <div>
+                    <label class="block text-xs font-medium text-gray-500 mb-1">Offer</label>
+                    <div id="e-offer-display"
+                        class="w-full border border-blue-100 bg-blue-50 rounded-lg px-3 py-2 text-sm text-blue-700 font-medium">—</div>
+                    <p class="text-xs text-gray-400 mt-1">Offer tidak dapat diubah setelah reservasi dibuat</p>
                 </div>
+
+                {{-- Assign nomor kamar — hanya muncul saat confirmed --}}
+                <div id="e-room-assign-wrap">
+                    <label class="block text-xs font-medium text-gray-500 mb-1">
+                        Assign Nomor Kamar
+                        <span class="ml-1 text-orange-500 font-normal">(wajib saat Confirmed)</span>
+                    </label>
+                    <select id="e-nomor-kamar"
+                        class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="">-- Pilih nomor kamar --</option>
+                    </select>
+                    <p class="text-xs text-gray-400 mt-1">Hanya kamar available sesuai tipe offer</p>
+                </div>
+
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block text-xs font-medium text-gray-500 mb-1">Check In</label>
@@ -409,7 +450,7 @@ $lost = $riwayat->where('status', 'canceled')->sum(function($r) use ($harga) {
                 </div>
                 <div>
                     <label class="block text-xs font-medium text-gray-500 mb-1">Status</label>
-                    <select id="e-status"
+                    <select id="e-status" onchange="toggleRoomAssign()"
                         class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <option value="pending">Pending</option>
                         <option value="confirmed">Confirmed</option>
@@ -428,90 +469,106 @@ $lost = $riwayat->where('status', 'canceled')->sum(function($r) use ($harga) {
 </div>
 
 <script>
-const roomMap = {
-    '1': { room: '01', tipe: 'Standard' },
-    '2': { room: '02', tipe: 'Superior' },
-    '3': { room: '03', tipe: 'Deluxe'  }
+// Simulasi kamar available per tipe — nanti dari DB
+const availableRooms = {
+    'Standard': ['01', '03', '05'],
+    'Superior': ['02', '04'],
+    'Deluxe':   ['01', '02'],
 };
 
-let currentEditId = null;
+let currentEditId   = null;
+let currentEditTipe = null;
+let selectedOfferHarga = 0;
 
-// ── TAB SWITCH ──────────────────────────────────────────
+// ── TAB SWITCH ───────────────────────────────────────────
 function switchTab(tab) {
     const isAktif = tab === 'aktif';
     document.getElementById('panel-aktif').classList.toggle('hidden', !isAktif);
     document.getElementById('panel-riwayat').classList.toggle('hidden', isAktif);
-
     document.getElementById('tab-aktif').className = isAktif
         ? 'tab-btn px-4 py-2.5 border-b-2 border-blue-600 text-blue-600 transition'
         : 'tab-btn px-4 py-2.5 border-b-2 border-transparent text-gray-400 hover:text-gray-600 transition';
-
     document.getElementById('tab-riwayat').className = !isAktif
         ? 'tab-btn px-4 py-2.5 border-b-2 border-blue-600 text-blue-600 transition'
         : 'tab-btn px-4 py-2.5 border-b-2 border-transparent text-gray-400 hover:text-gray-600 transition';
 }
 
-// ── MODAL TAMBAH ─────────────────────────────────────────
-document.getElementById('f-floor').addEventListener('change', function () {
-    const typeEl = document.getElementById('f-type-display');
-    typeEl.textContent = this.value ? roomMap[this.value].tipe : '—';
-    typeEl.className = this.value
-        ? 'w-full border border-blue-100 bg-blue-50 rounded-lg px-3 py-2 text-sm text-blue-700 font-medium'
-        : 'w-full border border-gray-100 bg-gray-50 rounded-lg px-3 py-2 text-sm text-gray-400';
-});
+// ── ESTIMASI TOTAL ───────────────────────────────────────
+function hitungEstimasi() {
+    const checkin  = document.getElementById('f-checkin').value;
+    const checkout = document.getElementById('f-checkout').value;
+    const offer    = document.querySelector('input[name="f-offer"]:checked');
 
+    if (!checkin || !checkout || !offer || checkout <= checkin) {
+        document.getElementById('f-estimasi').classList.add('hidden');
+        return;
+    }
+
+    const nights = Math.round((new Date(checkout) - new Date(checkin)) / 86400000);
+    const harga  = parseInt(offer.closest('label').dataset.harga);
+    const total  = nights * harga;
+
+    document.getElementById('f-estimasi-nilai').textContent =
+        nights + ' malam × Rp ' + harga.toLocaleString('id-ID') + ' = Rp ' + total.toLocaleString('id-ID');
+    document.getElementById('f-estimasi').classList.remove('hidden');
+}
+
+document.getElementById('f-checkin').addEventListener('change', hitungEstimasi);
+document.getElementById('f-checkout').addEventListener('change', hitungEstimasi);
+document.querySelectorAll('input[name="f-offer"]').forEach(r => r.addEventListener('change', hitungEstimasi));
+
+// ── MODAL TAMBAH ─────────────────────────────────────────
 function saveReservation() {
     const name     = document.getElementById('f-name').value.trim();
     const email    = document.getElementById('f-email').value.trim();
-    const floor    = document.getElementById('f-floor').value;
     const checkin  = document.getElementById('f-checkin').value;
     const checkout = document.getElementById('f-checkout').value;
-    const status   = document.getElementById('f-status').value;
+    const offerEl  = document.querySelector('input[name="f-offer"]:checked');
 
-    if (!name || !email || !floor || !checkin || !checkout) {
-        alert('Harap lengkapi semua field!'); return;
+    if (!name || !email || !offerEl || !checkin || !checkout) {
+        alert('Harap lengkapi semua field dan pilih offer!'); return;
     }
     if (checkout <= checkin) {
         alert('Check Out harus setelah Check In!'); return;
     }
 
-    const rm    = roomMap[floor];
-    const tbody = document.getElementById('aktif-table-body');
-    const id    = tbody.querySelectorAll('tr').length + 1;
-
-    const badgeMap = {
-        confirmed: 'bg-green-100 text-green-700 border border-green-200',
-        pending:   'bg-yellow-100 text-yellow-700 border border-yellow-200',
-        canceled:  'bg-red-100 text-red-700 border border-red-200',
-    };
-    const dotMap = {
-        confirmed: 'bg-green-500',
-        pending:   'bg-yellow-400',
-        canceled:  'bg-red-400',
-    };
+    const offerLabel = offerEl.closest('label');
+    const offerName  = offerLabel.querySelector('p.font-semibold').textContent;
+    const tipe       = offerLabel.dataset.tipe;
+    const lantai     = offerLabel.dataset.lantai;
+    const harga      = parseInt(offerLabel.dataset.harga);
+    const tbody      = document.getElementById('aktif-table-body');
+    const id         = tbody.querySelectorAll('tr').length + 1;
 
     const row = `
     <tr class="hover:bg-gray-50 transition">
-        <td class="px-4 py-3 text-gray-400 text-xs font-medium">#${id}</td>
-        <td class="px-4 py-3">
+        <td class="px-6 py-4 text-gray-400 text-xs font-medium">${String(id).padStart(3, '0')}</td>
+        <td class="px-6 py-4">
             <p class="font-semibold text-gray-800">${name}</p>
             <p class="text-xs text-gray-400">${email}</p>
         </td>
-        <td class="px-4 py-3">
-            <p class="text-gray-700 font-medium">Kamar ${rm.room} &middot; Lt ${floor}</p>
-            <p class="text-xs text-gray-400">${rm.tipe}</p>
+        <td class="px-6 py-4">
+            <p class="text-gray-800 font-semibold">${offerName}</p>
+            <p class="text-xs text-gray-400">${tipe} · Rp ${harga.toLocaleString('id-ID')}/malam</p>
         </td>
-        <td class="px-4 py-3 text-gray-700 font-medium">${checkin}</td>
-        <td class="px-4 py-3 text-gray-700 font-medium">${checkout}</td>
-        <td class="px-4 py-3">
-            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold ${badgeMap[status]}">
-                <span class="w-1.5 h-1.5 rounded-full ${dotMap[status]}"></span>
-                ${status.charAt(0).toUpperCase() + status.slice(1)}
+        <td class="px-6 py-4">
+            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-orange-50 text-orange-600 border border-orange-100">
+                <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M12 3a9 9 0 100 18A9 9 0 0012 3z"/>
+                </svg>
+                Belum di-assign
             </span>
         </td>
-        <td class="px-4 py-3">
+        <td class="px-6 py-4 text-gray-700">${checkin}</td>
+        <td class="px-6 py-4 text-gray-700">${checkout}</td>
+        <td class="px-6 py-4">
+            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-700 border border-yellow-200">
+                <span class="w-1.5 h-1.5 rounded-full bg-yellow-400"></span> Pending
+            </span>
+        </td>
+        <td class="px-6 py-4">
             <div class="flex gap-2">
-                <button onclick="openEdit(${id},'${name}','${email}','${floor}','${checkin}','${checkout}','${status}')"
+                <button onclick="openEdit(${id},'${name}','${email}',0,'${offerName}','${tipe}',${lantai},'','${checkin}','${checkout}','pending')"
                     class="text-xs px-3 py-1.5 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition font-medium">Edit</button>
                 <button onclick="checkoutRow(this)"
                     class="text-xs px-3 py-1.5 rounded-lg bg-gray-700 text-white hover:bg-gray-800 transition font-medium">Check Out</button>
@@ -521,42 +578,73 @@ function saveReservation() {
 
     tbody.insertAdjacentHTML('beforeend', row);
 
-    ['f-name','f-email','f-checkin','f-checkout'].forEach(el => document.getElementById(el).value = '');
-    document.getElementById('f-floor').value  = '';
-    document.getElementById('f-status').value = 'pending';
-    document.getElementById('f-type-display').textContent = '—';
-    document.getElementById('f-type-display').className   = 'w-full border border-gray-100 bg-gray-50 rounded-lg px-3 py-2 text-sm text-gray-400';
+    document.getElementById('f-name').value  = '';
+    document.getElementById('f-email').value = '';
+    document.getElementById('f-checkin').value  = '';
+    document.getElementById('f-checkout').value = '';
+    document.querySelectorAll('input[name="f-offer"]').forEach(r => r.checked = false);
+    document.getElementById('f-estimasi').classList.add('hidden');
 
     FlowbiteInstances.getInstance('Modal', 'modal-tambah')?.hide();
 }
 
 // ── MODAL EDIT ───────────────────────────────────────────
-document.getElementById('e-floor').addEventListener('change', function () {
-    document.getElementById('e-type-display').textContent = roomMap[this.value]?.tipe ?? '—';
-});
+function openEdit(id, name, email, offerId, offerName, tipe, lantai, nomorKamar, checkin, checkout, status) {
+    currentEditId   = id;
+    currentEditTipe = tipe;
 
-function openEdit(id, name, email, lantai, checkin, checkout, status) {
-    currentEditId = id;
     document.getElementById('edit-modal-title').textContent = 'Edit Reservasi #' + id;
     document.getElementById('e-name').value     = name;
     document.getElementById('e-email').value    = email;
-    document.getElementById('e-floor').value    = lantai;
+    document.getElementById('e-offer-display').textContent = offerName + ' (' + tipe + ' · Lt ' + lantai + ')';
     document.getElementById('e-checkin').value  = checkin;
     document.getElementById('e-checkout').value = checkout;
     document.getElementById('e-status').value   = status;
-    document.getElementById('e-type-display').textContent = roomMap[lantai]?.tipe ?? '—';
+
+    // Populate dropdown kamar available sesuai tipe offer
+    const rooms  = availableRooms[tipe] || [];
+    const select = document.getElementById('e-nomor-kamar');
+    select.innerHTML = '<option value="">-- Pilih nomor kamar --</option>';
+    rooms.forEach(r => {
+        const opt      = document.createElement('option');
+        opt.value      = r;
+        opt.textContent = 'Kamar ' + r + ' — Available';
+        if (r === nomorKamar) opt.selected = true;
+        select.appendChild(opt);
+    });
+    if (nomorKamar && !rooms.includes(nomorKamar)) {
+        const opt      = document.createElement('option');
+        opt.value      = nomorKamar;
+        opt.textContent = 'Kamar ' + nomorKamar + ' — (sudah di-assign)';
+        opt.selected   = true;
+        select.appendChild(opt);
+    }
+
+    toggleRoomAssign();
 
     const modal = FlowbiteInstances.getInstance('Modal', 'modal-edit')
         ?? new Modal(document.getElementById('modal-edit'));
     modal.show();
 }
 
+function toggleRoomAssign() {
+    const status = document.getElementById('e-status').value;
+    document.getElementById('e-room-assign-wrap').style.display =
+        status === 'confirmed' ? 'block' : 'none';
+}
+
 function saveEdit() {
     const checkin  = document.getElementById('e-checkin').value;
     const checkout = document.getElementById('e-checkout').value;
-    if (checkout <= checkin) { alert('Check Out harus setelah Check In!'); return; }
+    const status   = document.getElementById('e-status').value;
+    const kamar    = document.getElementById('e-nomor-kamar').value;
 
-    alert('Perubahan reservasi #' + currentEditId + ' disimpan!');
+    if (checkout <= checkin) { alert('Check Out harus setelah Check In!'); return; }
+    if (status === 'confirmed' && !kamar) {
+        alert('Nomor kamar wajib di-assign saat status Confirmed!'); return;
+    }
+
+    alert('Reservasi #' + currentEditId + ' disimpan!' + (kamar ? '\nKamar: ' + kamar : ''));
     FlowbiteInstances.getInstance('Modal', 'modal-edit')?.hide();
 }
 
