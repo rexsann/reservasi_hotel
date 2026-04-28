@@ -3,7 +3,7 @@
 <head>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <meta charset="UTF-8">
-    <title>Lupa Password</title>
+    <title>Forget Password</title>
 </head>
 
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
@@ -11,39 +11,11 @@
     <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md">
 
         <h2 class="text-2xl font-bold text-center mb-6 text-gray-700">
-            Lupa Password
+            Forget Password
         </h2>
 
-        @if ($errors->any())
-        <div class="mb-4 text-red-500 text-sm">
-            @foreach ($errors->all() as $error)
-            <p>{{ $error }}</p>
-            @endforeach
-        </div>
-        @endif
 
-        @if (session('success'))
-        <div id="alertBox"
-            class="mb-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow 
-           transform -translate-y-10 opacity-0 transition-all duration-500">
-            {{ session('success') }}
-        </div>
-
-        <script>
-            const alertBox = document.getElementById('alertBox');
-
-            setTimeout(() => {
-                alertBox.classList.remove('-translate-y-10', 'opacity-0');
-                alertBox.classList.add('translate-y-0', 'opacity-100');
-            }, 100);
-
-            setTimeout(() => {
-                alertBox.classList.add('-translate-y-10', 'opacity-0');
-            }, 3000);
-        </script>
-        @endif
-
-        <form method="POST" action="/lupapassword" class="space-y-4">
+        <form method="POST" action="{{ route('lupapassword') }}">
             @csrf
 
             <div class="flex flex-col gap-1">
@@ -51,14 +23,18 @@
                 <input
                     type="email"
                     name="email"
+                    value="{{ old('email') }}"
                     placeholder="Enter your email"
-                    class="block w-full px-3 py-3 pr-12 border border-gray-300 rounded-lg text-lg text-gray-700 
-               focus:outline-none focus:ring-2 focus:ring-blue-400">
+                    class="w-full px-3 py-3 border text-lg rounded-lg focus:ring-2 focus:ring-blue-400 {{ $errors->has('email') ? 'border-red-500' : '' }}">
+                @error('email')
+                <p class="text-red-500 text-sm">{{ $message }}</p>
+                @enderror
             </div>
 
             <div class="flex flex-col gap-2">
-                <button class="w-full bg-blue-500 text-white py-2 text-lg rounded-lg hover:bg-blue-600">
-                    Send Reset Link
+                <button type="submit"
+                    class="w-full bg-blue-500 text-white py-2 text-lg rounded-lg hover:bg-blue-600 mt-4">
+                    Send Code
                 </button>
             </div>
 
