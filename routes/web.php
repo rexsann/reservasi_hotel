@@ -13,6 +13,7 @@ use App\Http\Controllers\LupaPasswordController;
 use App\Http\Controllers\CodeVerificationController;
 use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\DetailController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\RoomController;
@@ -28,7 +29,14 @@ Route::get('/',            [HomeController::class, 'index']);
 Route::get('/home',        [HomeController::class, 'index']);
 Route::get('/about',       [AboutController::class, 'index']);
 Route::get('/contact',     [ContactController::class, 'index']);
-Route::get('/detail',      [DetailController::class, 'index']);
+Route::get('/detail', [DetailController::class, 'index'])->name('detail');
+Route::get('/booking', [PaymentController::class, 'fillData'])->name('booking.fill');
+Route::post('/booking', [PaymentController::class, 'index'])->name('payment.index');
+Route::get('/payment', [PaymentController::class, 'showPayment'])->name('payment.show');
+Route::post('/payment/order', [PaymentController::class, 'order'])->name('payment.order');
+Route::post('/payment/cancel', [PaymentController::class, 'cancel'])->name('payment.cancel');
+Route::get('/payment/check', [PaymentController::class, 'checkStatus'])->name('payment.check');
+Route::get('/confirmation', [PaymentController::class, 'confirmation'])->name('payment.confirmation');
 
 
 Route::get('/welcome', fn() => view('welcome'));
