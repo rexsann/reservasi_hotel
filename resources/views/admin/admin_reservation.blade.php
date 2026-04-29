@@ -144,7 +144,7 @@ $lost = $riwayat->where('status', 'canceled')->sum(function($r) {
             <tbody id="aktif-table-body" class="divide-y divide-gray-100">
                 @forelse($aktif as $res)
                 <tr class="hover:bg-gray-50 transition">
-                    <<td class="px-6 py-4 text-gray-400 text-xs font-medium">{{ str_pad($res->id, 3, '0', STR_PAD_LEFT) }}</td>
+                    <td class="px-6 py-4 text-gray-400 text-xs font-medium">{{ str_pad($res->id, 3, '0', STR_PAD_LEFT) }}</td>
                     <td class="px-6 py-4">
                         <p class="font-semibold text-gray-800">{{ $res->user->name }}</p>
                         <p class="text-xs text-gray-400">{{ $res->user->email }}</p>
