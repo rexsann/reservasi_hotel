@@ -60,16 +60,7 @@
 
       <h2 class="text-lg font-semibold text-gray-800">Informasi Pembayaran</h2>
 
-      <div class="flex justify-between items-center">
-
-        <span class="text-gray-500">Status</span>
-
-        <!-- STATUS BADGE BESAR -->
-        <span class="px-4 py-2 text-sm font-semibold rounded-full bg-yellow-100 text-yellow-700">
-          ⏳ Pending
-        </span>
-
-      </div>  
+      
 
       <div class="space-y-3 text-sm">
 
@@ -124,6 +115,25 @@
           <span>Rp 2.475.000</span>
         </div>
 
+      </div>
+
+      <div class="flex justify-between items-center">
+
+        <span class="text-gray-500">Status</span>
+
+        <span id="statusBadge"
+          class="px-4 py-2 text-sm font-semibold rounded-full bg-yellow-100 text-yellow-700">
+          ⏳ Pending
+        </span>
+
+      </div>
+
+      <!-- 🔥 TOMBOL CEK STATUS -->
+      <div class="mt-3">
+        <button onclick="cekStatus()"
+          class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition text-sm font-medium">
+          🔄 Cek Status Pembayaran
+        </button>
       </div>
 
     </div>
@@ -192,3 +202,31 @@
 
 </div>
 @endsection
+
+
+<script>
+  function cekStatus() {
+    const badge = document.getElementById('statusBadge');
+
+    // animasi loading
+    badge.innerText = "⏳ Mengecek...";
+    badge.className = "px-4 py-2 text-sm font-semibold rounded-full bg-gray-100 text-gray-600";
+
+    setTimeout(() => {
+      // simulasi hasil (bisa diganti dari backend nanti)
+      let status = "success"; // ubah: pending / success / rejected
+
+      if (status === "success") {
+        badge.innerText = "✅ Berhasil";
+        badge.className = "px-4 py-2 text-sm font-semibold rounded-full bg-green-100 text-green-700";
+      } else if (status === "rejected") {
+        badge.innerText = "❌ Ditolak";
+        badge.className = "px-4 py-2 text-sm font-semibold rounded-full bg-red-100 text-red-700";
+      } else {
+        badge.innerText = "⏳ Pending";
+        badge.className = "px-4 py-2 text-sm font-semibold rounded-full bg-yellow-100 text-yellow-700";
+      }
+
+    }, 1500);
+  }
+</script>
