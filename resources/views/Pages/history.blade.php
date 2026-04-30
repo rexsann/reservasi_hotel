@@ -1,362 +1,203 @@
 @extends('layouts.app')
 
-@section('title', 'My Reservations - Stayzy Hotel')
+@section('title', 'Riwayat Reservasi')
 
 @section('content')
 
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500&display=swap');
+<!-- BACKGROUND -->
+<div class="pt-32 pb-24 px-6 bg-gradient-to-b from-gray-50 to-white min-h-screen">
 
-  .res-wrap {
-    font-family: 'DM Sans', sans-serif;
-    min-height: 100vh;
-    background: #e8e0d4;
-    padding: 100px 24px 60px;
-  }
+  <div class="max-w-6xl mx-auto">
 
-  .res-shell {
-    width: 100%;
-    max-width: 1000px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-  }
+    <!-- CONTAINER -->
+    <div class="bg-white/80 backdrop-blur-xl border border-gray-100 rounded-3xl shadow-xl p-8 md:p-10 space-y-10">
 
-  /* PAGE HEADER */
-  .page-header {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    margin-bottom: 4px;
-  }
-
-  .page-label {
-    font-size: 11px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: #b8a98a;
-    font-weight: 500;
-    margin-bottom: 4px;
-  }
-
-  .page-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 36px;
-    font-weight: 600;
-    color: #1a1a2e;
-    line-height: 1.1;
-  }
-
-  .back-link {
-    font-size: 13px;
-    color: #9e8f7a;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    transition: color 0.2s;
-  }
-
-  .back-link:hover {
-    color: #1a1a2e;
-  }
-
-  /* EMPTY STATE */
-  .empty-card {
-    background: #fff;
-    border-radius: 20px;
-    padding: 64px 48px;
-    text-align: center;
-    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.04);
-  }
-
-  .empty-icon {
-    font-size: 48px;
-    margin-bottom: 16px;
-    opacity: 0.4;
-  }
-
-  .empty-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 22px;
-    color: #1a1a2e;
-    margin-bottom: 8px;
-  }
-
-  .empty-sub {
-    font-size: 14px;
-    color: #9e8f7a;
-  }
-
-  /* RESERVATION CARD */
-  .res-card {
-    background: #fff;
-    border-radius: 20px;
-    padding: 28px 36px;
-    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.04);
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 16px;
-    align-items: center;
-    transition: box-shadow 0.2s;
-  }
-
-  .res-card:hover {
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-  }
-
-  .res-left {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .res-top {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
-  }
-
-  .res-room {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 22px;
-    font-weight: 600;
-    color: #1a1a2e;
-  }
-
-  .res-package {
-    font-size: 12px;
-    background: #f5f0e8;
-    color: #9e8f7a;
-    padding: 4px 12px;
-    border-radius: 999px;
-    border: 1px solid #e5ddd0;
-  }
-
-  .res-meta {
-    display: flex;
-    gap: 24px;
-    flex-wrap: wrap;
-  }
-
-  .meta-item {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-
-  .meta-label {
-    font-size: 10px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: #b8a98a;
-    font-weight: 500;
-  }
-
-  .meta-value {
-    font-size: 14px;
-    color: #1a1a2e;
-    font-weight: 400;
-  }
-
-  .meta-price {
-    font-size: 18px;
-    font-weight: 500;
-    color: #1a1a2e;
-  }
-
-  /* STATUS BADGES */
-  .badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 12px;
-    font-weight: 500;
-    padding: 5px 14px;
-    border-radius: 999px;
-  }
-
-  .badge-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-
-  .badge-pending {
-    background: #fef9ec;
-    color: #a16207;
-    border: 1px solid #fde68a;
-  }
-
-  .badge-pending .badge-dot {
-    background: #f59e0b;
-  }
-
-  .badge-confirmed {
-    background: #f0fdf4;
-    color: #166534;
-    border: 1px solid #bbf7d0;
-  }
-
-  .badge-confirmed .badge-dot {
-    background: #22c55e;
-  }
-
-  .badge-rejected {
-    background: #fef2f2;
-    color: #991b1b;
-    border: 1px solid #fecaca;
-  }
-
-  .badge-rejected .badge-dot {
-    background: #ef4444;
-  }
-
-  /* RIGHT SIDE */
-  .res-right {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 12px;
-  }
-
-  .btn-detail {
-    background: #1a1a2e;
-    color: #f5f0e8;
-    border: none;
-    padding: 10px 24px;
-    border-radius: 10px;
-    font-size: 13px;
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 500;
-    cursor: pointer;
-    text-decoration: none;
-    transition: all 0.2s;
-    white-space: nowrap;
-  }
-
-  .btn-detail:hover {
-    background: #2d2d4e;
-    transform: translateY(-1px);
-    box-shadow: 0 6px 20px rgba(26, 26, 46, 0.15);
-  }
-
-  /* UPLOAD NOTICE untuk pending */
-  .upload-notice {
-    font-size: 11px;
-    color: #a16207;
-    background: #fef9ec;
-    border: 1px solid #fde68a;
-    border-radius: 8px;
-    padding: 6px 12px;
-    max-width: 180px;
-    text-align: center;
-    line-height: 1.4;
-  }
-
-  @media (max-width: 768px) {
-    .res-card {
-      grid-template-columns: 1fr;
-    }
-
-    .res-right {
-      align-items: flex-start;
-    }
-
-    .page-header {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 12px;
-    }
-  }
-</style>
-
-<div class="res-wrap">
-  <div class="res-shell">
-
-    <!-- PAGE HEADER -->
-    <div class="page-header">
-      <div>
-        <div class="page-label">Account</div>
-        <div class="page-title">My Reservations</div>
+      <!-- HEADER -->
+      <div class="space-y-2 border-b pb-6">
+        <h1 class="text-3xl font-semibold text-gray-800 tracking-tight">
+          Riwayat Reservasi
+        </h1>
+        <p class="text-gray-400 text-sm">
+          Kelola dan pantau semua reservasi Anda dengan mudah
+        </p>
       </div>
-    </div>
 
-    @if(empty($reservations))
+      <!-- LIST -->
+      <div class="space-y-6">
 
-    <!-- EMPTY STATE -->
-    <div class="empty-card">
-      <div class="empty-icon">🛎️</div>
-      <div class="empty-title">No reservations yet</div>
-      <div class="empty-sub">Your booking history will appear here after you make a reservation.</div>
-    </div>
+        <!-- CARD 1 -->
+        <div class="rounded-2xl border border-gray-100 p-6 hover:shadow-md transition bg-white">
 
-    @else
+          <div class="flex flex-col md:flex-row justify-between gap-6">
 
-    @foreach($reservations as $res)
-    <div class="res-card">
+            <div class="space-y-3">
+              <p class="text-xs uppercase tracking-wider text-gray-400">No. Reservasi</p>
+              <p class="text-lg font-semibold text-gray-800">RES-240501-001</p>
 
-      <!-- LEFT -->
-      <div class="res-left">
-        <div class="res-top">
-          <span class="res-room">{{ $res['room_name'] }}</span>
-          <span class="res-package">{{ $res['package'] }}</span>
+              <div>
+                <p class="text-sm text-gray-500">Kamar</p>
+                <p class="font-medium">Deluxe Room • 101</p>
+              </div>
+
+              <div>
+                <p class="text-sm text-gray-500">Tanggal</p>
+                <p class="font-medium">
+                  01 Mei — 03 Mei
+                  <span class="text-xs text-gray-400">(2 malam)</span>
+                </p>
+              </div>
+            </div>
+
+            <div class="flex flex-col justify-center">
+              <p class="text-sm text-gray-400">Total</p>
+              <p class="text-2xl font-semibold text-gray-900">Rp 2.475.000</p>
+            </div>
+
+            <div class="flex flex-col justify-between items-end gap-4">
+
+              <!-- STATUS -->
+              <span id="status-1"
+                class="px-4 py-1.5 text-xs font-medium rounded-full bg-amber-50 text-amber-700 border border-amber-200">
+                ⏳ Pending
+              </span>
+
+              <!-- BUTTON -->
+              <button onclick="cekStatus(1)"
+                class="px-5 py-2 text-sm rounded-lg 
+bg-blue-600 text-white 
+hover:bg-blue-700 hover:scale-105 active:scale-95 
+transition flex items-center gap-2 shadow-sm">
+                🔄 Cek Status
+              </button>
+
+            </div>
+
+          </div>
+
         </div>
 
-        <div class="res-meta">
-          <div class="meta-item">
-            <span class="meta-label">Check-in</span>
-            <span class="meta-value">{{ $res['check_in'] }}</span>
+        <!-- CARD 2 -->
+        <div class="rounded-2xl border border-gray-100 p-6 hover:shadow-md transition bg-white">
+
+          <div class="flex flex-col md:flex-row justify-between gap-6">
+
+            <div class="space-y-3">
+              <p class="text-xs uppercase tracking-wider text-gray-400">No. Reservasi</p>
+              <p class="text-lg font-semibold text-gray-800">RES-240430-002</p>
+
+              <p class="text-sm text-gray-500">Kamar</p>
+              <p class="font-medium">Superior Room • 202</p>
+
+              <p class="text-sm text-gray-500">Tanggal</p>
+              <p class="font-medium">28 Apr — 30 Apr</p>
+            </div>
+
+            <div class="flex flex-col justify-center">
+              <p class="text-sm text-gray-400">Total</p>
+              <p class="text-2xl font-semibold text-gray-900">Rp 1.800.000</p>
+            </div>
+
+            <div class="flex flex-col justify-between items-end gap-4">
+
+              <span id="status-2"
+                class="px-4 py-1.5 text-xs font-medium rounded-full bg-green-50 text-green-700 border border-green-200">
+                ✅ Berhasil
+              </span>
+
+              <button onclick="cekStatus(2)"
+                class="px-5 py-2 text-sm rounded-lg 
+bg-blue-600 text-white 
+hover:bg-blue-700 hover:scale-105 active:scale-95 
+transition flex items-center gap-2 shadow-sm">
+                🔄 Cek Status
+              </button>
+
+            </div>
+
           </div>
-          <div class="meta-item">
-            <span class="meta-label">Check-out</span>
-            <span class="meta-value">{{ $res['check_out'] }}</span>
-          </div>
-          <div class="meta-item">
-            <span class="meta-label">Duration</span>
-            <span class="meta-value">{{ $res['nights'] }} Night(s)</span>
-          </div>
-          <div class="meta-item">
-            <span class="meta-label">Total</span>
-            <span class="meta-price">Rp {{ number_format($res['total_price'], 0, ',', '.') }}</span>
-          </div>
+
         </div>
-      </div>
 
-      <!-- RIGHT -->
-      <div class="res-right">
+        <!-- CARD 3 -->
+        <div class="rounded-2xl border border-gray-100 p-6 hover:shadow-md transition bg-white">
 
-        {{-- STATUS BADGE --}}
-        @if($res['status'] === 'pending')
-        <span class="badge badge-pending">
-          <span class="badge-dot"></span> Awaiting Verification
-        </span>
-        <div class="upload-notice">Proof of transfer is being reviewed</div>
+          <div class="flex flex-col md:flex-row justify-between gap-6">
 
-        @elseif($res['status'] === 'confirmed')
-        <span class="badge badge-confirmed">
-          <span class="badge-dot"></span> Confirmed
-        </span>
+            <div class="space-y-3">
+              <p class="text-xs uppercase tracking-wider text-gray-400">No. Reservasi</p>
+              <p class="text-lg font-semibold text-gray-800">RES-240420-003</p>
 
-        @elseif($res['status'] === 'rejected')
-        <span class="badge badge-rejected">
-          <span class="badge-dot"></span> Rejected
-        </span>
-        @endif
+              <p class="text-sm text-gray-500">Kamar</p>
+              <p class="font-medium">Standard Room • 303</p>
 
-        <a href="/reservations/{{ $res['id'] }}" class="btn-detail">See Detail</a>
+              <p class="text-sm text-gray-500">Tanggal</p>
+              <p class="font-medium">20 Apr — 21 Apr</p>
+            </div>
+
+            <div class="flex flex-col justify-center">
+              <p class="text-sm text-gray-400">Total</p>
+              <p class="text-2xl font-semibold text-gray-900">Rp 750.000</p>
+            </div>
+
+            <div class="flex flex-col justify-between items-end gap-4">
+
+              <span id="status-3"
+                class="px-4 py-1.5 text-xs font-medium rounded-full bg-red-50 text-red-700 border border-red-200">
+                ❌ Ditolak
+              </span>
+
+              <button onclick="cekStatus(3)"
+                class="px-5 py-2 text-sm rounded-lg 
+bg-blue-600 text-white 
+hover:bg-blue-700 hover:scale-105 active:scale-95 
+transition flex items-center gap-2 shadow-sm">
+                🔄 Cek Status
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
 
       </div>
 
     </div>
-    @endforeach
-
-    @endif
 
   </div>
+
 </div>
 
 @endsection
+
+
+<script>
+function cekStatus(id) {
+    const badge = document.getElementById(`status-${id}`);
+
+    // loading
+    badge.innerText = "⏳ Mengecek...";
+    badge.className = "px-4 py-1.5 text-xs font-medium rounded-full bg-gray-100 text-gray-600";
+
+    setTimeout(() => {
+
+        // simulasi random status
+        let statuses = ["pending", "success", "rejected"];
+        let status = statuses[Math.floor(Math.random() * statuses.length)];
+
+        if (status === "success") {
+            badge.innerText = "✅ Berhasil";
+            badge.className = "px-4 py-1.5 text-xs font-medium rounded-full bg-green-50 text-green-700 border border-green-200";
+        } 
+        else if (status === "rejected") {
+            badge.innerText = "❌ Ditolak";
+            badge.className = "px-4 py-1.5 text-xs font-medium rounded-full bg-red-50 text-red-700 border border-red-200";
+        } 
+        else {
+            badge.innerText = "⏳ Pending";
+            badge.className = "px-4 py-1.5 text-xs font-medium rounded-full bg-amber-50 text-amber-700 border border-amber-200";
+        }
+
+    }, 1500);
+}
+</script>
