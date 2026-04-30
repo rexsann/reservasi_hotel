@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Session;
 use App\Http\Controllers\FacilityController;
 use App\Http\Controllers\OfferController;
 use App\Http\Controllers\HistoryController;
+use App\Http\Controllers\PembayaranController;
 
 // ─── PUBLIC ROUTES ────────────────────────────────────────────
 Route::get('/',            [HomeController::class, 'index']);
@@ -37,6 +38,15 @@ Route::post('/payment/order', [PaymentController::class, 'order'])->name('paymen
 Route::post('/payment/cancel', [PaymentController::class, 'cancel'])->name('payment.cancel');
 Route::get('/payment/check', [PaymentController::class, 'checkStatus'])->name('payment.check');
 Route::get('/confirmation', [PaymentController::class, 'confirmation'])->name('payment.confirmation');
+Route::get('/history', [ReservationController::class, 'index'])->name('history');
+Route::get('/pembayaran/{id}', [ReservationController::class, 'pembayaran'])->name('pembayaran');
+
+Route::get('/cek-status/{id}', [ReservationController::class, 'cekStatus']);
+// halaman admin pembayaran
+Route::get('/admin/pembayaran', [PembayaranController::class, 'index'])
+    ->name('admin.pembayaran');
+
+Route::post('/admin/pembayaran/{id}/status', [PembayaranController::class, 'updateStatus']);
 
 
 Route::get('/welcome', fn() => view('welcome'));
