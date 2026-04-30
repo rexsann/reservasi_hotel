@@ -1,75 +1,194 @@
 @extends('layouts.app')
 
-@section('title', 'Payment - Stayzy Hotel')
+@section('title', 'Pembayaran')
 
 @section('content')
+<div class="pt-32 px-6 max-w-7xl mx-auto pb-20">
 
+  <div class="grid lg:grid-cols-2 gap-6">
 
-<div class="min-h-screen bg-gray-200 flex items-center justify-center px-4 py-10 mt-20">
-  <div class="bg-white rounded-2xl shadow-lg w-full max-w-md overflow-hidden">
+    <!-- ================= ROW 1 - KIRI ================= -->
+    <!-- INSTRUKSI -->
+    <div class="bg-white rounded-2xl shadow p-6 space-y-4">
 
-    {{-- Step indicator --}}
-    <div class="bg-gray-50 border-b border-gray-200 px-6 py-3 flex items-center gap-2 text-sm">
-      <span class="text-gray-400">1. Fill in data</span>
-      <div class="flex-1 border-t border-dashed border-gray-300"></div>
-      <span class="font-semibold text-gray-700">2. Payment</span>
-    </div>
+      <h2 class="text-lg font-semibold text-gray-800">Instruksi Pembayaran</h2>
 
-    {{-- Body --}}
-    <div class="p-6 space-y-5">
+      <div class="flex items-start gap-3 bg-blue-50 border border-blue-200 text-blue-700 p-4 rounded-xl text-sm">
+        <span>ℹ️</span>
+        <p>
+          Silakan lakukan pembayaran ke nomor rekening berikut, lalu upload bukti pembayaran.
+        </p>
+      </div>
 
-      {{-- Payment method --}}
-      <div>
-        <p class="text-sm font-semibold text-gray-700 mb-2">Payment</p>
-        <div class="border border-gray-200 rounded-xl p-4 flex items-center justify-between">
+      <div class="border rounded-xl p-5 space-y-3">
+        <div class="flex items-center gap-3">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Bank_Central_Asia.svg" class="h-8">
           <div>
-            <p class="font-semibold text-gray-800">Bank Transfer BCA</p>
-            <p class="text-sm text-gray-500 mt-0.5">
-              Nomor Rekening : <span class="font-bold text-gray-800">9912783747</span>
+            <p class="font-semibold">BCA</p>
+            <p class="text-sm text-gray-500">Bank Central Asia</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 text-sm mt-3">
+          <div>
+            <p class="text-gray-500">Nama Pemilik</p>
+            <p class="font-medium">Stayzy Hotel</p>
+          </div>
+          <div>
+            <p class="text-gray-500">Nomor Rekening</p>
+            <p class="font-medium">9913 6678 9012</p>
+          </div>
+          <div class="col-span-2">
+            <p class="text-gray-500">Catatan</p>
+            <p class="font-medium">
+              Gunakan nomor pembayaran sebagai referensi transfer.
             </p>
           </div>
-          <div class="bg-blue-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg tracking-wide">BCA</div>
         </div>
       </div>
 
-      {{-- Upload --}}
-      <div>
-        <p class="text-sm font-semibold text-gray-700 mb-2">Upload Invoice Transfer</p>
-        <label class="inline-flex items-center gap-2 px-5 py-2 border border-gray-300 rounded-full cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition text-sm text-gray-500">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
-          </svg>
-          Choose file
-          <input type="file" class="hidden" />
-        </label>
+      <div class="flex items-start gap-3 bg-yellow-50 border border-yellow-200 text-yellow-700 p-4 rounded-xl text-sm">
+        <span>⚠️</span>
+        <p>Pastikan jumlah transfer sesuai total pembayaran.</p>
       </div>
 
-      {{-- Buttons --}}
-      <form method="POST" action="{{ route('payment.order') }}">
-        @csrf
-        <button type="submit"
-          class="w-full py-3 rounded-xl bg-blue-500 hover:bg-blue-600 text-white font-bold text-sm transition">
-          Order
-        </button>
-      </form>
+    </div>
 
-      <form method="POST" action="{{ route('payment.cancel') }}">
-        @csrf
-        <button type="submit"
-          class="w-full py-3 rounded-xl bg-red-500 hover:bg-red-600 text-white font-bold text-sm transition">
-          Cancel
-        </button>
-      </form>
+    <!-- ================= ROW 1 - KANAN ================= -->
+    <!-- INFORMASI PEMBAYARAN -->
+    <div class="bg-white rounded-2xl shadow p-6 space-y-6 h-fit">
 
-      {{-- Note --}}
-      <p class="text-xs text-gray-400 leading-relaxed">
-        We would like to inform you that your invoice will be sent shortly via email
-        by our admin team. Please check your inbox (and spam folder, if necessary)
-        to ensure you receive it.
-      </p>
+      <h2 class="text-lg font-semibold text-gray-800">Informasi Pembayaran</h2>
+
+      <div class="flex justify-between items-center">
+
+        <span class="text-gray-500">Status</span>
+
+        <!-- STATUS BADGE BESAR -->
+        <span class="px-4 py-2 text-sm font-semibold rounded-full bg-yellow-100 text-yellow-700">
+          ⏳ Pending
+        </span>
+
+      </div>  
+
+      <div class="space-y-3 text-sm">
+
+        <div class="flex justify-between">
+          <span class="text-gray-500">No. Pembayaran</span>
+          <span class="font-medium">PAY-240501-001</span>
+        </div>
+
+        <div class="flex justify-between">
+          <span class="text-gray-500">No. Reservasi</span>
+          <span class="font-medium">RES-240501-001</span>
+        </div>
+
+        <div class="flex justify-between">
+          <span class="text-gray-500">Tamu</span>
+          <span class="font-medium">Budi Santoso</span>
+        </div>
+
+        <div class="flex justify-between">
+          <span class="text-gray-500">Kamar</span>
+          <span class="font-medium">101 - Deluxe Room</span>
+        </div>
+
+        <div class="flex justify-between">
+          <span class="text-gray-500">Tanggal Menginap</span>
+          <span class="font-medium text-right">
+            01 Mei 2024 - 03 Mei 2024 <br>
+            <span class="text-xs text-gray-400">(2 Malam)</span>
+          </span>
+        </div>
+
+      </div>
+
+      <hr>
+
+      <div class="space-y-3 text-sm">
+
+        <h3 class="font-semibold text-gray-700">Rincian Pembayaran</h3>
+
+        <div class="flex justify-between">
+          <span class="text-gray-500">Harga Kamar (2 Malam)</span>
+          <span>Rp 2.250.000</span>
+        </div>
+
+        <div class="flex justify-between">
+          <span class="text-gray-500">Pajak & Biaya Layanan (10%)</span>
+          <span>Rp 225.000</span>
+        </div>
+
+        <div class="flex justify-between font-semibold text-blue-600 text-base pt-2 border-t">
+          <span>Total Pembayaran</span>
+          <span>Rp 2.475.000</span>
+        </div>
+
+      </div>
 
     </div>
-  </div>
-</div>
 
+    <!-- ================= ROW 2 (FULL WIDTH) ================= -->
+    <!-- UPLOAD FULL -->
+    <div class="lg:col-span-2 bg-white rounded-2xl shadow p-6 space-y-6">
+
+      <h2 class="text-lg font-semibold text-gray-800">Upload Bukti Pembayaran</h2>
+
+      <div class="grid md:grid-cols-2 gap-6">
+
+        <!-- KIRI UPLOAD -->
+        <div class="border-2 border-dashed rounded-xl p-6 text-center flex flex-col items-center gap-3">
+
+          <div class="text-4xl">☁️</div>
+
+          <p class="text-gray-600 text-sm leading-relaxed">
+            Upload bukti pembayaran
+          </p>
+
+          <span class="text-xs text-gray-400 block">
+            JPG, PNG, PDF (Max. 5MB)
+          </span>
+
+          <input type="file" class="hidden" id="uploadBukti">
+
+          <label for="uploadBukti"
+            class="mt-2 bg-blue-600 text-white px-4 py-2 rounded-lg cursor-pointer hover:bg-blue-700 transition">
+            Pilih File
+          </label>
+
+        </div>
+
+        <!-- KANAN INFO -->
+        <div class="space-y-3">
+          <p class="text-sm font-medium text-gray-700">Bukti Pembayaran</p>
+          <p class="text-sm text-red-500">Belum ada bukti pembayaran diupload.</p>
+
+          <div class="bg-blue-50 border border-blue-200 text-blue-700 p-4 rounded-xl text-sm">
+            <p class="font-medium mb-2">Ketentuan Upload</p>
+            <ul class="list-disc list-inside space-y-1">
+              <li>Bukti harus jelas</li>
+              <li>Nominal harus sesuai</li>
+              <li>Verifikasi maksimal 1x24 jam</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- FOOTER -->
+      <div class="flex items-center justify-between bg-gray-50 border rounded-xl p-4 text-sm">
+        <p class="text-gray-600">
+          Setelah bukti pembayaran diupload, admin akan memverifikasi pembayaran Anda.
+        </p>
+
+        <button class="bg-gray-300 text-white px-6 py-2 rounded-lg cursor-not-allowed">
+          Kirim Bukti Pembayaran
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
 @endsection
