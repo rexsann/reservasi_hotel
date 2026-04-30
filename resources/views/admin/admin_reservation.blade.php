@@ -3,7 +3,7 @@
 @section('content')
 
 @php
-// Simulasi data offers — nanti dari DB tabel offers
+// Simulasi data offers - nanti dari DB tabel offers
 $offers = collect([
     (object)['id' => 1, 'name' => 'Basic Deal',     'tipe' => 'Standard', 'lantai' => 1, 'harga' => 200000, 'benefits' => ['No Breakfast', 'Free WiFi']],
     (object)['id' => 2, 'name' => 'Standard Plus',  'tipe' => 'Standard', 'lantai' => 1, 'harga' => 280000, 'benefits' => ['Breakfast', 'Free WiFi']],
