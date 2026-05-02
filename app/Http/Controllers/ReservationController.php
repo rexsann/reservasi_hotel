@@ -54,6 +54,25 @@ class ReservationController extends Controller
         return view('pages.riwayat', compact('reservasi'));
     }
 
+    // 🔥 HALAMAN HASIL CEK BOOKING (TANPA DATABASE)
+public function cek_reservasi(Request $request)
+{
+    $code = $request->code;
+    $email = $request->email;
+
+    // dummy data (sementara)
+    $data = [
+        'kode' => $code,
+        'email' => $email,
+        'nama' => 'Budi Santoso',
+        'kamar' => 'Deluxe Room - 101',
+        'tanggal' => '01 Mei 2024 - 03 Mei 2024',
+        'durasi' => '2 Malam',
+        'status' => 'confirmed'
+    ];
+
+    return view('pages.cek_reservasi', compact('data'));
+}
     // 🔥 HALAMAN PEMBAYARAN
     public function pembayaran($id)
     {
