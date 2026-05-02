@@ -49,6 +49,9 @@ Route::get('/admin/pembayaran', [PembayaranController::class, 'index'])
 Route::post('/admin/pembayaran/{id}/status', [PembayaranController::class, 'updateStatus']);
 
 
+// halaman form (punya kamu)
+Route::get('/cek_reservasi', [ReservationController::class, 'cek_reservasi']);
+
 Route::get('/welcome', fn() => view('welcome'));
 Route::get('/app',     fn() => view('app'));
 
