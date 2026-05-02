@@ -4,23 +4,42 @@
 
 @section('content')
 
+<div class="min-h-screen bg-[#f5f1eb] py-32 px-6">
 
-<div class="min-h-screen bg-[#f5f1eb] py-48 px-6">
+  <!-- 🔥 STEP PROGRESS (DI LUAR CONTAINER) -->
+  <div class="max-w-6xl mx-auto px-6 mb-8">
+    <div class="flex items-center justify-between text-sm font-medium">
 
-  <div class="max-w-6xl mx-auto px-6 grid md:grid-cols-3 gap-6">
-
-    <!-- LEFT: FORM -->
-    <div class="md:col-span-2 bg-white rounded-2xl shadow-xl p-6">
-
-      <!-- STEP -->
-      <div class="border-b font-medium px-6 py-3 flex items-center gap-2 text-sm">
-
-        <span class="font-semibold text-gray-700">1. Fill in data</span>
-        <div class="flex-1 border-t border-dashed border-gray-300"></div>
-        <span class="text-gray-400">2. Payment</span>
+      <!-- STEP 1 (ACTIVE) -->
+      <div class="flex items-center gap-2 text-blue-600">
+        <div class="w-6 h-6 flex items-center justify-center rounded-full bg-blue-600 text-white text-xs font-bold">
+          1
+        </div>
+        <span class="font-semibold">Fill in data</span>
       </div>
 
-      <form method="POST" action="{{ route('payment.index') }}" class="p-6 space-y-5">
+      <!-- LINE -->
+      <div class="flex-1 h-px bg-gray-300 mx-3"></div>
+
+      <!-- STEP 2 -->
+      <div class="flex items-center gap-2 text-gray-400">
+        <div class="w-6 h-6 flex items-center justify-center rounded-full bg-gray-200 text-gray-500 text-xs font-bold">
+          2
+        </div>
+        <span>Payment</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 🔥 MAIN GRID -->
+  <div class="max-w-6xl mx-auto px-6 grid md:grid-cols-3 gap-6">
+
+    <!-- LEFT -->
+    <div class="order-2 md:order-1 md:col-span-2 bg-white rounded-2xl shadow-xl p-6">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-4">Complete Your Booking</h2>
+
+      <form method="POST" action="{{ route('payment.index') }}" class="space-y-5">
         @csrf
 
         <!-- CHECKBOX -->
@@ -59,14 +78,14 @@
 
         <!-- BUTTON -->
         <button type="submit"
-          class="w-full bg-black text-white py-3 rounded-full font-semibold hover:bg-gray-800 transition">
+          class="w-full bg-blue-600 text-white py-3 rounded-full font-semibold hover:bg-blue-700 transition">
           Review Reservation
         </button>
       </form>
     </div>
 
     <!-- RIGHT: SUMMARY -->
-    <div class="bg-white rounded-2xl shadow-xl p-6">
+    <div class="order-1 md:order-2 bg-white rounded-2xl shadow-xl p-6 mb-6 md:mb-0">
 
       <h2 class="font-semibold text-lg mb-4">Reservation Details</h2>
 
