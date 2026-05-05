@@ -120,7 +120,9 @@ Route::get('/users', function () {
     Route::get('/rooms', [RoomController::class, 'index']);
 
     // Reservation Management
-    Route::get('/reservations',           [AdminReservationController::class, 'index'])  ->name('reservations.index');
+    Route::get('/reservations', function () {
+    return view('admin.admin_reservation');
+});
     Route::get('/reservations/create',    [AdminReservationController::class, 'create']) ->name('reservations.create');
     Route::post('/reservations',          [AdminReservationController::class, 'store'])  ->name('reservations.store');
     Route::get('/reservations/{id}',      [AdminReservationController::class, 'show'])   ->name('reservations.show');
