@@ -3,12 +3,10 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoginController;
-use App\Http\Controllers\KamarController;
 use App\Http\Controllers\AboutController;
 use App\Http\Controllers\RegistrasiController;
 use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\ContactController;
-use App\Http\Controllers\LupaPasswrodController;
 use App\Http\Controllers\LupaPasswordController;
 use App\Http\Controllers\CodeVerificationController;
 use App\Http\Controllers\ResetPasswordController;
