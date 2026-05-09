@@ -16,16 +16,12 @@
         <p class="text-2xl font-semibold text-gray-800" id="stat-total">0</p>
     </div>
     <div class="bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
-        <p class="text-xs text-gray-400 mb-1 flex items-center gap-1">
-            <span class="w-2 h-2 rounded-full bg-green-500 inline-block"></span> Pernah Menginap
-        </p>
-        <p class="text-2xl font-semibold text-green-600" id="stat-menginap">0</p>
+        <p class="text-xs text-gray-400 mb-1">Total Pernah Reservasi</p>
+        <p class="text-2xl font-semibold text-blue-600" id="stat-menginap">0</p>
     </div>
     <div class="bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
-        <p class="text-xs text-gray-400 mb-1 flex items-center gap-1">
-            <span class="w-2 h-2 rounded-full bg-yellow-400 inline-block"></span> Belum Menginap
-        </p>
-        <p class="text-2xl font-semibold text-yellow-500" id="stat-belum">0</p>
+        <p class="text-xs text-gray-400 mb-1">Belum Pernah Reservasi</p>
+        <p class="text-2xl font-semibold text-gray-500" id="stat-belum">0</p>
     </div>
 </div>
 
@@ -44,7 +40,6 @@
                 <th class="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">ID</th>
                 <th class="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Tamu</th>
                 <th class="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Total Reservasi</th>
-                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Status</th>
                 <th class="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Terdaftar</th>
             </tr>
         </thead>
@@ -58,12 +53,12 @@ const users = [
     { id: 2, name: 'Sunshine',   email: 'shine@gmail.com',   reservasi: 1, terdaftar: '2026-02-14' },
     { id: 3, name: 'Facha',      email: 'chacha@gmail.com',  reservasi: 0, terdaftar: '2026-03-05' },
     { id: 4, name: 'Nareen',     email: 'nareen@mail.com',   reservasi: 2, terdaftar: '2026-03-20' },
-    { id: 5, name: 'Baobao',      email: 'baobao@mail.com',    reservasi: 1, terdaftar: '2026-04-01' },
-    { id: 6, name: 'Allysum',     email: 'ally@mail.com',   reservasi: 0, terdaftar: '2026-04-10' },
+    { id: 5, name: 'Baobao',     email: 'baobao@mail.com',   reservasi: 1, terdaftar: '2026-04-01' },
+    { id: 6, name: 'Allysum',    email: 'ally@mail.com',     reservasi: 0, terdaftar: '2026-04-10' },
 ];
 
 function renderUsers() {
-    const q       = document.getElementById('searchInput').value.toLowerCase();
+    const q = document.getElementById('searchInput').value.toLowerCase();
     const filtered = users.filter(u =>
         u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q)
     );
@@ -78,21 +73,22 @@ function renderUsers() {
     if (!filtered.length) {
         tbody.innerHTML = `
             <tr>
-                <td colspan="5" class="px-6 py-10 text-center text-sm text-gray-400">
+                <td colspan="4" class="px-6 py-10 text-center text-sm text-gray-400">
                     Tidak ada tamu yang cocok dengan pencarian
                 </td>
             </tr>`;
         return;
     }
 
-    tbody.innerHTML = filtered.map(u => {
-        const sudahMenginap = u.reservasi > 0;
-        return `
+    tbody.innerHTML = filtered.map(u => `
         <tr class="hover:bg-gray-50 transition">
-            <td class="px-6 py-4 text-xs text-gray-400 font-medium">${String(u.id).padStart(3, '0')}</td>
+            <td class="px-6 py-4 text-xs text-gray-400 font-medium">
+                ${String(u.id).padStart(3, '0')}
+            </td>
+
             <td class="px-6 py-4">
                 <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-bold flex-shrink-0">
+                    <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-bold">
                         ${u.name.charAt(0).toUpperCase()}
                     </div>
                     <div>
@@ -101,23 +97,17 @@ function renderUsers() {
                     </div>
                 </div>
             </td>
+
             <td class="px-6 py-4">
                 <span class="font-semibold text-gray-800">${u.reservasi}</span>
                 <span class="text-xs text-gray-400 ml-1">reservasi</span>
             </td>
-            <td class="px-6 py-4">
-                ${sudahMenginap
-                    ? `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700 border border-green-200">
-                            <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Pernah Menginap
-                       </span>`
-                    : `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-700 border border-yellow-200">
-                            <span class="w-1.5 h-1.5 rounded-full bg-yellow-400"></span> Belum Menginap
-                       </span>`
-                }
+
+            <td class="px-6 py-4 text-gray-500 text-xs">
+                ${u.terdaftar}
             </td>
-            <td class="px-6 py-4 text-gray-500 text-xs">${u.terdaftar}</td>
-        </tr>`;
-    }).join('');
+        </tr>
+    `).join('');
 }
 
 renderUsers();
