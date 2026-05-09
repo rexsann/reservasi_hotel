@@ -5,7 +5,7 @@
 <div class="flex justify-between items-center mb-6">
     <div>
         <h1 class="text-xl font-semibold text-gray-800">Offer Management</h1>
-        <p class="text-sm text-gray-400">Kelola paket dan harga penawaran hotel</p>
+        <p class="text-sm text-gray-400">Manage hotel offer packages and pricing</p>
     </div>
 </div>
 
@@ -14,17 +14,17 @@
     {{-- KOLOM KIRI: FORM TAMBAH --}}
     <div class="lg:col-span-1">
         <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 sticky top-4">
-            <h2 class="text-sm font-semibold text-gray-700 mb-4">Tambah Offer Baru</h2>
+            <h2 class="text-sm font-semibold text-gray-700 mb-4">Add New Offer</h2>
 
             <div class="space-y-4">
                 <div>
-                    <label class="block text-xs font-medium text-gray-500 mb-1">Nama Offer</label>
+                    <label class="block text-xs font-medium text-gray-500 mb-1">Offer Name</label>
                     <input id="offerName" type="text" placeholder="e.g. Breakfast Package"
                         class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
 
                 <div>
-                    <label class="block text-xs font-medium text-gray-500 mb-1">Tipe Kamar</label>
+                    <label class="block text-xs font-medium text-gray-500 mb-1">Room Type</label>
                     <select id="offerTipe"
                         class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <option value="1">Standard — Floor 1</option>
@@ -34,7 +34,7 @@
                 </div>
 
                 <div>
-                    <label class="block text-xs font-medium text-gray-500 mb-1">Harga per Malam</label>
+                    <label class="block text-xs font-medium text-gray-500 mb-1">Price per Night</label>
                     <div class="relative">
                         <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-400">Rp</span>
                         <input id="offerPrice" type="number" placeholder="350000"
@@ -47,15 +47,14 @@
                     <div class="space-y-2" id="benefitList">
                         @php
                         $benefits = [
-                            'Sarapan pagi',
+                            'Free Breakfast',
                             'Free WiFi',
-                            'Air minum gratis',
-                            'Akses kolam renang',
-                            'Parkir gratis',
+                            'Free Mineral Water',
+                            'Swimming Pool Access',
+                            'Free Parking',
                             'Late check-out (hingga 14.00)',
                             'Early check-in (dari 11.00)',
                             'Laundry 2 potong/hari',
-                            'Antar-jemput bandara',
                             'Diskon restoran 10%',
                         ];
                         @endphp
@@ -69,7 +68,7 @@
 
                 <button onclick="saveOffer()"
                     class="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2.5 rounded-lg transition">
-                    Simpan Offer
+                    Save Offer
                 </button>
             </div>
         </div>
@@ -107,51 +106,46 @@ let offers = {
         {
             name: 'Room Only',
             price: 300000,
-            benefits: ['Free WiFi', 'Air minum gratis', 'Parkir gratis']
+            benefits: ['Free WiFi', 'Free Water', 'Free Parking']
         },
         {
             name: 'Breakfast Package',
             price: 350000,
-            benefits: ['Sarapan pagi', 'Free WiFi', 'Air minum gratis', 'Parkir gratis']
-        },
-        {
-            name: 'Staycation Deal',
-            price: 400000,
-            benefits: ['Sarapan pagi', 'Free WiFi', 'Akses kolam renang', 'Late check-out (hingga 14.00)', 'Diskon restoran 10%']
+            benefits: ['Free Breakfast', 'Free WiFi', 'Akses kolam renang', 'Late check-out (hingga 14.00)', 'Diskon restoran 10%']
         },
     ],
     2: [
         {
             name: 'Business Stay',
             price: 500000,
-            benefits: ['Sarapan pagi', 'Free WiFi', 'Parkir gratis', 'Early check-in (dari 11.00)', 'Air minum gratis']
+            benefits: ['Free Breakfast', 'Free WiFi', 'Free Parking', 'Early check-in (dari 11.00)', 'Free Water']
         },
         {
             name: 'Family Package',
             price: 600000,
-            benefits: ['Sarapan pagi', 'Free WiFi', 'Akses kolam renang', 'Parkir gratis', 'Laundry 2 potong/hari']
+            benefits: ['Free Breakfast', 'Free WiFi', 'swimming pool access', 'Free Parking', 'Laundry 2 potong/hari']
         },
         {
             name: 'Weekend Deal',
             price: 650000,
-            benefits: ['Sarapan pagi', 'Free WiFi', 'Akses kolam renang', 'Late check-out (hingga 14.00)', 'Early check-in (dari 11.00)', 'Diskon restoran 10%']
+            benefits: ['Free Breakfast', 'Free WiFi', 'swimming pool access', 'Late check-out (hingga 14.00)', 'Early check-in (dari 11.00)', 'Diskon restoran 10%']
         },
     ],
     3: [
         {
             name: 'Luxury Stay',
             price: 750000,
-            benefits: ['Sarapan pagi', 'Free WiFi', 'Akses kolam renang', 'Laundry 2 potong/hari', 'Late check-out (hingga 14.00)', 'Diskon restoran 10%']
+            benefits: ['Free Breakfast', 'Free WiFi', 'swimming pool access', 'Laundry 2 potong/hari', 'Late check-out (hingga 14.00)', 'Diskon restoran 10%']
         },
         {
             name: 'Honeymoon Package',
             price: 900000,
-            benefits: ['Sarapan pagi', 'Free WiFi', 'Akses kolam renang', 'Late check-out (hingga 14.00)', 'Early check-in (dari 11.00)', 'Laundry 2 potong/hari', 'Antar-jemput bandara']
+            benefits: ['Free Breakfast', 'Free WiFi', 'swimming pool access', 'Late check-out (hingga 14.00)', 'Early check-in (dari 11.00)', 'Laundry 2 potong/hari', 'Antar-jemput bandara']
         },
         {
             name: 'VIP Experience',
             price: 1100000,
-            benefits: ['Sarapan pagi', 'Free WiFi', 'Akses kolam renang', 'Late check-out (hingga 14.00)', 'Early check-in (dari 11.00)', 'Laundry 2 potong/hari', 'Antar-jemput bandara', 'Diskon restoran 10%']
+            benefits: ['Free Breakfast', 'Free WiFi', 'swimming pool access', 'Late check-out (hingga 14.00)', 'Early check-in (dari 11.00)', 'Laundry 2 potong/hari', 'Diskon restoran 10%']
         },
     ]
 };
