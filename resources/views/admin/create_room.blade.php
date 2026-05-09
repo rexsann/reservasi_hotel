@@ -1,4 +1,4 @@
-@extends('Layouts.layout')
+{{-- @extends('Layouts.layout')
 
 @section('content')
 
@@ -114,4 +114,4 @@ priceInput.addEventListener('input', function(e) {
 });
 </script>
 
-@endsection
+@endsection --}}
