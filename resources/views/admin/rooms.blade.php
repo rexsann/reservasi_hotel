@@ -143,7 +143,7 @@
 
 <div id="roomContainer"></div>
 
-<!-- MODAL EDIT OFFER -->
+<!-- Modal edit offer -->
 <div class="modal-overlay" id="editModal">
     <div class="modal">
         <div class="modal-title">Edit Room Offer</div>
