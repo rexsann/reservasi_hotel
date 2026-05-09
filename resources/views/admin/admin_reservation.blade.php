@@ -17,13 +17,13 @@
             (object)['id'=>9,'name'=>'VIP Experience',    'tipe'=>'Deluxe','lantai'=>3,'harga'=>1100000,'benefits'=>['Sarapan pagi','Free WiFi','Akses kolam renang','Late check-out (hingga 14.00)','Early check-in (dari 11.00)','Laundry 2 potong/hari','Antar-jemput bandara','Diskon restoran 10%']],
         ]);
 
-        // PERUBAHAN: setiap reservasi punya array items[] — bisa 1 atau lebih
+        // setiap pesanan bisa punya 1 atau lebih items (kamar+offer)
         $reservations = collect([
             (object)[
                 'id' => 1,
                 'user' => (object)['name'=>'Moonlight','email'=>'moon@gmail.com'],
                 'items' => [
-                    (object)['offer'=>(object)['id'=>2,'name'=>'Breakfast Package','harga'=>350000],'room'=>(object)['nomor_kamar'=>'01','lantai'=>1,'tipe'=>'Standard']],
+                    (object)['offer'=>(object)['id'=>2,'name'=>'Breakfast Package','harga'=>350000],'room'=>(object)['nomor_kamar'=>'106','lantai'=>1,'tipe'=>'Standard']],
                 ],
                 'check_in' => '2026-04-20',
                 'check_out' => '2026-04-22',
@@ -34,8 +34,8 @@
                 'user' => (object)['name'=>'Sunshine','email'=>'shine@gmail.com'],
                 // 2 kamar dengan offer berbeda
                 'items' => [
-                    (object)['offer'=>(object)['id'=>5,'name'=>'Family Package','harga'=>600000],'room'=>(object)['nomor_kamar'=>null,'lantai'=>2,'tipe'=>'Superior']],
-                    (object)['offer'=>(object)['id'=>1,'name'=>'Room Only','harga'=>300000],'room'=>(object)['nomor_kamar'=>null,'lantai'=>1,'tipe'=>'Standard']],
+                    (object)['offer'=>(object)['id'=>5,'name'=>'Family Package','harga'=>600000],'room'=>(object)['nomor_kamar'=>'107','lantai'=>2,'tipe'=>'Superior']],
+                    (object)['offer'=>(object)['id'=>1,'name'=>'Room Only','harga'=>300000],'room'=>(object)['nomor_kamar'=>'101','lantai'=>1,'tipe'=>'Standard']],
                 ],
                 'check_in' => '2026-04-25',
                 'check_out' => '2026-04-27',
@@ -45,7 +45,7 @@
                 'id' => 3,
                 'user' => (object)['name'=>'Facha','email'=>'chacha@gmail.com'],
                 'items' => [
-                    (object)['offer'=>(object)['id'=>9,'name'=>'VIP Experience','harga'=>1100000],'room'=>(object)['nomor_kamar'=>null,'lantai'=>3,'tipe'=>'Deluxe']],
+                    (object)['offer'=>(object)['id'=>9,'name'=>'VIP Experience','harga'=>1100000],'room'=>(object)['nomor_kamar'=>'109','lantai'=>3,'tipe'=>'Deluxe']],
                 ],
                 'check_in' => '2026-04-28',
                 'check_out' => '2026-05-01',
@@ -55,7 +55,7 @@
                 'id' => 4,
                 'user' => (object)['name'=>'Allysum','email'=>'ally@gmail.com'],
                 'items' => [
-                    (object)['offer'=>(object)['id'=>3,'name'=>'Staycation Deal','harga'=>400000],'room'=>(object)['nomor_kamar'=>'03','lantai'=>1,'tipe'=>'Standard']],
+                    (object)['offer'=>(object)['id'=>3,'name'=>'Staycation Deal','harga'=>400000],'room'=>(object)['nomor_kamar'=>'103','lantai'=>1,'tipe'=>'Standard']],
                 ],
                 'check_in' => '2026-03-10',
                 'check_out' => '2026-03-13',
@@ -66,8 +66,8 @@
                 'user' => (object)['name'=>'Baobao','email'=>'baobao@gmail.com'],
                 // 2 kamar berbeda
                 'items' => [
-                    (object)['offer'=>(object)['id'=>4,'name'=>'Business Stay','harga'=>500000],'room'=>(object)['nomor_kamar'=>'02','lantai'=>2,'tipe'=>'Superior']],
-                    (object)['offer'=>(object)['id'=>7,'name'=>'Luxury Stay','harga'=>750000],'room'=>(object)['nomor_kamar'=>'01','lantai'=>3,'tipe'=>'Deluxe']],
+                    (object)['offer'=>(object)['id'=>4,'name'=>'Business Stay','harga'=>500000],'room'=>(object)['nomor_kamar'=>'102','lantai'=>2,'tipe'=>'Superior']],
+                    (object)['offer'=>(object)['id'=>7,'name'=>'Luxury Stay','harga'=>750000],'room'=>(object)['nomor_kamar'=>'101','lantai'=>3,'tipe'=>'Deluxe']],
                 ],
                 'check_in' => '2026-03-15',
                 'check_out' => '2026-03-17',
@@ -93,21 +93,21 @@
     <div class="flex justify-between items-center mb-6">
         <div>
             <h2 class="text-xl font-semibold text-gray-800">Reservations Management</h2>
-            <p class="text-sm text-gray-400">Kelola reservasi hotel</p>
+            <p class="text-sm text-gray-400">manage your hotel reservations</p>
         </div>
         <button data-modal-target="modal-tambah" data-modal-toggle="modal-tambah"
             class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
             </svg>
-            Tambah Reservasi
+            Add Reservasi
         </button>
     </div>
 
     {{-- STAT CARDS --}}
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         <div class="bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
-            <p class="text-xs text-gray-400 mb-1">Total Aktif</p>
+            <p class="text-xs text-gray-400 mb-1">Total Aktive</p>
             <p class="text-2xl font-semibold text-gray-800">{{ $aktif->count() }}</p>
         </div>
         <div class="bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
@@ -124,7 +124,7 @@
         </div>
         <div class="bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
             <p class="text-xs text-gray-400 mb-1 flex items-center gap-1">
-                <span class="w-2 h-2 rounded-full bg-blue-400 inline-block"></span> Total Riwayat
+                <span class="w-2 h-2 rounded-full bg-blue-400 inline-block"></span> Total History
             </p>
             <p class="text-2xl font-semibold text-blue-500">{{ $riwayat->count() }}</p>
         </div>
@@ -143,7 +143,7 @@
             <li>
                 <button onclick="switchTab('riwayat')" id="tab-riwayat"
                     class="tab-btn px-4 py-2.5 border-b-2 border-transparent text-gray-400 hover:text-gray-600 transition">
-                    Riwayat
+                    History
                     <span class="ml-1.5 bg-gray-100 text-gray-500 text-xs px-1.5 py-0.5 rounded-full">{{ $riwayat->count() }}</span>
                 </button>
             </li>
@@ -158,14 +158,14 @@
                     <tr class="bg-gray-800 text-gray-300 text-xs uppercase tracking-wider">
                         <th class="px-4 py-3 text-center w-10"></th>{{-- expand toggle --}}
                         <th class="px-4 py-3 text-center">ID</th>
-                        <th class="px-4 py-3 text-center">Kode</th>
+                        <th class="px-4 py-3 text-center">Code</th>
                         <th class="px-6 py-3 text-left">Customer</th>
-                        <th class="px-4 py-3 text-center">Kamar</th>
+                        <th class="px-4 py-3 text-center">Room</th>
                         <th class="px-4 py-3 text-center">Check In</th>
                         <th class="px-4 py-3 text-center">Check Out</th>
-                        <th class="px-4 py-3 text-center">Total/Malam</th>
+                        <th class="px-4 py-3 text-center">Total/Night</th>
                         <th class="px-4 py-3 text-center">Status</th>
-                        <th class="px-6 py-3 text-center">Aksi</th>
+                        <th class="px-6 py-3 text-center">Actions</th>
                     </tr>
                 </thead>
                 <tbody id="aktif-table-body" class="divide-y divide-gray-100">
@@ -219,10 +219,10 @@
                             <td class="px-4 py-4 text-center">
                                 @if($items->count() > 1)
                                     <span class="text-xs font-semibold bg-purple-50 text-purple-700 px-2 py-1 rounded-lg">
-                                        {{ $items->count() }} kamar
+                                        {{ $items->count() }} Rooms
                                     </span>
                                     @if(!$allAssigned)
-                                        <p class="text-xs text-orange-500 mt-0.5">ada yg belum</p>
+                                        <p class="text-xs text-orange-500 mt-0.5">Some rooms not assigned</p>
                                     @endif
                                 @else
                                     @php $singleRoom = $items->first()->room @endphp
@@ -231,7 +231,7 @@
                                             {{ $singleRoom->nomor_kamar }}
                                         </span>
                                     @else
-                                        <span class="text-xs text-orange-600 bg-orange-50 px-2 py-1 rounded-lg">Belum</span>
+                                        <span class="text-xs text-orange-600 bg-orange-50 px-2 py-1 rounded-lg">Not assigned</span>
                                     @endif
                                 @endif
                             </td>
@@ -248,7 +248,7 @@
                                     Rp {{ number_format($totalPerMalam, 0, ',', '.') }}
                                 </p>
                                 @if($items->count() > 1)
-                                    <p class="text-xs text-gray-400">{{ $items->count() }} offer</p>
+                                    <p class="text-xs text-gray-400">{{ $items->count() }} offers</p>
                                 @endif
                             </td>
 
@@ -307,7 +307,7 @@
                                                     <div class="flex items-center justify-between gap-2">
                                                         <p class="text-sm font-semibold text-gray-800">{{ $item->offer->name }}</p>
                                                         <p class="text-sm font-bold text-blue-600 whitespace-nowrap">
-                                                            Rp {{ number_format($item->offer->harga, 0, ',', '.') }}/malam
+                                                            Rp {{ number_format($item->offer->harga, 0, ',', '.') }}/night
                                                         </p>
                                                     </div>
                                                     <div class="flex items-center gap-2 mt-1">
@@ -315,11 +315,11 @@
                                                         <span class="text-gray-300">·</span>
                                                         @if($item->room->nomor_kamar)
                                                             <span class="text-xs font-semibold bg-gray-100 text-gray-700 px-2 py-0.5 rounded-lg">
-                                                                Kamar {{ $item->room->nomor_kamar }}
+                                                                Room {{ $item->room->nomor_kamar }}
                                                             </span>
                                                         @else
                                                             <span class="text-xs bg-orange-50 text-orange-600 px-2 py-0.5 rounded-lg">
-                                                                Belum di-assign
+                                                                Not assigned
                                                             </span>
                                                         @endif
                                                     </div>
@@ -333,7 +333,7 @@
                                     @endphp
                                     <div class="mt-2 flex items-center justify-end gap-2">
                                         <p class="text-xs text-gray-400">
-                                            {{ $nights }} malam × Rp {{ number_format($totalPerMalam, 0, ',', '.') }}
+                                            {{ $nights }} nights × Rp {{ number_format($totalPerMalam, 0, ',', '.') }}
                                         </p>
                                         <span class="text-gray-300">→</span>
                                         <p class="text-sm font-bold text-gray-800">
@@ -346,7 +346,7 @@
 
                     @empty
                         <tr>
-                            <td colspan="10" class="px-6 py-10 text-center text-gray-400">Tidak ada reservasi aktif</td>
+                            <td colspan="10" class="px-6 py-10 text-center text-gray-400">No active reservations</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -359,13 +359,13 @@
         <div class="grid grid-cols-2 gap-4 mb-4">
             <div class="bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
                 <p class="text-xs text-gray-400 mb-1 flex items-center gap-1">
-                    <span class="w-2 h-2 rounded-full bg-green-500 inline-block"></span> Pemasukan Masuk
+                    <span class="w-2 h-2 rounded-full bg-green-500 inline-block"></span> income (Checked Out)
                 </p>
                 <p class="text-xl font-semibold text-green-600">Rp {{ number_format($income, 0, ',', '.') }}</p>
             </div>
             <div class="bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
                 <p class="text-xs text-gray-400 mb-1 flex items-center gap-1">
-                    <span class="w-2 h-2 rounded-full bg-red-400 inline-block"></span> Potensi Hilang (Canceled)
+                    <span class="w-2 h-2 rounded-full bg-red-400 inline-block"></span> Potential Loss (Canceled)
                 </p>
                 <p class="text-xl font-semibold text-red-500">Rp {{ number_format($lost, 0, ',', '.') }}</p>
             </div>
@@ -377,10 +377,10 @@
                         <th class="px-4 py-3 text-left text-xs font-semibold text-gray-300 uppercase w-8"></th>
                         <th class="px-4 py-3 text-left text-xs font-semibold text-gray-300 uppercase">ID</th>
                         <th class="px-4 py-3 text-left text-xs font-semibold text-gray-300 uppercase">Customer</th>
-                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-300 uppercase">Kamar</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-300 uppercase">Rooms</th>
                         <th class="px-4 py-3 text-left text-xs font-semibold text-gray-300 uppercase">Check In</th>
                         <th class="px-4 py-3 text-left text-xs font-semibold text-gray-300 uppercase">Check Out</th>
-                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-300 uppercase">Total Bayar</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-300 uppercase">Total Pay</th>
                         <th class="px-4 py-3 text-left text-xs font-semibold text-gray-300 uppercase">Status</th>
                     </tr>
                 </thead>
@@ -412,19 +412,19 @@
                             <td class="px-4 py-3">
                                 @if($items->count() > 1)
                                     <span class="text-xs font-semibold bg-purple-50 text-purple-700 px-2 py-1 rounded-lg">
-                                        {{ $items->count() }} kamar
+                                        {{ $items->count() }} Rooms
                                     </span>
                                 @else
                                     <p class="text-gray-800 font-semibold text-xs">{{ $items->first()->offer->name }}</p>
                                     <p class="text-xs text-gray-400">
-                                        Kamar {{ $items->first()->room->nomor_kamar }} · {{ $items->first()->room->tipe }}
+                                        Room {{ $items->first()->room->nomor_kamar }} · {{ $items->first()->room->tipe }}
                                     </p>
                                 @endif
                             </td>
                             <td class="px-4 py-3 text-gray-700 font-medium">{{ $res->check_in }}</td>
                             <td class="px-4 py-3">
                                 <p class="text-gray-700 font-medium">{{ $res->check_out }}</p>
-                                <p class="text-xs text-gray-400">{{ $nights }} malam</p>
+                                <p class="text-xs text-gray-400">{{ $nights }} nights</p>
                             </td>
                             <td class="px-4 py-3">
                                 @if($res->status === 'canceled')
@@ -459,11 +459,11 @@
                                                     <p class="text-xs text-gray-400">
                                                         {{ $item->room->tipe }} ·
                                                         @if($item->room->nomor_kamar)
-                                                            Kamar {{ $item->room->nomor_kamar }}
+                                                            Room {{ $item->room->nomor_kamar }}
                                                         @else
                                                             —
                                                         @endif
-                                                        · Rp {{ number_format($item->offer->harga,0,',','.') }}/malam
+                                                        · Rp {{ number_format($item->offer->harga,0,',','.') }}/night
                                                     </p>
                                                 </div>
                                             </div>
@@ -474,13 +474,13 @@
                         @endif
                     @empty
                         <tr>
-                            <td colspan="8" class="px-4 py-8 text-center text-sm text-gray-400">Belum ada riwayat reservasi</td>
+                            <td colspan="8" class="px-4 py-8 text-center text-sm text-gray-400">No reservation history available</td>
                         </tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
-        <p class="text-xs text-gray-400 mt-3">* Pemasukan hanya dihitung dari reservasi berstatus <strong>Checked Out</strong>.</p>
+        <p class="text-xs text-gray-400 mt-3">* Income is only calculated from reservations with status<strong>Checked Out</strong>.</p>
     </div>
 
     {{-- MODAL TAMBAH --}}
@@ -490,8 +490,8 @@
             <div class="relative bg-white rounded-2xl shadow-lg border border-gray-100">
                 <div class="flex items-center justify-between p-5 border-b border-gray-100">
                     <div>
-                        <h3 class="text-base font-semibold text-gray-800">Tambah Reservasi</h3>
-                        <p class="text-xs text-gray-400 mt-0.5">Bisa pilih lebih dari 1 offer/kamar</p>
+                        <h3 class="text-base font-semibold text-gray-800">Add Reservation</h3>
+                        <p class="text-xs text-gray-400 mt-0.5">You can select more than 1 offer/room</p>
                     </div>
                     <button type="button" data-modal-hide="modal-tambah"
                         class="text-gray-400 hover:bg-gray-100 rounded-lg p-1.5 transition">
@@ -504,11 +504,11 @@
 
                     {{-- Data Tamu --}}
                     <div class="pb-3 border-b border-gray-100">
-                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Data Tamu</p>
+                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Data Guest</p>
                         <div class="space-y-3">
                             <div>
-                                <label class="block text-xs font-medium text-gray-500 mb-1">Nama Lengkap</label>
-                                <input id="f-name" type="text" placeholder="Masukkan nama tamu"
+                                <label class="block text-xs font-medium text-gray-500 mb-1">Full Name</label>
+                                <input id="f-name" type="text" placeholder="Enter guest name"
                                     class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                             </div>
                             <div>
@@ -522,8 +522,8 @@
                     {{-- Pilih Offers (MULTI-SELECT CHECKBOX) --}}
                     <div class="pb-3 border-b border-gray-100">
                         <div class="flex items-center justify-between mb-3">
-                            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Pilih Offer / Kamar</p>
-                            <span id="f-offer-count" class="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full hidden">0 dipilih</span>
+                            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Select Offer / Room</p>
+                            <span id="f-offer-count" class="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full hidden">0 selected</span>
                         </div>
                         <div id="f-offer-list" class="space-y-2">
                             @foreach($offers as $offer)
@@ -558,7 +558,7 @@
 
                     {{-- Tanggal --}}
                     <div>
-                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Tanggal Menginap</p>
+                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Check-in Date</p>
                         <div class="grid grid-cols-2 gap-3">
                             <div>
                                 <label class="block text-xs font-medium text-gray-500 mb-1">Check In</label>
@@ -582,14 +582,14 @@
                     </div>
 
                     <div class="bg-yellow-50 border border-yellow-100 rounded-lg px-3 py-2.5">
-                        <p class="text-xs font-medium text-yellow-700">Status awal: Pending</p>
-                        <p class="text-xs text-yellow-600 mt-0.5">Nomor kamar setiap offer akan di-assign saat konfirmasi.</p>
+                        <p class="text-xs font-medium text-yellow-700">Initial Status: Pending</p>
+                        <p class="text-xs text-yellow-600 mt-0.5">Room numbers for each offer will be assigned upon confirmation.</p>
                     </div>
                 </div>
                 <div class="px-5 pb-5">
                     <button onclick="saveReservation()"
                         class="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2.5 rounded-lg transition">
-                        Simpan Reservasi
+                        Save Reservation
                     </button>
                 </div>
             </div>
@@ -602,7 +602,7 @@
         <div class="relative p-4 w-full max-w-md max-h-full">
             <div class="relative bg-white rounded-2xl shadow-lg border border-gray-100">
                 <div class="flex items-center justify-between p-5 border-b border-gray-100">
-                    <h3 class="text-base font-semibold text-gray-800" id="edit-modal-title">Edit Reservasi</h3>
+                    <h3 class="text-base font-semibold text-gray-800" id="edit-modal-title">Edit Reservation</h3>
                     <button type="button" onclick="closeEditModal()"
                         class="text-gray-400 hover:bg-gray-100 rounded-lg p-1.5 transition">
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -612,7 +612,7 @@
                 </div>
                 <div class="p-5 space-y-4">
                     <div>
-                        <label class="block text-xs font-medium text-gray-500 mb-1">Nama Lengkap</label>
+                        <label class="block text-xs font-medium text-gray-500 mb-1">Full Name</label>
                         <input id="e-name" type="text"
                             class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                     </div>
@@ -624,9 +624,9 @@
 
                     {{-- Offer summary (readonly) --}}
                     <div>
-                        <label class="block text-xs font-medium text-gray-500 mb-1">Offer yang Dipesan</label>
+                        <label class="block text-xs font-medium text-gray-500 mb-1">Offer Summary</label>
                         <div id="e-items-display" class="space-y-1.5"></div>
-                        <p class="text-xs text-gray-400 mt-1">Offer tidak dapat diubah setelah reservasi dibuat</p>
+                        <p class="text-xs text-gray-400 mt-1">Offer cannot be changed after reservation is created</p>
                     </div>
 
                     <div class="grid grid-cols-2 gap-3">
@@ -655,7 +655,7 @@
                     {{-- Assign kamar per item (hanya saat confirmed) --}}
                     <div id="e-room-assign-wrap" class="hidden">
                         <div class="bg-orange-50 border border-orange-100 rounded-lg px-3 py-2 mb-2">
-                            <p class="text-xs font-medium text-orange-700">Assign kamar untuk setiap offer</p>
+                            <p class="text-xs font-medium text-orange-700">Assign rooms for each offer</p>
                         </div>
                         <div id="e-room-assign-list" class="space-y-2"></div>
                     </div>
@@ -663,7 +663,7 @@
                 <div class="px-5 pb-5">
                     <button onclick="saveEdit()"
                         class="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2.5 rounded-lg transition">
-                        Simpan Perubahan
+                        Save Changes
                     </button>
                 </div>
             </div>
@@ -673,19 +673,19 @@
     {{-- MODAL INVOICE --}}
     <div id="modal-invoice" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/40">
         <div class="bg-white w-full max-w-md rounded-2xl shadow-lg p-6 space-y-4 text-center">
-            <h2 class="text-lg font-semibold text-gray-800">Kode Reservasi</h2>
+            <h2 class="text-lg font-semibold text-gray-800">Reservation Code</h2>
             <div class="py-4">
-                <p class="text-xs text-gray-400 mb-2">Gunakan kode ini untuk check-in</p>
+                <p class="text-xs text-gray-400 mb-2">Use this code for check-in</p>
                 <p id="inv-code" class="text-2xl font-bold text-blue-600 tracking-widest"></p>
             </div>
             <div class="flex justify-center gap-2 pt-4">
                 <button onclick="sendInvoiceEmail()"
                     class="text-xs px-3 py-1.5 rounded-lg bg-green-600 text-white hover:bg-green-700">
-                    Kirim ke Email
+                    Send to Email
                 </button>
                 <button onclick="closeInvoice()"
                     class="bg-gray-200 px-4 py-2 rounded-lg text-sm">
-                    Tutup
+                    Close
                 </button>
             </div>
         </div>
@@ -713,7 +713,7 @@
             }
         }
 
-        // ── TAB SWITCH ───────────────────────────────────────────
+        // ── TAB SWITCH
         function switchTab(tab) {
             const isAktif = tab === 'aktif';
             document.getElementById('panel-aktif').classList.toggle('hidden', !isAktif);
@@ -726,7 +726,7 @@
                 : 'tab-btn px-4 py-2.5 border-b-2 border-transparent text-gray-400 hover:text-gray-600 transition';
         }
 
-        // ── EXPAND DETAIL ────────────────────────────────────────
+        // ── EXPAND DETAIL
         function toggleDetail(detailId, btn) {
             const row = document.getElementById(detailId);
             const icon = btn.querySelector('svg');
@@ -734,7 +734,7 @@
             icon.style.transform = isHidden ? '' : 'rotate(180deg)';
         }
 
-        // ── ESTIMASI MULTI-OFFER ─────────────────────────────────
+        // ── ESTIMASI MULTI-OFFER
         function updateOfferCount() {
             const checked = document.querySelectorAll('.offer-checkbox:checked');
             const badge = document.getElementById('f-offer-count');
@@ -773,7 +773,7 @@
             document.getElementById('f-estimasi').classList.remove('hidden');
         }
 
-        // ── MODAL TAMBAH ─────────────────────────────────────────
+        // ── MODAL TAMBAH 
         function saveReservation() {
             const name    = document.getElementById('f-name').value.trim();
             const email   = document.getElementById('f-email').value.trim();
@@ -791,9 +791,10 @@
             }
 
             const tbody = document.getElementById('aktif-table-body');
-            const id    = tbody.querySelectorAll('tr[id^="row-"]').length + 100;
-            const rowId    = 'row-' + id;
-            const detailId = 'detail-' + id;
+            const numberId = tbody.querySelectorAll('tr[id^="row-"]').length + 1;
+            const id = String(numberId).padStart(3, '0');
+            const rowId = 'row-' + id;
+            const detailId = 'detail-' + id;          
 
             let totalPerMalam = 0;
             let itemsData = [];
@@ -810,7 +811,7 @@
             // Row utama
             const kamarCell = checked.length > 1
                 ? `<span class="text-xs font-semibold bg-purple-50 text-purple-700 px-2 py-1 rounded-lg">${checked.length} kamar</span><p class="text-xs text-orange-500 mt-0.5">ada yg belum</p>`
-                : `<span class="text-xs text-orange-600 bg-orange-50 px-2 py-1 rounded-lg">Belum</span>`;
+                : `<span class="text-xs text-orange-600 bg-orange-50 px-2 py-1 rounded-lg">Not Assigned</span>`;
 
             const kode = 'RSV-' + new Date().toISOString().slice(2,10).replace(/-/g,'') + '-' + String(id).padStart(3,'0');
 
@@ -876,92 +877,124 @@
             FlowbiteInstances.getInstance('Modal','modal-tambah')?.hide();
         }
 
-        // ── MODAL EDIT ───────────────────────────────────────────
-        // items: array yang di-pass langsung dari PHP via Js::from()
-        function openEdit(id, name, email, checkin, checkout, status, itemsArr) {
-            currentEditId    = id;
-            currentEditItems = Array.isArray(itemsArr) ? itemsArr : (itemsArr ? JSON.parse(itemsArr) : []);
+        // ── MODAL EDIT 
+// items: array yang di-pass langsung dari PHP via Js::from()
+function openEdit(id, name, email, checkin, checkout, status, itemsArr) {
 
-            document.getElementById('edit-modal-title').textContent = 'Edit Reservasi #' + id;
-            document.getElementById('e-name').value    = name;
-            document.getElementById('e-email').value   = email;
-            document.getElementById('e-checkin').value = checkin;
-            document.getElementById('e-checkout').value= checkout;
-            document.getElementById('e-status').value  = status;
+    // format ID jadi 001, 002, dst
+    const formattedId = String(id).padStart(3, '0');
 
-            // Tampilkan items
-            const display = document.getElementById('e-items-display');
-            display.innerHTML = currentEditItems.length
-                ? currentEditItems.map(item => `
+    currentEditId = formattedId;
+
+    currentEditItems = Array.isArray(itemsArr)
+        ? itemsArr
+        : (itemsArr ? JSON.parse(itemsArr) : []);
+
+    // fallback untuk reservasi manual
+    if (currentEditItems.length === 0) {
+        currentEditItems = [
+            {
+                name: 'Manual Reservation',
+                tipe: 'Standard',
+                harga: 350000
+            }
+        ];
+    }
+
+    document.getElementById('edit-modal-title').textContent = 'Edit Reservation #' + formattedId;
+
+    document.getElementById('e-name').value     = name;
+    document.getElementById('e-email').value    = email;
+    document.getElementById('e-checkin').value  = checkin;
+    document.getElementById('e-checkout').value = checkout;
+    document.getElementById('e-status').value   = status;
+
+    // Tampilkan items
+    const display = document.getElementById('e-items-display');
+    display.innerHTML = currentEditItems.length
+        ? currentEditItems.map(item => `
 <div class="flex items-center justify-between bg-blue-50 border border-blue-100 rounded-lg px-3 py-2 text-sm">
     <span class="font-medium text-blue-700">${item.name}</span>
     <span class="text-xs text-blue-500">${item.tipe} · Rp ${item.harga.toLocaleString('id-ID')}/malam</span>
 </div>`).join('')
-                : '<p class="text-xs text-gray-400">Data offer tidak tersedia</p>';
+        : '<p class="text-xs text-gray-400">Data offer tidak tersedia</p>';
 
-            toggleRoomAssign();
+    toggleRoomAssign();
 
-            // Buka modal edit
-            const editModal = document.getElementById('modal-edit');
-            if (typeof FlowbiteInstances !== 'undefined') {
-                const m = FlowbiteInstances.getInstance('Modal','modal-edit') ?? new Modal(editModal);
-                m.show();
-            } else {
-                editModal.classList.remove('hidden');
-                editModal.classList.add('flex');
-            }
-        }
+    // Buka modal edit
+    const editModal = document.getElementById('modal-edit');
+    if (typeof FlowbiteInstances !== 'undefined') {
+        const m = FlowbiteInstances.getInstance('Modal','modal-edit') ?? new Modal(editModal);
+        m.show();
+    } else {
+        editModal.classList.remove('hidden');
+        editModal.classList.add('flex');
+    }
+}
 
-        function toggleRoomAssign() {
-            const status = document.getElementById('e-status').value;
-            const wrap   = document.getElementById('e-room-assign-wrap');
-            const list   = document.getElementById('e-room-assign-list');
+function toggleRoomAssign() {
+    const status = document.getElementById('e-status').value;
+    const wrap   = document.getElementById('e-room-assign-wrap');
+    const list   = document.getElementById('e-room-assign-list');
 
-            if (status === 'confirmed' && currentEditItems.length > 0) {
-                wrap.classList.remove('hidden');
-                list.innerHTML = currentEditItems.map((item, idx) => {
-                    const rooms = availableRooms[item.tipe] || [];
-                    const opts  = rooms.map(r => `<option value="${r}">Kamar ${r} — Available</option>`).join('');
-                    return `
+    if (status === 'confirmed' && currentEditItems.length > 0) {
+        wrap.classList.remove('hidden');
+        list.innerHTML = currentEditItems.map((item, idx) => {
+            const rooms = availableRooms[item.tipe] || [];
+            const opts  = rooms.map(r => `<option value="${r}">Kamar ${r} — Available</option>`).join('');
+
+            return `
 <div class="bg-white border border-gray-100 rounded-lg p-3">
-    <p class="text-xs font-semibold text-gray-700 mb-1.5">${idx+1}. ${item.name} <span class="font-normal text-gray-400">(${item.tipe})</span></p>
-    <select id="e-kamar-${idx}" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+    <p class="text-xs font-semibold text-gray-700 mb-1.5">
+        ${idx + 1}. ${item.name}
+        <span class="font-normal text-gray-400">(${item.tipe})</span>
+    </p>
+
+    <select id="e-kamar-${idx}"
+        class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
         <option value="">-- Pilih nomor kamar --</option>
         ${opts}
     </select>
 </div>`;
-                }).join('');
-            } else {
-                wrap.classList.add('hidden');
+        }).join('');
+    } else {
+        wrap.classList.add('hidden');
+    }
+}
+
+function saveEdit() {
+    const checkin  = document.getElementById('e-checkin').value;
+    const checkout = document.getElementById('e-checkout').value;
+    const status   = document.getElementById('e-status').value;
+
+    if (checkout <= checkin) {
+        alert('Check Out harus setelah Check In!');
+        return;
+    }
+
+    if (status === 'confirmed') {
+        for (let i = 0; i < currentEditItems.length; i++) {
+            const val = document.getElementById('e-kamar-' + i)?.value;
+
+            if (!val) {
+                alert('Nomor kamar untuk "' + currentEditItems[i].name + '" belum dipilih!');
+                return;
             }
         }
+    }
 
-        function saveEdit() {
-            const checkin  = document.getElementById('e-checkin').value;
-            const checkout = document.getElementById('e-checkout').value;
-            const status   = document.getElementById('e-status').value;
+    // alert pakai format ID yang sudah diformat (001, 002, dst)
+    alert('Reservasi #' + currentEditId + ' berhasil disimpan!');
 
-            if (checkout <= checkin) { alert('Check Out harus setelah Check In!'); return; }
+    const editModal = document.getElementById('modal-edit');
 
-            if (status === 'confirmed') {
-                for (let i = 0; i < currentEditItems.length; i++) {
-                    const val = document.getElementById('e-kamar-' + i)?.value;
-                    if (!val) {
-                        alert('Nomor kamar untuk "' + currentEditItems[i].name + '" belum dipilih!');
-                        return;
-                    }
-                }
-            }
-
-            alert('Reservasi #' + currentEditId + ' berhasil disimpan!');
-            const editModal = document.getElementById('modal-edit');
-            if (typeof FlowbiteInstances !== 'undefined') {
-                FlowbiteInstances.getInstance('Modal','modal-edit')?.hide();
-            } else {
-                editModal.classList.add('hidden');
-                editModal.classList.remove('flex');
-            }
-        }
+    if (typeof FlowbiteInstances !== 'undefined') {
+        FlowbiteInstances.getInstance('Modal','modal-edit')?.hide();
+    } else {
+        editModal.classList.add('hidden');
+        editModal.classList.remove('flex');
+    }
+}
 
         // ── CHECK OUT ────────────────────────────────────────────
         function checkoutRow(btn, rowId, detailId) {
