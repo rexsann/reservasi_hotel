@@ -17,7 +17,7 @@ class ResetPasswordController extends Controller
             return redirect('/forgot-password')->with('error', 'Akses tidak valid!');
         }
 
-        return view('resetpassword');
+        return view('auth.resetpassword');
     }
 
     // Proses reset password
