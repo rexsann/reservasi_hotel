@@ -10,7 +10,7 @@ class RegistrasiController extends Controller
 {
     public function showRegistrasi()
     {
-        return view('registrasi');
+        return view('auth.registrasi');
     }
 
     public function registrasi(Request $request)
