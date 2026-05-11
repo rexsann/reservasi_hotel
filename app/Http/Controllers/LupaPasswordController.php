@@ -10,7 +10,7 @@ class LupaPasswordController extends Controller
     // Tampilkan halaman lupa password
     public function index()
     {
-        return view('lupapassword');
+        return view('auth.lupapassword');
     }
 
     // Proses kirim OTP
