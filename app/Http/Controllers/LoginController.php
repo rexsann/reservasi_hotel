@@ -13,7 +13,7 @@ class LoginController extends Controller
     public function index()
     {
         Session::put('user_id', null);
-        return view('login');
+        return view('auth.login');
     }
 
     // ini proses login
