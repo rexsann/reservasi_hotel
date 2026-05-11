@@ -11,7 +11,7 @@ class CodeVerificationController extends Controller
     public function index()
     {
         Session::put('otp', '123456');
-        return view('codeverification');
+        return view('auth.codeverification');
     }
 
     // Proses verifikasi OTP
