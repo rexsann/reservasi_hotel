@@ -5,29 +5,29 @@
 <div class="flex justify-between items-center mb-6">
     <div>
         <h1 class="text-xl font-semibold text-gray-800">Users Management</h1>
-        <p class="text-sm text-gray-400">Daftar tamu terdaftar</p>
+        <p class="text-sm text-gray-400">List of registered guests</p>
     </div>
 </div>
 
 {{-- STAT CARDS --}}
 <div class="grid grid-cols-3 gap-4 mb-6">
     <div class="bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
-        <p class="text-xs text-gray-400 mb-1">Total Tamu</p>
+        <p class="text-xs text-gray-400 mb-1">Total Guests</p>
         <p class="text-2xl font-semibold text-gray-800" id="stat-total">0</p>
     </div>
     <div class="bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
-        <p class="text-xs text-gray-400 mb-1">Total Pernah Reservasi</p>
+        <p class="text-xs text-gray-400 mb-1">Ever Made a Reservation</p>
         <p class="text-2xl font-semibold text-blue-600" id="stat-menginap">0</p>
     </div>
     <div class="bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
-        <p class="text-xs text-gray-400 mb-1">Belum Pernah Reservasi</p>
+        <p class="text-xs text-gray-400 mb-1">No Reservation Yet</p>
         <p class="text-2xl font-semibold text-gray-500" id="stat-belum">0</p>
     </div>
 </div>
 
 {{-- SEARCH --}}
 <div class="mb-4">
-    <input type="text" id="searchInput" placeholder="Cari nama atau email tamu..."
+    <input type="text" id="searchInput" placeholder="Search by name or email..."
         oninput="renderUsers()"
         class="w-full max-w-sm border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
 </div>
@@ -38,9 +38,9 @@
         <thead>
             <tr class="bg-gray-800">
                 <th class="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">ID</th>
-                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Tamu</th>
-                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Total Reservasi</th>
-                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Terdaftar</th>
+                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Guest</th>
+                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Total Reservations</th>
+                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Registered</th>
             </tr>
         </thead>
         <tbody id="userTableBody" class="divide-y divide-gray-100"></tbody>
@@ -74,7 +74,7 @@ function renderUsers() {
         tbody.innerHTML = `
             <tr>
                 <td colspan="4" class="px-6 py-10 text-center text-sm text-gray-400">
-                    Tidak ada tamu yang cocok dengan pencarian
+                    No guests found matching your search
                 </td>
             </tr>`;
         return;
@@ -85,7 +85,6 @@ function renderUsers() {
             <td class="px-6 py-4 text-xs text-gray-400 font-medium">
                 ${String(u.id).padStart(3, '0')}
             </td>
-
             <td class="px-6 py-4">
                 <div class="flex items-center gap-3">
                     <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-bold">
@@ -97,12 +96,10 @@ function renderUsers() {
                     </div>
                 </div>
             </td>
-
             <td class="px-6 py-4">
                 <span class="font-semibold text-gray-800">${u.reservasi}</span>
-                <span class="text-xs text-gray-400 ml-1">reservasi</span>
+                <span class="text-xs text-gray-400 ml-1">reservations</span>
             </td>
-
             <td class="px-6 py-4 text-gray-500 text-xs">
                 ${u.terdaftar}
             </td>
