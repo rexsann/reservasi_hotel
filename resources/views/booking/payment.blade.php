@@ -5,11 +5,9 @@
 @section('content')
 <div class="pt-32 px-6 max-w-6xl mx-auto pb-20">
 
-  <!-- STEP PROGRESS -->
   <div class="mb-10">
     <div class="flex items-center justify-between text-sm font-medium">
 
-      <!-- STEP 1 (DONE) -->
       <div class="flex items-center gap-2 text-green-600">
         <div class="w-6 h-6 flex items-center justify-center rounded-full bg-green-100 text-green-600 text-xs font-bold">
           ✓
@@ -17,10 +15,8 @@
         <span>Fill in data</span>
       </div>
 
-      <!-- LINE -->
       <div class="flex-1 h-px bg-gray-300 mx-3"></div>
 
-      <!-- STEP 2 (ACTIVE) -->
       <div class="flex items-center gap-2 text-blue-600">
         <div class="w-6 h-6 flex items-center justify-center rounded-full bg-blue-600 text-white text-xs font-bold">
           2
@@ -33,7 +29,6 @@
 
   <div class="grid lg:grid-cols-2 gap-6 items-stretch">
 
-    <!-- ================= KIRI ================= -->
     <div class="bg-white rounded-2xl shadow p-6 flex flex-col gap-4">
 
       <h2 class="text-lg font-semibold text-gray-800">Instruksi Pembayaran</h2>
@@ -73,14 +68,14 @@
         <p>Pastikan jumlah transfer sesuai total pembayaran.</p>
       </div>
 
-      <!-- UPLOAD SECTION -->
+      <!-- Bagian pembayarna -->
       <div class="border-t pt-4 flex-1 flex flex-col justify-between gap-3">
 
         <h2 class="text-base font-semibold text-gray-800">Upload Bukti Pembayaran</h2>
 
         <div class="grid grid-cols-2 gap-3 flex-1">
 
-          <!-- KIRI: Upload box kotak -->
+          <!-- Box Kotak -->
           <div class="border-2 border-dashed rounded-xl p-4 flex flex-col items-center justify-center gap-2 text-center flex-1">
             <div class="text-2xl">☁️</div>
             <p class="text-xs text-gray-500">JPG, PNG, PDF (Max. 5MB)</p>
@@ -92,7 +87,7 @@
             </label>
           </div>
 
-          <!-- KANAN: Ketentuan -->
+          <!-- Padding Upload -->
           <div class="bg-blue-50 border border-blue-200 text-blue-700 p-3 rounded-xl text-xs flex flex-col justify-center gap-1">
             <p class="font-semibold text-sm mb-1">Ketentuan Upload</p>
             <ul class="list-disc list-inside space-y-1">
@@ -104,7 +99,6 @@
 
         </div>
 
-        <!-- Footer -->
         <div class="flex items-center justify-between bg-gray-50 border rounded-xl p-3 gap-3">
           <p class="text-gray-500 text-xs">Admin akan verifikasi setelah bukti diupload.</p>
           <button class="shrink-0 bg-gray-300 text-white px-4 py-1.5 rounded-lg text-sm cursor-not-allowed">
@@ -116,7 +110,6 @@
 
     </div>
 
-    <!-- ================= KANAN ================= -->
     <div class="bg-white rounded-2xl shadow p-6 flex flex-col gap-4">
 
       <h2 class="text-lg font-semibold text-gray-800">Informasi Pembayaran</h2>
@@ -181,7 +174,6 @@
         🔄 Cek Status Pembayaran
       </button>
 
-      <!-- Butuh Bantuan — turun dengan mt-auto, huruf diperbesar -->
       <div class="bg-gray-50 border rounded-xl p-4 mt-auto">
         <p class="font-semibold text-gray-700 text-base mb-1">Butuh Bantuan?</p>
         <p class="text-gray-500 text-sm mb-3">Hubungi kami jika mengalami kendala saat pembayaran.</p>
@@ -206,7 +198,7 @@
   desc.className = "text-sm text-gray-400";
 
   setTimeout(() => {
-    let status = "success"; // ubah: pending / success / rejected
+    let status = "success";
 
     if (status === "success") {
       badge.innerText = "✅ Berhasil";
