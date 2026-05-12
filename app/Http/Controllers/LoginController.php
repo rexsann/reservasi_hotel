@@ -33,7 +33,7 @@ class LoginController extends Controller
         // ini untuk mencari user berdasarkan email
         $user = User::where('email', $request->email)->first();
 
-        // ini untuk mengecek user + password (WAJIB pakai Hash::check)
+        // ini untuk mengecek user + password
         if ($user && Hash::check($request->password, $user->password)) {
 
             // ini buat simpan session

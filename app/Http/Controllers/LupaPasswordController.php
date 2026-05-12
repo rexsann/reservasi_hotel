@@ -28,17 +28,13 @@ class LupaPasswordController extends Controller
 
         $email = $request->email;
 
-        // Generate OTP 6 digit
-        $otp = rand(100000, 999999);
-
         // Simpan ke session
         Session::put('email', $email);
-        Session::put('otp', $otp);
 
         // Simulasi kirim email (sementara)
         // Nanti bisa pakai Mail Laravel
 
         return redirect()->route('verification')
-            ->with('success', "Kode OTP dikirim ke $email (Simulasi: $otp)");
+            ->with('success', "Kode OTP dikirim ke $email");
     }
 }
