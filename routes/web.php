@@ -92,6 +92,7 @@ Route::get('/resetpassword', [ResetPasswordController::class, 'index'])->name('r
 Route::post('/resetpassword', [ResetPasswordController::class, 'update'])->name('resetpassword.post');
 
 Route::get('/profil', [ProfilController::class, 'index'])->name('profil');
+Route::put('/profile/update', [ProfilController::class, 'update']);
 
 // ─── RESERVATION (USER) ───────────────────────────────────────
 Route::get('/reservation', fn() => view('pages.reservation'));
