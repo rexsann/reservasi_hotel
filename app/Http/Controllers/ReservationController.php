@@ -19,6 +19,11 @@ class ReservationController extends Controller
 
         // Contoh sementara (belum pakai database)
         return "Kode: $code | Email: $email";
+
+        return redirect()->route('reservation.cek', [
+        'code' => $request->code,
+        'email' => $request->email,
+    ]);
     }
 
     public function index()
@@ -57,8 +62,8 @@ class ReservationController extends Controller
     // 🔥 HALAMAN HASIL CEK BOOKING (TANPA DATABASE)
 public function cek_reservasi(Request $request)
 {
-    $code = $request->code;
-    $email = $request->email;
+    $code  = $request->query('code');
+    $email = $request->query('email');
 
     // dummy data (sementara)
     $data = [
