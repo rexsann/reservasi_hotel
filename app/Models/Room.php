@@ -6,11 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Room extends Model
 {
+    protected $table = 'rooms';
+
     protected $fillable = [
-    'room_number',
-    'floor',
-    'type',
-    'price',
-    'status'
-];
+        'room_name',
+        'offer',
+        'price_per_night',
+        'status'
+    ];
 }

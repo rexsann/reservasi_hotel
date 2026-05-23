@@ -3,42 +3,69 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Room;
 
 class RoomController extends Controller
 {
-    // 🔹 tampilkan halaman rooms (data di-handle JS)
+    // tampilkan data room dari database
     public function index()
     {
-        return view('admin.rooms');
+        $rooms = Room::all();
+
+        return view('admin.rooms', compact('rooms'));
     }
 
-    // 🔹 tampilkan halaman create room
+    // halaman create
     public function create()
     {
         return view('admin.create_room');
     }
 
-    // 🔹 fake store (biar route ga error aja)
+    // simpan room baru
     public function store(Request $request)
     {
-        return redirect('/admin/rooms')->with('success', 'Room added (frontend only)');
+        Room::create([
+            'room_name' => $request->room_name,
+            'offer' => $request->offer,
+            'price_per_night' => $request->price_per_night,
+            'status' => $request->status,
+        ]);
+
+        return redirect('/admin/rooms')
+            ->with('success', 'Room added successfully');
     }
 
-    // 🔹 fake edit (optional, kalau mau halaman edit)
+    // halaman edit
     public function edit($id)
     {
-        return view('admin.edit_room');
+        $room = Room::findOrFail($id);
+
+        return view('admin.edit_room', compact('room'));
     }
 
-    // 🔹 fake update
+    // update room
     public function update(Request $request, $id)
     {
-        return redirect('/admin/rooms')->with('success', 'Room updated (frontend only)');
+        $room = Room::findOrFail($id);
+
+        $room->update([
+            'room_name' => $request->room_name,
+            'offer' => $request->offer,
+            'price_per_night' => $request->price_per_night,
+            'status' => $request->status,
+        ]);
+
+        return redirect('/admin/rooms')
+            ->with('success', 'Room updated successfully');
     }
 
-    // 🔹 fake delete
+    // delete room
     public function destroy($id)
     {
-        return redirect('/admin/rooms')->with('success', 'Room deleted (frontend only)');
+        $room = Room::findOrFail($id);
+        $room->delete();
+
+        return redirect('/admin/rooms')
+            ->with('success', 'Room deleted successfully');
     }
 }
