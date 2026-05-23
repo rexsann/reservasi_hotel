@@ -421,15 +421,15 @@
   let selectedOrders = [];
 
   // FIX: Init litepicker untuk date range
-  document.addEventListener('DOMContentLoaded', function () {
-    new Litepicker({
-      element: document.getElementById('dateRange'),
-      singleMode: false,
-      format: 'DD MMM YYYY',
-      numberOfMonths: 2,
-      numberOfColumns: 2,
-    });
-  });
+ // document.addEventListener('DOMContentLoaded', function () {
+   // new Litepicker({
+     // element: document.getElementById('dateRange'),
+      //singleMode: false,
+      //format: 'DD MMM YYYY',
+      //numberOfMonths: 2,
+      //numberOfColumns: 2,
+    //});
+  //});
 
   // FIX: Handler untuk tombol Search (sebelumnya tidak ada)
   function handleSearch() {
