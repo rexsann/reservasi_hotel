@@ -242,40 +242,62 @@
 @endphp
 
 @forelse($grouped as $typeName => $typeRooms)
+
 <div class="room-type-card">
 
     {{-- Room Type Header --}}
     <div class="room-type-header">
         <div>
             <h2 class="room-type-title">{{ $typeName ?? 'Standard' }}</h2>
-            <span class="room-type-floor">· Floor {{ $typeRooms->first()->floor ?? 1 }}</span>
+
+            <span class="room-type-floor">
+                · Floor {{ $loop->iteration }}
+            </span>
+
             <p class="room-type-price">
                 Rp {{ number_format($typeRooms->min('price_per_night'), 0, ',', '.') }}
                 – Rp {{ number_format($typeRooms->max('price_per_night'), 0, ',', '.') }} / night
             </p>
         </div>
+
         <div class="room-type-stats">
             <span class="summary-badge sb-available">
                 {{ $typeRooms->where('status', 'Available')->count() }} Available
             </span>
+
             <span class="summary-badge sb-occupied">
                 {{ $typeRooms->where('status', 'Occupied')->count() }} Occupied
             </span>
+
             <span class="summary-badge sb-maintenance">
                 {{ $typeRooms->where('status', 'Maintenance')->count() }} Maintenance
             </span>
         </div>
+
     </div>
 
     {{-- Facilities (opsional, jika ada kolom facilities) --}}
-    @if($typeRooms->first()->facilities ?? false)
-    <div class="facilities-row">
-        <span class="facilities-label">Facilities:</span>
-        @foreach(explode(',', $typeRooms->first()->facilities) as $fac)
-            <span class="facility-tag">{{ trim($fac) }}</span>
-        @endforeach
-    </div>
-    @endif
+    @php
+    $facilityList = \App\Models\Facility::where('room_type', $typeName)->get();
+@endphp
+
+@if($facilityList->count())
+<div class="facilities-row">
+
+    <span class="facilities-label">
+        Facilities:
+    </span>
+
+    @foreach($facilityList as $facility)
+
+        <span class="facility-tag">
+            {{ $facility->name }}
+        </span>
+
+    @endforeach
+
+</div>
+@endif
 
     {{-- Table --}}
     <div class="table-scroll-wrap">
@@ -321,12 +343,22 @@
                         @endif
                     </td>
                     <td class="td-c">
-                        <a href="{{ route('admin.rooms.edit', $room->id) }}" class="btn-edit">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" fill="currentColor" viewBox="0 0 16 16">
-                                <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
-                            </svg>
-                            Edit
-                        </a>
+    <button
+    onclick="openEditModal(
+    '{{ $room->id }}',
+    '{{ $room->offer }}',
+    '{{ $room->type }}',
+    '{{ $room->status }}'
+)"
+    class="btn-edit">
+
+    <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" fill="currentColor" viewBox="0 0 16 16">
+        <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10z"/>
+    </svg>
+
+    Edit
+
+    </button>
                     </td>
                 </tr>
                 @empty
@@ -343,4 +375,154 @@
 <div class="text-center text-gray-400 py-16">Belum ada data kamar.</div>
 @endforelse
 
+{{-- EDIT MODAL --}}
+<div
+    id="editModal"
+    class="fixed inset-0 bg-black/40 hidden items-center justify-center z-50">
+
+    <div class="bg-white w-full max-w-md rounded-2xl p-6 shadow-xl">
+
+        <h2 class="text-lg font-bold mb-5">
+            Edit Room
+        </h2>
+
+        <form id="editForm" method="POST">
+
+            @csrf
+            @method('PUT')
+
+            <div class="mb-4">
+
+                <label class="block text-sm mb-2">
+                    Offer
+                </label>
+
+                <div class="mb-4">
+
+    <select
+        name="offer"
+        id="editOffer"
+        class="w-full border rounded-lg px-3 py-2">
+
+        @foreach($offers as $offer)
+
+            <option
+                value="{{ $offer->name }}"
+                data-type="{{ $offer->room_type }}">
+
+                {{ $offer->name }}
+                -
+                Rp {{ number_format($offer->price,0,',','.') }}
+
+            </option>
+
+        @endforeach
+
+    </select>
+
+</div>
+
+<div class="mb-4">
+
+    <label class="block text-sm mb-2">
+        Status
+    </label>
+
+    <select
+        name="status"
+        id="editStatus"
+        class="w-full border rounded-lg px-3 py-2">
+
+        <option value="Available">
+            Available
+        </option>
+
+        <option value="Occupied">
+            Occupied
+        </option>
+
+        <option value="Maintenance">
+            Maintenance
+        </option>
+
+    </select>
+
+</div>
+
+            </div>
+
+            <div class="flex justify-end gap-2">
+
+                <button
+                    type="button"
+                    onclick="closeEditModal()"
+                    class="px-4 py-2 rounded-lg border">
+
+                    Cancel
+
+                </button>
+
+                <button
+                    type="submit"
+                    class="px-4 py-2 rounded-lg bg-blue-600 text-white">
+
+                    Save
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<script>
+
+function openEditModal(id, currentOffer, roomType, currentStatus)
+{
+    document.getElementById('editModal')
+        .classList.remove('hidden');
+
+    document.getElementById('editStatus').value =
+    currentStatus;
+
+    document.getElementById('editModal')
+        .classList.add('flex');
+
+    document.getElementById('editForm').action =
+        '/admin/rooms/' + id;
+
+    const select = document.getElementById('editOffer');
+
+    Array.from(select.options).forEach(option => {
+
+        if(option.dataset.type === roomType)
+        {
+            option.hidden = false;
+        }
+        else
+        {
+            option.hidden = true;
+        }
+
+        option.selected =
+            option.value === currentOffer;
+    });
+
+    const statusSelect = document.getElementById('editStatus');
+    statusSelect.value = currentStatus;
+}
+
+function closeEditModal()
+{
+    document.getElementById('editModal')
+        .classList.remove('flex');
+
+    document.getElementById('editModal')
+        .classList.add('hidden');
+}
+
+</script>
 @endsection
