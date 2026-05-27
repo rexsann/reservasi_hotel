@@ -22,6 +22,7 @@ use App\Http\Controllers\FacilityController;
 use App\Http\Controllers\OfferController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\PembayaranController;
+use App\Http\Controllers\UserManagementController;
 
 // ─── PUBLIC ROUTES ────────────────────────────────────────────
 Route::get('/',            [HomeController::class, 'index']);
@@ -105,9 +106,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
 
     // Users (placeholder)
-Route::get('/users', function () {
-    return view('admin.user_management');
-})->name('users');
+Route::get('/users', [UserManagementController::class, 'index'])
+    ->name('users');
 
     // Room Management
     Route::get('/rooms',           [RoomController::class, 'index'])  ->name('rooms.index');
@@ -131,14 +131,24 @@ Route::get('/users', function () {
 
 
 // 🔹 FACILITY MANAGEMENT ⭐
-    Route::prefix('facilities')->name('facilities.')->group(function () {
-        Route::get('/', [FacilityController::class, 'index'])->name('index');
-    });
+  Route::prefix('facility')->group(function () {
 
+    Route::get('/', [FacilityController::class, 'index']);
+
+    Route::post('/store', [FacilityController::class, 'store']);
+
+    Route::delete('/{id}', [FacilityController::class, 'destroy']);
+
+});
 
     // 🔹 OFFER MANAGEMENT ⭐
-    Route::prefix('offers')->name('offers.')->group(function () {
-        Route::get('/', [OfferController::class, 'index'])->name('index');
-    });
+Route::get('/offers', [OfferController::class, 'index'])
+    ->name('offers.index');
+
+Route::post('/offers/store', [OfferController::class, 'store'])
+    ->name('offers.store');
+
+Route::delete('/offers/{id}', [OfferController::class, 'destroy'])
+    ->name('offers.destroy');
 
 });
