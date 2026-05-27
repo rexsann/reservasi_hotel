@@ -4,15 +4,17 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Room;
+use App\Models\Offer;
 
 class RoomController extends Controller
 {
-    // tampilkan data room dari database
+    // tampilkan data room
     public function index()
     {
         $rooms = Room::all();
+        $offers = Offer::all();
 
-        return view('admin.rooms', compact('rooms'));
+        return view('admin.rooms', compact('rooms', 'offers'));
     }
 
     // halaman create
@@ -26,6 +28,7 @@ class RoomController extends Controller
     {
         Room::create([
             'room_name' => $request->room_name,
+            'type' => $request->type,
             'offer' => $request->offer,
             'price_per_night' => $request->price_per_night,
             'status' => $request->status,
@@ -35,34 +38,33 @@ class RoomController extends Controller
             ->with('success', 'Room added successfully');
     }
 
-    // halaman edit
-    public function edit($id)
-    {
-        $room = Room::findOrFail($id);
-
-        return view('admin.edit_room', compact('room'));
-    }
-
     // update room
     public function update(Request $request, $id)
-    {
-        $room = Room::findOrFail($id);
+{
+    $room = Room::findOrFail($id);
 
-        $room->update([
-            'room_name' => $request->room_name,
-            'offer' => $request->offer,
-            'price_per_night' => $request->price_per_night,
-            'status' => $request->status,
-        ]);
+    $offer = Offer::where('name', $request->offer)
+        ->where('room_type', $room->type)
+        ->first();
 
-        return redirect('/admin/rooms')
-            ->with('success', 'Room updated successfully');
+    if (!$offer) {
+        return back()->with('error', 'Offer not found');
     }
+
+    $room->update([
+        'offer' => $offer->name,
+        'price_per_night' => $offer->price,
+        'status' => $request->status,
+    ]);
+
+    return back()->with('success', 'Room updated');
+}
 
     // delete room
     public function destroy($id)
     {
         $room = Room::findOrFail($id);
+
         $room->delete();
 
         return redirect('/admin/rooms')
