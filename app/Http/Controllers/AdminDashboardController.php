@@ -2,12 +2,79 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\Room;
+use App\Models\Reservation;
+use Carbon\Carbon;
 
 class AdminDashboardController extends Controller
 {
     public function index()
     {
-        return view('admin.dashboard');
+        // ======================
+        // ROOM STATS
+        // ======================
+
+        $totalRooms = Room::count();
+
+        $availableRooms = Room::where('status', 'Available')->count();
+
+        $occupiedRooms = Room::where('status', 'Occupied')->count();
+
+        $maintenanceRooms = Room::where('status', 'Maintenance')->count();
+
+        // ======================
+        // RESERVATION STATS
+        // ======================
+
+        $activeReservations = Reservation::whereIn('status', [
+            'Pending',
+            'Confirmed',
+            'Checked In'
+        ])->count();
+
+        $confirmedReservations = Reservation::where('status', 'Confirmed')->count();
+
+        $pendingReservations = Reservation::where('status', 'Pending')->count();
+
+        // ======================
+        // TOTAL INCOME
+        // ======================
+
+        $income = Reservation::whereIn('payment_status', [
+            'Paid'
+        ])->sum('total_price');
+
+        // ======================
+        // TODAY CHECKIN
+        // ======================
+
+        $todayCheckin = Reservation::whereDate(
+            'check_in',
+            Carbon::today()
+        )->count();
+
+        // ======================
+        // LATEST RESERVATION
+        // ======================
+
+        $latestReservations = Reservation::latest()
+            ->take(5)
+            ->get();
+
+        return view('admin.dashboard', compact(
+            'totalRooms',
+            'availableRooms',
+            'occupiedRooms',
+            'maintenanceRooms',
+
+            'activeReservations',
+            'confirmedReservations',
+            'pendingReservations',
+
+            'income',
+            'todayCheckin',
+
+            'latestReservations'
+        ));
     }
 }
