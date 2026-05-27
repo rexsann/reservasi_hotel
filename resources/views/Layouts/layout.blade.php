@@ -75,9 +75,9 @@
                     Rooms Management
                 </a>
 
-                <a href="/admin/facilities"
+                <a href="/admin/facility"
                     class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition
-               {{ request()->is('admin/facilities*') ? 'bg-blue-600 text-white shadow-sm' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
+               {{ request()->is('admin/facility*') ? 'bg-blue-600 text-white shadow-sm' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
                     <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
@@ -116,7 +116,7 @@
                         A
                     </div>
                     <div class="flex-1 min-w-0">
-                        <p class="text-xs font-semibold text-gray-700 truncate">Administrator</p>
+                        <p class="text-xs font-semibold text-gray-700 truncate">AdminiSZy</p>
                         <p class="text-xs text-gray-400 truncate">admin@stayzy.com</p>
                     </div>
                 </div>
@@ -148,7 +148,7 @@
                         @elseif(request()->is('admin/reservations*')) Reservations
                         @elseif(request()->is('admin/users*')) Users Management
                         @elseif(request()->is('admin/rooms*')) Rooms Management
-                        @elseif(request()->is('admin/facilities*')) Facility Management
+                        @elseif(request()->is('admin/facility*')) Facility Management
                         @elseif(request()->is('admin/offers*')) Offer Management
                         @else Admin Panel
                         @endif
