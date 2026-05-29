@@ -2,527 +2,582 @@
 
 @section('content')
 
-<style>
-.table-scroll-wrap {
-    max-height: 300px;
-    overflow-y: auto;
-    border-radius: 0 0 10px 10px;
-}
-.table-scroll-wrap::-webkit-scrollbar { width: 4px; }
-.table-scroll-wrap::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 4px; }
+    <style>
+        .table-scroll-wrap {
+            max-height: 300px;
+            overflow-y: auto;
+            border-radius: 0 0 10px 10px;
+        }
 
-.room-table {
-    width: 100%;
-    border-collapse: collapse;
-    table-layout: fixed;
-    font-size: 13px;
-}
+        .table-scroll-wrap::-webkit-scrollbar {
+            width: 4px;
+        }
 
-.room-table col.c-id     { width: 52px; }
-.room-table col.c-room   { width: 130px; }
-.room-table col.c-offer  { width: 200px; }
-.room-table col.c-price  { width: 160px; }
-.room-table col.c-status { width: 130px; }
-.room-table col.c-action { width: 90px; }
+        .table-scroll-wrap::-webkit-scrollbar-thumb {
+            background: #e2e8f0;
+            border-radius: 4px;
+        }
 
-.room-table thead {
-    position: sticky;
-    top: 0;
-    z-index: 5;
-}
+        .room-table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+            font-size: 13px;
+        }
 
-.room-table thead tr {
-    background: #1e293b;
-}
+        .room-table col.c-id {
+            width: 52px;
+        }
 
-.room-table th {
-    padding: 11px 14px;
-    text-align: left;
-    font-size: 11px;
-    font-weight: 600;
-    color: #ffffff;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    white-space: nowrap;
-}
+        .room-table col.c-room {
+            width: 130px;
+        }
 
-.room-table th.th-c { text-align: center; }
+        .room-table col.c-offer {
+            width: 200px;
+        }
 
-.room-table tbody tr {
-    border-top: 1px solid #f1f5f9;
-    transition: background 0.1s;
-}
+        .room-table col.c-price {
+            width: 160px;
+        }
 
-.room-table tbody tr:hover {
-    background: #f8fafc;
-}
+        .room-table col.c-status {
+            width: 130px;
+        }
 
-.room-table td {
-    padding: 11px 14px;
-    color: #1e293b;
-    vertical-align: middle;
-    font-size: 13px;
-}
+        .room-table col.c-action {
+            width: 90px;
+        }
 
-.room-table td.td-c { text-align: center; }
+        .room-table thead {
+            position: sticky;
+            top: 0;
+            z-index: 5;
+        }
 
-.room-table td.td-id {
-    color: #94a3b8;
-    font-size: 12px;
-    text-align: center;
-}
+        .room-table thead tr {
+            background: #1e293b;
+        }
 
-.room-table td.td-room {
-    font-weight: 600;
-    font-size: 13px;
-}
+        .room-table th {
+            padding: 11px 14px;
+            text-align: left;
+            font-size: 11px;
+            font-weight: 600;
+            color: #ffffff;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
 
-.room-table td.td-price {
-    font-weight: 600;
-    color: #0f172a;
-}
+        .room-table th.th-c {
+            text-align: center;
+        }
 
-/* ===== Status Badge ===== */
-.status-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 4px 11px;
-    border-radius: 99px;
-    font-size: 11px;
-    font-weight: 500;
-    border: 1px solid;
-    white-space: nowrap;
-}
+        .room-table tbody tr {
+            border-top: 1px solid #f1f5f9;
+            transition: background 0.1s;
+        }
 
-.status-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    flex-shrink: 0;
-}
+        .room-table tbody tr:hover {
+            background: #f8fafc;
+        }
 
-.s-available {
-    background: #f0fdf4;
-    color: #15803d;
-    border-color: #bbf7d0;
-}
-.s-available .status-dot { background: #22c55e; }
+        .room-table td {
+            padding: 11px 14px;
+            color: #1e293b;
+            vertical-align: middle;
+            font-size: 13px;
+        }
 
-.s-occupied {
-    background: #eff6ff;
-    color: #1d4ed8;
-    border-color: #bfdbfe;
-}
-.s-occupied .status-dot { background: #3b82f6; }
+        .room-table td.td-c {
+            text-align: center;
+        }
 
-.s-maintenance {
-    background: #fffbeb;
-    color: #b45309;
-    border-color: #fde68a;
-}
-.s-maintenance .status-dot { background: #f59e0b; }
+        .room-table td.td-id {
+            color: #94a3b8;
+            font-size: 12px;
+            text-align: center;
+        }
 
-/* ===== Room Type Card ===== */
-.room-type-card {
-    background: #fff;
-    border-radius: 14px;
-    border: 1px solid #e2e8f0;
-    margin-bottom: 1.75rem;
-    overflow: hidden;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-}
+        .room-table td.td-room {
+            font-weight: 600;
+            font-size: 13px;
+        }
 
-.room-type-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    padding: 1.2rem 1.4rem 0.6rem;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-}
+        .room-table td.td-price {
+            font-weight: 600;
+            color: #0f172a;
+        }
 
-.room-type-title {
-    font-size: 1rem;
-    font-weight: 700;
-    color: #0f172a;
-    margin: 0;
-    display: inline;
-}
+        /* ===== Status Badge ===== */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 11px;
+            border-radius: 99px;
+            font-size: 11px;
+            font-weight: 500;
+            border: 1px solid;
+            white-space: nowrap;
+        }
 
-.room-type-floor {
-    color: #94a3b8;
-    font-size: 0.9rem;
-    margin-left: 4px;
-}
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
 
-.room-type-price {
-    color: #64748b;
-    font-size: 12px;
-    margin: 4px 0 0;
-}
+        .s-available {
+            background: #f0fdf4;
+            color: #15803d;
+            border-color: #bbf7d0;
+        }
 
-.room-type-stats {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-    align-items: center;
-}
+        .s-available .status-dot {
+            background: #22c55e;
+        }
 
-/* ===== Summary Badges ===== */
-.summary-badge {
-    padding: 3px 12px;
-    border-radius: 99px;
-    font-size: 11px;
-    font-weight: 500;
-    border: 1.5px solid;
-}
-.sb-available   { color: #15803d; border-color: #bbf7d0; background: #f0fdf4; }
-.sb-occupied    { color: #1d4ed8; border-color: #bfdbfe; background: #eff6ff; }
-.sb-maintenance { color: #b45309; border-color: #fde68a; background: #fffbeb; }
+        .s-occupied {
+            background: #eff6ff;
+            color: #1d4ed8;
+            border-color: #bfdbfe;
+        }
 
-/* ===== Facilities ===== */
-.facilities-row {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 0 1.4rem 0.9rem;
-    flex-wrap: wrap;
-}
-.facilities-label {
-    color: #94a3b8;
-    font-size: 12px;
-}
-.facility-tag {
-    border: 1px solid #e2e8f0;
-    border-radius: 6px;
-    padding: 2px 9px;
-    font-size: 11px;
-    color: #475569;
-}
+        .s-occupied .status-dot {
+            background: #3b82f6;
+        }
 
-/* ===== Edit Button ===== */
-.btn-edit {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 11px;
-    font-weight: 500;
-    color: #2563eb;
-    background: #eff6ff;
-    border: 1px solid #bfdbfe;
-    padding: 4px 11px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background 0.15s;
-    text-decoration: none;
-}
-.btn-edit:hover { background: #dbeafe; }
+        .s-maintenance {
+            background: #fffbeb;
+            color: #b45309;
+            border-color: #fde68a;
+        }
 
-/* ===== Empty ===== */
-.empty-row {
-    text-align: center;
-    color: #94a3b8;
-    padding: 1.5rem;
-    font-size: 13px;
-}
-</style>
+        .s-maintenance .status-dot {
+            background: #f59e0b;
+        }
 
-{{-- Page Header --}}
-<div class="flex justify-between items-center mb-6">
-    <div>
-        <h1 class="text-2xl font-bold text-gray-800">Rooms Management</h1>
-        <p class="text-sm text-gray-400 mt-1">Manage hotel room data</p>
-    </div>
-</div>
+        /* ===== Room Type Card ===== */
+        .room-type-card {
+            background: #fff;
+            border-radius: 14px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 1.75rem;
+            overflow: hidden;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+        }
 
-{{-- Group by Room Type --}}
-@php
-    $grouped = $rooms->groupBy('type');
-@endphp
+        .room-type-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 1.2rem 1.4rem 0.6rem;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
 
-@forelse($grouped as $typeName => $typeRooms)
+        .room-type-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin: 0;
+            display: inline;
+        }
 
-<div class="room-type-card">
+        .room-type-floor {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            margin-left: 4px;
+        }
 
-    {{-- Room Type Header --}}
-    <div class="room-type-header">
+        .room-type-price {
+            color: #64748b;
+            font-size: 12px;
+            margin: 4px 0 0;
+        }
+
+        .room-type-stats {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        /* ===== Summary Badges ===== */
+        .summary-badge {
+            padding: 3px 12px;
+            border-radius: 99px;
+            font-size: 11px;
+            font-weight: 500;
+            border: 1.5px solid;
+        }
+
+        .sb-available {
+            color: #15803d;
+            border-color: #bbf7d0;
+            background: #f0fdf4;
+        }
+
+        .sb-occupied {
+            color: #1d4ed8;
+            border-color: #bfdbfe;
+            background: #eff6ff;
+        }
+
+        .sb-maintenance {
+            color: #b45309;
+            border-color: #fde68a;
+            background: #fffbeb;
+        }
+
+        /* ===== Facilities ===== */
+        .facilities-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 0 1.4rem 0.9rem;
+            flex-wrap: wrap;
+        }
+
+        .facilities-label {
+            color: #94a3b8;
+            font-size: 12px;
+        }
+
+        .facility-tag {
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 2px 9px;
+            font-size: 11px;
+            color: #475569;
+        }
+
+        /* ===== Edit Button ===== */
+        .btn-edit {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 11px;
+            font-weight: 500;
+            color: #2563eb;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            padding: 4px 11px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.15s;
+            text-decoration: none;
+        }
+
+        .btn-edit:hover {
+            background: #dbeafe;
+        }
+
+        /* ===== Empty ===== */
+        .empty-row {
+            text-align: center;
+            color: #94a3b8;
+            padding: 1.5rem;
+            font-size: 13px;
+        }
+    </style>
+
+    {{-- Page Header --}}
+    <div class="flex justify-between items-center mb-6">
         <div>
-            <h2 class="room-type-title">{{ $typeName ?? 'Standard' }}</h2>
-
-            <span class="room-type-floor">
-                · Floor {{ $loop->iteration }}
-            </span>
-
-            <p class="room-type-price">
-                Rp {{ number_format($typeRooms->min('price_per_night'), 0, ',', '.') }}
-                – Rp {{ number_format($typeRooms->max('price_per_night'), 0, ',', '.') }} / night
-            </p>
+            <h1 class="text-2xl font-bold text-gray-800">Rooms Management</h1>
+            <p class="text-sm text-gray-400 mt-1">Manage hotel room data</p>
         </div>
-
-        <div class="room-type-stats">
-            <span class="summary-badge sb-available">
-                {{ $typeRooms->where('status', 'Available')->count() }} Available
-            </span>
-
-            <span class="summary-badge sb-occupied">
-                {{ $typeRooms->where('status', 'Occupied')->count() }} Occupied
-            </span>
-
-            <span class="summary-badge sb-maintenance">
-                {{ $typeRooms->where('status', 'Maintenance')->count() }} Maintenance
-            </span>
-        </div>
-
     </div>
 
-    {{-- Facilities (opsional, jika ada kolom facilities) --}}
+    {{-- Group by Room Type --}}
     @php
-    $facilityList = \App\Models\Facility::where('room_type', $typeName)->get();
-@endphp
+        $grouped = $rooms->groupBy('type');
+    @endphp
 
-@if($facilityList->count())
-<div class="facilities-row">
+    @forelse($grouped as $typeName => $typeRooms)
+        <div class="room-type-card">
 
-    <span class="facilities-label">
-        Facilities:
-    </span>
+            {{-- Room Type Header --}}
+            <div class="room-type-header">
+                <div>
+                    <h2 class="room-type-title">{{ $typeName ?? 'Standard' }}</h2>
 
-    @foreach($facilityList as $facility)
+                    <span class="room-type-floor">
+                        · Floor {{ $loop->iteration }}
+                    </span>
 
-        <span class="facility-tag">
-            {{ $facility->name }}
-        </span>
+                    <p class="room-type-price">
+                        Rp {{ number_format($typeRooms->min('price_per_night'), 0, ',', '.') }}
+                        – Rp {{ number_format($typeRooms->max('price_per_night'), 0, ',', '.') }} / night
+                    </p>
+                </div>
 
-    @endforeach
+                <div class="room-type-stats">
 
-</div>
-@endif
+                    <span class="summary-badge sb-available">
+                        {{ $typeRooms->filter(fn($r) => strtolower(trim($r->status)) == 'available')->count() }}
+                        Available
+                    </span>
 
-    {{-- Table --}}
-    <div class="table-scroll-wrap">
-        <table class="room-table">
-            <colgroup>
-                <col class="c-id">
-                <col class="c-room">
-                <col class="c-offer">
-                <col class="c-price">
-                <col class="c-status">
-                <col class="c-action">
-            </colgroup>
-            <thead>
-                <tr>
-                    <th class="th-c">ID</th>
-                    <th>Room</th>
-                    <th>Offer</th>
-                    <th>Price / Night</th>
-                    <th class="th-c">Status</th>
-                    <th class="th-c">Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($typeRooms as $room)
-                <tr>
-                    <td class="td-id">{{ $room->id }}</td>
-                    <td class="td-room">{{ $room->room_name }}</td>
-                    <td>{{ $room->offer }}</td>
-                    <td class="td-price">Rp {{ number_format($room->price_per_night, 0, ',', '.') }}</td>
-                    <td class="td-c">
-                        @if($room->status == 'Available')
-                            <span class="status-badge s-available">
-                                <span class="status-dot"></span> Available
-                            </span>
-                        @elseif($room->status == 'Occupied')
-                            <span class="status-badge s-occupied">
-                                <span class="status-dot"></span> Occupied
-                            </span>
-                        @else
-                            <span class="status-badge s-maintenance">
-                                <span class="status-dot"></span> Maintenance
-                            </span>
-                        @endif
-                    </td>
-                    <td class="td-c">
-    <button
-    onclick="openEditModal(
-    '{{ $room->id }}',
-    '{{ $room->offer }}',
-    '{{ $room->type }}',
-    '{{ $room->status }}'
-)"
-    class="btn-edit">
+                    <span class="summary-badge sb-occupied">
+                        {{ $typeRooms->filter(fn($r) => strtolower(trim($r->status)) == 'occupied')->count() }}
+                        Occupied
+                    </span>
 
-    <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" fill="currentColor" viewBox="0 0 16 16">
-        <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10z"/>
-    </svg>
+                    <span class="summary-badge sb-maintenance">
+                        {{ $typeRooms->filter(fn($r) => strtolower(trim($r->status)) == 'maintenance')->count() }}
+                        Maintenance
+                    </span>
 
-    Edit
+                </div>
 
-    </button>
-                    </td>
-                </tr>
-                @empty
-                <tr>
-                    <td colspan="6" class="empty-row">Tidak ada kamar untuk tipe ini.</td>
-                </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
+            </div>
 
-</div>
-@empty
-<div class="text-center text-gray-400 py-16">Belum ada data kamar.</div>
-@endforelse
+            {{-- Facilities (opsional, jika ada kolom facilities) --}}
+            @php
+                $facilityList = \App\Models\Facility::where('room_type', $typeName)->get();
+            @endphp
 
-{{-- EDIT MODAL --}}
-<div
-    id="editModal"
-    class="fixed inset-0 bg-black/40 hidden items-center justify-center z-50">
+            @if ($facilityList->count())
+                <div class="facilities-row">
 
-    <div class="bg-white w-full max-w-md rounded-2xl p-6 shadow-xl">
+                    <span class="facilities-label">
+                        Facilities:
+                    </span>
 
-        <h2 class="text-lg font-bold mb-5">
-            Edit Room
-        </h2>
+                    @foreach ($facilityList as $facility)
+                        <span class="facility-tag">
+                            {{ $facility->name }}
+                        </span>
+                    @endforeach
 
-        <form id="editForm" method="POST">
+                </div>
+            @endif
 
-            @csrf
-            @method('PUT')
+            {{-- Table --}}
+            <div class="table-scroll-wrap">
+                <table class="room-table">
+                    <colgroup>
+                        <col class="c-id">
+                        <col class="c-room">
+                        <col class="c-offer">
+                        <col class="c-price">
+                        <col class="c-status">
+                        <col class="c-action">
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th class="th-c">ID</th>
+                            <th>Room</th>
+                            <th>Offer</th>
+                            <th>Price / Night</th>
+                            <th class="th-c">Status</th>
+                            <th class="th-c">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($typeRooms as $room)
+                            <tr>
+                                <td class="td-id">{{ $room->id }}</td>
+                                <td class="td-room">{{ $room->room_name }}</td>
+                                <td>{{ $room->offer }}</td>
+                                <td class="td-price">Rp {{ number_format($room->price_per_night, 0, ',', '.') }}</td>
+                                <td class="td-c">
 
-            <div class="mb-4">
+                                    @php
+                                        $status = strtolower(trim($room->status));
+                                    @endphp
 
-                <label class="block text-sm mb-2">
-                    Offer
-                </label>
+                                    @if ($status == 'available')
+                                        <span class="status-badge s-available">
+                                            <span class="status-dot"></span>
+                                            Available
+                                        </span>
+                                    @elseif($status == 'occupied')
+                                        <span class="status-badge s-occupied">
+                                            <span class="status-dot"></span>
+                                            Occupied
+                                        </span>
+                                    @else
+                                        <span class="status-badge s-maintenance">
+                                            <span class="status-dot"></span>
+                                            Maintenance
+                                        </span>
+                                    @endif
+
+                                </td>
+                                <td class="td-c">
+                                    <button
+                                        onclick='openEditModal(
+@json($room->id),
+@json($room->offer),
+@json($room->type),
+@json($room->status)
+)'
+                                        class="btn-edit">
+
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11"
+                                            fill="currentColor" viewBox="0 0 16 16">
+                                            <path
+                                                d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10z" />
+                                        </svg>
+
+                                        Edit
+
+                                    </button>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="6" class="empty-row">Tidak ada kamar untuk tipe ini.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    @empty
+        <div class="text-center text-gray-400 py-16">Belum ada data kamar.</div>
+    @endforelse
+
+    {{-- EDIT MODAL --}}
+    <div id="editModal" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-50">
+
+        <div class="bg-white w-full max-w-md rounded-2xl p-6 shadow-xl">
+
+            <h2 class="text-lg font-bold mb-5">
+                Edit Room
+            </h2>
+
+            <form id="editForm" method="POST">
+
+                @csrf
+                @method('PUT')
 
                 <div class="mb-4">
 
-    <select
-        name="offer"
-        id="editOffer"
-        class="w-full border rounded-lg px-3 py-2">
+                    <label class="block text-sm mb-2">
+                        Offer
+                    </label>
 
-        @foreach($offers as $offer)
+                    <div class="mb-4">
 
-            <option
-                value="{{ $offer->name }}"
-                data-type="{{ $offer->room_type }}">
+                        <select name="offer" id="editOffer" class="w-full border rounded-lg px-3 py-2">
 
-                {{ $offer->name }}
-                -
-                Rp {{ number_format($offer->price,0,',','.') }}
+                            @foreach ($offers as $offer)
+                                <option value="{{ $offer->name }}" data-type="{{ $offer->room_type }}">
 
-            </option>
+                                    {{ $offer->name }}
+                                    -
+                                    Rp {{ number_format($offer->price, 0, ',', '.') }}
 
-        @endforeach
+                                </option>
+                            @endforeach
 
-    </select>
+                        </select>
 
-</div>
+                    </div>
 
-<div class="mb-4">
+                    <div class="mb-4">
 
-    <label class="block text-sm mb-2">
-        Status
-    </label>
+                        <label class="block text-sm mb-2">
+                            Status
+                        </label>
 
-    <select
-        name="status"
-        id="editStatus"
-        class="w-full border rounded-lg px-3 py-2">
+                        <select name="status" id="editStatus" class="w-full border rounded-lg px-3 py-2">
 
-        <option value="Available">
-            Available
-        </option>
+                            <option value="Available">
+                                Available
+                            </option>
 
-        <option value="Occupied">
-            Occupied
-        </option>
+                            <option value="Occupied">
+                                Occupied
+                            </option>
 
-        <option value="Maintenance">
-            Maintenance
-        </option>
+                            <option value="Maintenance">
+                                Maintenance
+                            </option>
 
-    </select>
+                        </select>
 
-</div>
+                    </div>
 
-            </div>
+                </div>
 
-            <div class="flex justify-end gap-2">
+                <div class="flex justify-end gap-2">
 
-                <button
-                    type="button"
-                    onclick="closeEditModal()"
-                    class="px-4 py-2 rounded-lg border">
+                    <button type="button" onclick="closeEditModal()" class="px-4 py-2 rounded-lg border">
 
-                    Cancel
+                        Cancel
 
-                </button>
+                    </button>
 
-                <button
-                    type="submit"
-                    class="px-4 py-2 rounded-lg bg-blue-600 text-white">
+                    <button type="submit" class="px-4 py-2 rounded-lg bg-blue-600 text-white">
 
-                    Save
+                        Save
 
-                </button>
+                    </button>
 
-            </div>
+                </div>
 
-        </form>
+            </form>
+
+        </div>
 
     </div>
 
-</div>
+    <script>
+function openEditModal(id, currentOffer, roomType, currentStatus) {
+    const modal = document.getElementById('editModal');
+    const form = document.getElementById('editForm');
+    const offerSelect = document.getElementById('editOffer');
+    const statusSelect = document.getElementById('editStatus');
 
-<script>
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
 
-function openEditModal(id, currentOffer, roomType, currentStatus)
-{
-    document.getElementById('editModal')
-        .classList.remove('hidden');
+    form.action = "{{ url('/admin/rooms') }}/" + id;
 
-    document.getElementById('editStatus').value =
-    currentStatus;
+    // set status
+    statusSelect.value = currentStatus.trim();
 
-    document.getElementById('editModal')
-        .classList.add('flex');
+    const currentType = (roomType || '').trim().toLowerCase();
 
-    document.getElementById('editForm').action =
-        '/admin/rooms/' + id;
+    // reset semua option
+    let firstVisible = null;
+    let foundSelected = false;
 
-    const select = document.getElementById('editOffer');
+    Array.from(offerSelect.options).forEach(option => {
+        const optionType = (option.dataset.type || '').trim().toLowerCase();
 
-    Array.from(select.options).forEach(option => {
+        // ✅ pakai includes agar fleksibel (Superior cocok dengan "Superior Room" dll)
+        const isMatch = optionType === currentType
+            || optionType.includes(currentType)
+            || currentType.includes(optionType);
 
-        if(option.dataset.type === roomType)
-        {
-            option.hidden = false;
+        option.hidden = !isMatch;
+        option.selected = false;
+
+        if (isMatch) {
+            if (!firstVisible) firstVisible = option;
+
+            // set selected ke offer yang sedang aktif
+            if (option.value.trim().toLowerCase() === (currentOffer || '').trim().toLowerCase()) {
+                option.selected = true;
+                foundSelected = true;
+            }
         }
-        else
-        {
-            option.hidden = true;
-        }
-
-        option.selected =
-            option.value === currentOffer;
     });
 
-    const statusSelect = document.getElementById('editStatus');
-    statusSelect.value = currentStatus;
+    // fallback: kalau offer aktif tidak ketemu, pilih option pertama yang visible
+    if (!foundSelected && firstVisible) {
+        firstVisible.selected = true;
+    }
 }
-
-function closeEditModal()
-{
-    document.getElementById('editModal')
-        .classList.remove('flex');
-
-    document.getElementById('editModal')
-        .classList.add('hidden');
-}
-
 </script>
 @endsection
