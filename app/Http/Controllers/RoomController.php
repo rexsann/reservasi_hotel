@@ -41,25 +41,40 @@ class RoomController extends Controller
     // update room
     public function update(Request $request, $id)
 {
+    $request->validate([
+        'offer' => 'required',
+        'status' => 'required|in:Available,Occupied,Maintenance',
+    ]);
+
     $room = Room::findOrFail($id);
 
-    $offer = Offer::where('name', $request->offer)
-        ->where('room_type', $room->type)
-        ->first();
+    // cari offer berdasarkan nama + type room
+    $offer = Offer::whereRaw('LOWER(TRIM(name)) = ?', [
+        strtolower(trim($request->offer))
+    ])
+    ->whereRaw('LOWER(TRIM(room_type)) = ?', [
+        strtolower(trim($room->type))
+    ])
+    ->first();
 
     if (!$offer) {
         return back()->with('error', 'Offer not found');
     }
 
-    $room->update([
-        'offer' => $offer->name,
-        'price_per_night' => $offer->price,
-        'status' => $request->status,
-    ]);
+    // update data room
+    $room->offer = $offer->name;
+    $room->price_per_night = $offer->price;
 
-    return back()->with('success', 'Room updated');
+    // update status
+    $room->status = $request->status;
+
+    $room->save();
+
+    return redirect()->back()->with(
+        'success',
+        'Room updated successfully'
+    );
 }
-
     // delete room
     public function destroy($id)
     {
