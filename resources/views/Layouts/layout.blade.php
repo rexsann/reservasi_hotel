@@ -3,170 +3,190 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stayzy — Admin Panel</title>
-    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.css" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+    
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+
 </head>
 
-<body class="bg-gray-50 overflow-hidden">
+<body>
+<div class="flex h-screen">
 
-    <div class="flex h-screen">
+    <!-- ═══════════ SIDEBAR ═══════════ -->
+    <aside class="sidebar">
 
-        <!-- SIDEBAR -->
-        <aside class="w-64 bg-white border-r border-gray-100 flex flex-col h-full flex-shrink-0 shadow-sm">
-
-            {{-- LOGO --}}
-            <div class="px-5 py-5 border-b border-gray-100">
-                <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center text-white font-bold text-base shadow-sm flex-shrink-0">
-                        S
-                    </div>
-                    <div>
-                        <p class="text-sm font-bold text-gray-800 leading-tight">Stayzy Hotel</p>
-                        <p class="text-xs text-gray-400 leading-tight">Admin Panel</p>
-                    </div>
-                </div>
+        <div class="sidebar-logo">
+            <div class="logo-mark">S</div>
+            <div>
+                <div class="logo-text-main">Stayzy Hotel</div>
+                <div class="logo-text-sub">Admin Panel</div>
             </div>
-
-            {{-- MENU --}}
-            <nav class="flex-1 px-3 py-4 overflow-y-auto space-y-0.5">
-
-                <p class="text-xs text-gray-400 font-medium uppercase tracking-widest px-3 mb-2">Main</p>
-
-                <a href="/admin/dashboard"
-                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition
-               {{ request()->is('admin/dashboard') ? 'bg-blue-600 text-white shadow-sm' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
-                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M3 12l9-9 9 9M5 10v9a1 1 0 001 1h4v-5h4v5h4a1 1 0 001-1v-9" />
-                    </svg>
-                    Dashboard
-                </a>
-
-                <a href="/admin/reservations"
-                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition
-               {{ request()->is('admin/reservations*') ? 'bg-blue-600 text-white shadow-sm' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
-                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                    Reservations
-                </a>
-
-                <a href="/admin/users"
-                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition
-               {{ request()->is('admin/users*') ? 'bg-blue-600 text-white shadow-sm' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
-                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                    Users Management
-                </a>
-
-                <p class="text-xs text-gray-400 font-medium uppercase tracking-widest px-3 pt-4 pb-2">Hotel</p>
-
-                <a href="/admin/rooms"
-                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition
-               {{ request()->is('admin/rooms*') ? 'bg-blue-600 text-white shadow-sm' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
-                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0H5m14 0h2M5 21H3M9 7h1m-1 4h1m4-4h1m-1 4h1m-2 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                    </svg>
-                    Rooms Management
-                </a>
-
-                <a href="/admin/facility"
-                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition
-               {{ request()->is('admin/facility*') ? 'bg-blue-600 text-white shadow-sm' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
-                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-                    </svg>
-                    Facility Management
-                </a>
-
-                <a href="/admin/offers"
-                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition
-               {{ request()->is('admin/offers*') ? 'bg-blue-600 text-white shadow-sm' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
-                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-                    </svg>
-                    Offer Management
-                </a>
-
-                <a href="/admin/pembayaran"
-                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition
-   {{ request()->is('admin/pembayaran*') ? 'bg-blue-600 text-white shadow-sm' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
-
-                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M17 9V7a5 5 0 00-10 0v2M5 9h14l1 11H4L5 9z" />
-                    </svg>
-
-                    Pembayaran
-                </a>
-
-            </nav>
-
-            {{-- FOOTER SIDEBAR — profil + logout --}}
-            <div class="px-4 py-4 border-t border-gray-100 space-y-2">
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 text-xs font-bold flex-shrink-0">
-                        A
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <p class="text-xs font-semibold text-gray-700 truncate">AdminiSZy</p>
-                        <p class="text-xs text-gray-400 truncate">admin@stayzy.com</p>
-                    </div>
-                </div>
-
-                {{-- Tombol Logout --}}
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button type="submit"
-                        class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm font-medium text-red-500 hover:bg-red-50 hover:text-red-600 transition">
-                        <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                        </svg>
-                        Logout
-                    </button>
-                </form>
-            </div>
-
-        </aside>
-
-        <!-- MAIN CONTENT -->
-        <div class="flex-1 flex flex-col overflow-hidden">
-
-            {{-- TOPBAR --}}
-            <header class="bg-white border-b border-gray-100 px-6 py-3.5 flex items-center justify-between flex-shrink-0 shadow-sm">
-                <div>
-                    <p class="text-sm font-semibold text-gray-800">
-                        @if(request()->is('admin/dashboard')) Dashboard
-                        @elseif(request()->is('admin/reservations*')) Reservations
-                        @elseif(request()->is('admin/users*')) Users Management
-                        @elseif(request()->is('admin/rooms*')) Rooms Management
-                        @elseif(request()->is('admin/facility*')) Facility Management
-                        @elseif(request()->is('admin/offers*')) Offer Management
-                        @else Admin Panel
-                        @endif
-                    </p>
-                    <p class="text-xs text-gray-400">{{ now()->translatedFormat('l, d F Y') }}</p>
-                </div>
-            </header>
-
-            {{-- PAGE CONTENT --}}
-            <main class="flex-1 overflow-y-auto p-6">
-                @yield('content')
-            </main>
-
         </div>
+
+        <nav class="sidebar-nav">
+
+            <div class="nav-section-label">Main</div>
+
+            <a href="/admin/dashboard"
+               class="nav-item {{ request()->is('admin/dashboard') ? 'active' : '' }}">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M3 12l9-9 9 9M5 10v9a1 1 0 001 1h4v-5h4v5h4a1 1 0 001-1v-9"/>
+                </svg>
+                Dashboard
+            </a>
+
+            <a href="/admin/reservations"
+               class="nav-item {{ request()->is('admin/reservations*') ? 'active' : '' }}">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+                Reservations
+            </a>
+
+            <a href="/admin/users"
+               class="nav-item {{ request()->is('admin/users*') ? 'active' : '' }}">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                Users Management
+            </a>
+
+            <div class="sidebar-divider"></div>
+            <div class="nav-section-label">Hotel</div>
+
+            <a href="/admin/rooms"
+               class="nav-item {{ request()->is('admin/rooms*') ? 'active' : '' }}">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0H5m14 0h2M5 21H3M9 7h1m-1 4h1m4-4h1m-1 4h1m-2 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                </svg>
+                Rooms
+            </a>
+
+            <a href="/admin/facility"
+               class="nav-item {{ request()->is('admin/facility*') ? 'active' : '' }}">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+                </svg>
+                Facilities
+            </a>
+
+            <a href="/admin/offers"
+               class="nav-item {{ request()->is('admin/offers*') ? 'active' : '' }}">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
+                </svg>
+                Offers
+            </a>
+
+            <a href="/admin/pembayaran"
+               class="nav-item {{ request()->is('admin/pembayaran*') ? 'active' : '' }}">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+                </svg>
+                Pembayaran
+            </a>
+
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="profile-card">
+                <div class="profile-avatar">
+                    {{ strtoupper(substr(Auth::user()->name ?? 'A', 0, 1)) }}
+                </div>
+                <div style="flex:1; min-width:0;">
+                    <div class="profile-name">{{ Auth::user()->name ?? 'AdminiSZy' }}</div>
+                    <div class="profile-role">{{ Auth::user()->email ?? 'admin@stayzy.com' }}</div>
+                </div>
+            </div>
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button type="submit" class="logout-btn">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                    </svg>
+                    Sign Out
+                </button>
+            </form>
+        </div>
+
+    </aside>
+
+    <!-- ═══════════ MAIN AREA ═══════════ -->
+    <div class="main-area">
+
+        <header class="topbar">
+            <div class="topbar-left">
+                <div class="topbar-title">
+                    @if(request()->is('admin/dashboard'))         Dashboard
+                    @elseif(request()->is('admin/reservations*')) Reservations
+                    @elseif(request()->is('admin/users*'))        Users Management
+                    @elseif(request()->is('admin/rooms*'))        Rooms Management
+                    @elseif(request()->is('admin/facility*'))     Facility Management
+                    @elseif(request()->is('admin/offers*'))       Offer Management
+                    @elseif(request()->is('admin/pembayaran*'))   Pembayaran
+                    @else                                          Admin Panel
+                    @endif
+                </div>
+                                <div class="topbar-breadcrumb">
+                    @if(request()->is('admin/dashboard'))         
+                        Monitor all hotel activities and performance overview
+
+                    @elseif(request()->is('admin/reservations*')) 
+                        Manage and track all guest reservations
+
+                    @elseif(request()->is('admin/users*'))        
+                        Manage user accounts and access permissions
+
+                    @elseif(request()->is('admin/rooms*'))        
+                        Manage room listings and availability
+
+                    @elseif(request()->is('admin/facility*'))     
+                        Manage facilities available for each room type
+
+                    @elseif(request()->is('admin/offers*'))       
+                        Create and manage special offers or promotions
+
+                    @elseif(request()->is('admin/pembayaran*'))   
+                        Monitor and verify payment transactions
+
+                    @else                                          
+                        Welcome to the Stayzy admin panel
+                    @endif
+                </div>
+            </div>
+
+            <div class="topbar-right">
+                <div class="topbar-date-badge">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                    {{ now()->translatedFormat('l, d F Y') }}
+                </div>
+                <div class="topbar-dot" title="Online"></div>
+            </div>
+        </header>
+
+        <main class="page-content">
+            @yield('content')
+        </main>
+
     </div>
+</div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.js"></script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.js"></script>
 </body>
-
 </html>
