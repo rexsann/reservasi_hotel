@@ -2,177 +2,104 @@
 
 @section('content')
 
-<div class="flex justify-between items-center mb-6">
-    <div>
-        <h1 class="text-xl font-semibold text-gray-800">
-            Facility Management
-        </h1>
+<div class="grid lg:grid-cols-3 gap-5">
 
-        <p class="text-sm text-gray-400">
-            Manage facilities per room type
-        </p>
-    </div>
-</div>
-
-<div class="grid lg:grid-cols-3 gap-6">
-
-    {{-- FORM --}}
+    {{-- ════ FORM ════ --}}
     <div class="lg:col-span-1">
+        <div class="form-card">
 
-        <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 sticky top-4">
-
-            <h2 class="text-sm font-semibold text-gray-700 mb-4">
+            <div class="form-card-title">
+                <span class="form-card-title-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
+                </span>
                 Add Facility
-            </h2>
+            </div>
 
-           <form action="/admin/facility/store" method="POST">
-
+            <form action="/admin/facility/store" method="POST">
                 @csrf
 
-                <div class="space-y-3">
-
-                    {{-- ROOM --}}
-                    <div>
-
-                        <label class="block text-xs font-medium text-gray-500 mb-1">
-                            Room
-                        </label>
-
-                        <select
-    name="type"
-    class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
-
-    @foreach($rooms as $room)
-
-        <option value="{{ $room->type }}">
-            {{ $room->type }}
-        </option>
-
-    @endforeach
-
-</select>
-
-                    </div>
-
-                    {{-- FACILITY NAME --}}
-                    <div>
-
-                        <label class="block text-xs font-medium text-gray-500 mb-1">
-                            Facility Name
-                        </label>
-
-                        <input
-                            name="name"
-                            type="text"
-                            placeholder="e.g. Hair Dryer"
-                            class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-
-                    </div>
-
-                    <button
-                        type="submit"
-                        class="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2.5 rounded-lg transition">
-
-                        + Add Facility
-
-                    </button>
-
+                <div class="field-group">
+                    <label class="field-label">Room Type</label>
+                    <select name="type" class="field-select">
+                        @foreach($rooms as $room)
+                            <option value="{{ $room->type }}">{{ $room->type }}</option>
+                        @endforeach
+                    </select>
                 </div>
 
+                <div class="field-group">
+                    <label class="field-label">Facility Name</label>
+                    <input
+                        name="name"
+                        type="text"
+                        placeholder="e.g. Hair Dryer, Smart TV..."
+                        class="field-input">
+                </div>
+
+                <button type="submit" class="btn-add">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    Add Facility
+                </button>
             </form>
 
         </div>
-
     </div>
 
-    {{-- LIST PER TYPE --}}
-    <div class="lg:col-span-2 space-y-4">
+    {{-- ════ LIST ════ --}}
+    <div class="lg:col-span-2">
 
         @php
             $types = ['Standard', 'Superior', 'Deluxe'];
-
-            $colors = [
-                'Standard' => 'bg-blue-500',
-                'Superior' => 'bg-purple-500',
-                'Deluxe'   => 'bg-amber-500',
-            ];
         @endphp
 
         @foreach($types as $type)
+            @php
+                $facilityList = $facilities->filter(fn($f) => $f->room_type === $type);
+            @endphp
 
-        @php
-            $facilityList = $facilities->filter(function ($facility) use ($type) {
-                return $facility->room_type === $type;
-            });
-        @endphp
+            <div class="type-card">
 
-        <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-
-            {{-- HEADER --}}
-            <div class="flex items-center justify-between px-5 py-3.5 border-b border-gray-100 bg-gray-50">
-
-                <div class="flex items-center gap-2">
-
-                    <span class="w-2 h-2 rounded-full {{ $colors[$type] }}"></span>
-
-                    <p class="text-sm font-semibold text-gray-700">
-                        {{ $type }}
-                    </p>
-
-                </div>
-
-                <span class="text-xs text-gray-400">
-                    {{ $facilityList->count() }} facilities
-                </span>
-
-            </div>
-
-            {{-- LIST --}}
-            <div class="divide-y divide-gray-100">
-
-                @forelse($facilityList as $facility)
-
-                <div class="flex items-center justify-between px-5 py-3 hover:bg-gray-50 transition">
-
-                    <div class="flex items-center gap-3">
-
-                        <span class="w-1.5 h-1.5 rounded-full {{ $colors[$type] }}"></span>
-
-                        <span class="text-sm font-medium text-gray-800">
-                            {{ $facility->name }}
-                        </span>
-
+                <div class="type-card-header">
+                    <div class="type-card-header-left">
+                        <span class="type-name">{{ $type }}</span>
                     </div>
-
-                    <form action="/admin/facility/{{ $facility->id }}" method="POST">
-
-                        @csrf
-                        @method('DELETE')
-
-                        <button
-                            onclick="return confirm('Delete this facility?')"
-                            class="text-xs px-3 py-1.5 rounded-lg bg-red-50 text-red-600 border border-red-100 hover:bg-red-100 transition font-medium">
-
-                            Delete
-
-                        </button>
-
-                    </form>
-
+                    <span class="type-count">{{ $facilityList->count() }} facilities</span>
                 </div>
 
-                @empty
-
-                <p class="px-5 py-6 text-center text-sm text-gray-400">
-                    No facilities added
-                </p>
-
-                @endforelse
+                <div>
+                    @forelse($facilityList as $facility)
+                        <div class="facility-row">
+                            <div class="facility-row-left">
+                                <span class="facility-name">{{ $facility->name }}</span>
+                            </div>
+                            <form action="/admin/facility/{{ $facility->id }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button
+                                    type="submit"
+                                    onclick="return confirm('Delete \'{{ $facility->name }}\'?')"
+                                    class="btn-delete">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="none"
+                                        stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                    </svg>
+                                    Delete
+                                </button>
+                            </form>
+                        </div>
+                    @empty
+                        <p class="empty-facilities">No facilities added for {{ $type }}</p>
+                    @endforelse
+                </div>
 
             </div>
-
-        </div>
-
         @endforeach
 
     </div>
