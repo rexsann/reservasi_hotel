@@ -83,7 +83,7 @@ Route::post('/registrasi', [RegistrasiController::class, 'registrasi']);
 
 Route::get('/login',       [LoginController::class, 'index'])->name('login');
 Route::post('/login',      [LoginController::class, 'authenticate']);
-Route::get('/logout',      [LoginController::class, 'logout'])->name('logout');
+Route::post('/logout',      [LoginController::class, 'logout'])->name('logout');
 
 Route::get('/lupapassword', [LupaPasswordController::class, 'index']);
 Route::post('/lupapassword', [LupaPasswordController::class, 'sendOtp'])->name('lupapassword');
@@ -147,6 +147,9 @@ Route::get('/offers', [OfferController::class, 'index'])
 
 Route::post('/offers/store', [OfferController::class, 'store'])
     ->name('offers.store');
+
+Route::put('/offers/{id}', [OfferController::class, 'update'])
+    ->name('offers.update');
 
 Route::delete('/offers/{id}', [OfferController::class, 'destroy'])
     ->name('offers.destroy');
