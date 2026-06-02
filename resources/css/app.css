@@ -1,10 +1,4 @@
-@import './layout.css';
-@import './pages/dashboard.css';
-@import './pages/rooms.css';
-@import './pages/offers.css';
-@import './pages/facility.css';
-@import './pages/users.css';
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
