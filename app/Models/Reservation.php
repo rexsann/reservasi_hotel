@@ -9,25 +9,36 @@ class Reservation extends Model
     protected $table = 'reservation';
 
     protected $fillable = [
+    'reservation_code',
+    'invoice_code',
+    'name',
+    'email',
+    'room_id',
+    'room_name',
+    'room_type',
+    'offer',
+    'check_in',
+    'check_out',
+    'guest_total',
+    'total_price',
+    'status',
+    'paid_at',
+    'checked_in_at',
+    'checked_out_at',
+    'cancelled_at',
+];
 
-        'guest_name',
-        'email',
+    protected static function boot()
+    {
+        parent::boot();
 
-        'room_name',
-        'room_type',
-        'offer',
+        static::creating(function ($model) {
+            $model->reservation_code = 'RES-' . strtoupper(uniqid());
+        });
+    }
 
-        'check_in',
-        'check_out',
-
-        'total_nights',
-
-        'total_price',
-
-        'status'
-    ];
-    public function payment()
+    public function payments()
 {
-    return $this->hasOne(Payment::class);
+    return $this->hasMany(Payment::class);
 }
 }
