@@ -40,8 +40,11 @@ class AdminDashboardController extends Controller
         // TOTAL INCOME
         // ======================
 
-        $income = Reservation::whereIn('payment_status', [
-            'Paid'
+        // Sesudah ✅
+        $income = Reservation::whereIn('status', [
+            'Confirmed',
+            'Checked In',
+            'Checked Out'
         ])->sum('total_price');
 
         // ======================
