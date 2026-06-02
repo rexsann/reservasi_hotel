@@ -6,39 +6,39 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
-    // ini untuk mengambil halaman login
     public function index()
     {
-        Session::put('user_id', null);
         return view('auth.login');
     }
 
-    // ini proses login
     public function authenticate(Request $request)
     {
         $request->validate([
-            'email' => 'required|email',
+            'email'    => 'required|email',
             'password' => 'required|string|min:6',
         ]);
 
-        $user = User::where('email', $request->email)->first();
+        $credentials = $request->only('email', 'password');
 
-        if ($user && Hash::check($request->password, $user->password)) {
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
 
-            Session::put('user_id', $user->id);
+            $user = Auth::user();
+
+            // simpan session tambahan kalau masih dipakai di tempat lain
+            Session::put('user_id',   $user->id);
             Session::put('user_name', $user->name);
             Session::put('user_role', $user->role);
 
-            // redirect admin
             if ($user->role === 'admin') {
                 return redirect('/admin/dashboard')
                     ->with('success', 'Selamat datang Admin!');
             }
 
-            // redirect user
             return redirect('/home')
                 ->with('success', 'Login berhasil!');
         }
@@ -48,10 +48,11 @@ class LoginController extends Controller
         ])->withInput();
     }
 
-    // logout
-    public function logout()
+    public function logout(Request $request)
     {
-        Session::flush(); // hapus semua session
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
         return redirect('/login')->with('success', 'Berhasil logout!');
     }
 }
