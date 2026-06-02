@@ -7,8 +7,7 @@
             <a href="/" class="flex items-center gap-3">
 
                 <!-- Logo Image -->
-                <img src="{{ asset('images/logo_hotel.png') }}"
-                    alt="Stayzy Hotel Logo"
+                <img src="{{ asset('images/logo_hotel.png') }}" alt="Stayzy Hotel Logo"
                     class="w-14 h-14 rounded-xl object-cover shadow-md border-2 border-white">
 
                 <!-- Nama Hotel -->
@@ -47,8 +46,7 @@
         <div class="flex items-center gap-4">
 
             <!-- Hamburger Mobile -->
-            <button data-collapse-toggle="navbar-menu"
-                type="button"
+            <button data-collapse-toggle="navbar-menu" type="button"
                 class="inline-flex items-center justify-center w-10 h-10 rounded-lg text-gray-700 md:hidden hover:bg-white/30 transition">
                 ☰
             </button>
@@ -56,8 +54,7 @@
             <!-- User Dropdown -->
             <div class="relative">
 
-                <button id="user-menu-button"
-                    data-dropdown-toggle="user-dropdown"
+                <button id="user-menu-button" data-dropdown-toggle="user-dropdown"
                     class="flex items-center gap-2 hover:scale-105 transition">
 
                     <img src="https://ui-avatars.com/api/?name={{ session('user_name') ?? 'Guest' }}"
@@ -82,24 +79,26 @@
                     <!-- Menu -->
                     <div class="py-2">
 
-                        <a href="/profil"
-                            class="flex items-center gap-3 px-5 py-3 hover:bg-gray-50 transition">
+                        <a href="/profil" class="flex items-center gap-3 px-5 py-3 hover:bg-gray-50 transition">
                             👤 Profil
                         </a>
 
-                        <a href="/history"
-                            class="flex items-center gap-3 px-5 py-3 hover:bg-gray-50 transition">
+                        <a href="/history" class="flex items-center gap-3 px-5 py-3 hover:bg-gray-50 transition">
                             📖 Riwayat Reservasi
                         </a>
 
                     </div>
 
                     <!-- Logout -->
+                    <!-- Logout -->
                     <div class="border-t">
-                        <a href="/logout"
-                            class="flex items-center gap-3 px-5 py-3 text-red-500 hover:bg-red-50 transition font-medium">
-                            🚪 Logout
-                        </a>
+                        <form action="{{ route('logout') }}" method="POST">
+                            @csrf
+                            <button type="submit"
+                                class="w-full flex items-center gap-3 px-5 py-3 text-red-500 hover:bg-red-50 transition font-medium text-left">
+                                🚪 Logout
+                            </button>
+                        </form>
                     </div>
 
                 </div>
