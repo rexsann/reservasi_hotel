@@ -3,101 +3,64 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Reservation;
 
 class ReservationController extends Controller
 {
+    // Cek booking berdasarkan kode & email
     public function check(Request $request)
     {
-        // Validasi input
         $request->validate([
-            'code' => 'required',
+            'code'  => 'required',
             'email' => 'required|email'
         ]);
 
-        $code = $request->code;
-        $email = $request->email;
-
-        // Contoh sementara (belum pakai database)
-        return "Kode: $code | Email: $email";
-
         return redirect()->route('reservation.cek', [
-        'code' => $request->code,
-        'email' => $request->email,
-    ]);
+            'code'  => $request->code,
+            'email' => $request->email,
+        ]);
     }
 
+    // Halaman riwayat reservasi
     public function index()
     {
-        // dummy data (nanti ganti dari database)
-        $reservasi = [
-            [
-                'id' => 1,
-                'kode' => 'RES-240501-001',
-                'kamar' => 'Deluxe Room - 101',
-                'tanggal' => '01 Mei 2024 - 03 Mei 2024',
-                'total' => 2475000,
-                'status' => 'pending'
-            ],
-            [
-                'id' => 2,
-                'kode' => 'RES-240430-002',
-                'kamar' => 'Superior Room - 202',
-                'tanggal' => '28 April 2024 - 30 April 2024',
-                'total' => 1800000,
-                'status' => 'success'
-            ],
-            [
-                'id' => 3,
-                'kode' => 'RES-240420-003',
-                'kamar' => 'Standard Room - 303',
-                'tanggal' => '20 April 2024 - 21 April 2024',
-                'total' => 750000,
-                'status' => 'rejected'
-            ],
-        ];
+        $reservasi = Reservation::latest()->get();
 
         return view('pages.riwayat', compact('reservasi'));
     }
 
-    // 🔥 HALAMAN HASIL CEK BOOKING (TANPA DATABASE)
-public function cek_reservasi(Request $request)
-{
-    $code  = $request->query('code');
-    $email = $request->query('email');
+    // Halaman hasil cek booking
+    public function cek_reservasi(Request $request)
+    {
+        $code  = $request->query('code');
+        $email = $request->query('email');
 
-    // dummy data (sementara)
-    $data = [
-        'kode' => $code,
-        'email' => $email,
-        'nama' => 'Budi Santoso',
-        'kamar' => 'Deluxe Room - 101',
-        'tanggal' => '01 Mei 2024 - 03 Mei 2024',
-        'durasi' => '2 Malam',
-        'status' => 'confirmed'
-    ];
+        $data = Reservation::where('reservation_code', $code)
+                            ->where('email', $email)
+                            ->first();
 
-    return view('pages.cek_reservasi', compact('data'));
-}
-    // 🔥 HALAMAN PEMBAYARAN
+        if (!$data) {
+            return redirect()->back()->with('error', 'Reservasi tidak ditemukan.');
+        }
+
+        return view('pages.cek_reservasi', compact('data'));
+    }
+
+    // Halaman pembayaran
     public function pembayaran($id)
     {
-        // dummy data
-        $data = [
-            'id' => $id,
-            'kode' => 'RES-240501-001',
-            'total' => 2475000,
-            'status' => 'pending'
-        ];
+        $data = Reservation::findOrFail($id);
 
         return view('pages.pembayaran', compact('data'));
     }
 
-    // 🔥 CEK STATUS (UNTUK AJAX / FETCH)
+    // Cek status reservasi (untuk AJAX)
     public function cekStatus($id)
     {
-        // simulasi (nanti dari database)
+        $data = Reservation::findOrFail($id);
+
         return response()->json([
-            'status' => 'success' // pending / success / rejected
+            'status' => $data->status
         ]);
     }
 }
