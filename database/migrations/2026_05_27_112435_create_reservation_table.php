@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('reservations', function (Blueprint $table) {
+        Schema::create('reservation', function (Blueprint $table) {
 
             $table->id();
 
@@ -17,7 +17,6 @@ return new class extends Migration
 
             $table->string('name');
             $table->string('email');
-            $table->string('phone')->nullable();
 
             $table->foreignId('room_id')
                 ->nullable()
@@ -55,6 +54,6 @@ return new class extends Migration
     }
      public function down(): void
     {
-        Schema::dropIfExists('reservations');
+        Schema::dropIfExists('reservation');
     }
 };

@@ -13,7 +13,7 @@ return new class extends Migration
             $table->id();
 
             $table->foreignId('reservation_id')
-                ->constrained('reservations')
+                ->constrained('reservation')
                 ->onDelete('cascade');
 
             $table->string('payment_method');
