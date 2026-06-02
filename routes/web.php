@@ -10,7 +10,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\LupaPasswordController;
 use App\Http\Controllers\CodeVerificationController;
 use App\Http\Controllers\ResetPasswordController;
-use App\Http\Controllers\DetailController;
+use App\Http\Controllers\BookingController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\AdminDashboardController;
@@ -29,10 +29,10 @@ Route::get('/',            [HomeController::class, 'index']);
 Route::get('/home',        [HomeController::class, 'index']);
 Route::get('/about',       [AboutController::class, 'index']);
 Route::get('/contact',     [ContactController::class, 'index']);
-Route::get('/detail', [DetailController::class, 'index'])->name('detail');
-Route::get('/booking', [PaymentController::class, 'fillData'])->name('booking.fill');
-Route::post('/booking', [PaymentController::class, 'index'])->name('payment.index');
+Route::get('/booking', [BookingController::class, 'index'])->name('booking')->middleware('auth');
+Route::post('/booking', [BookingController::class, 'store'])->name('booking.store')->middleware('auth');
 Route::get('/payment', [PaymentController::class, 'showPayment'])->name('payment.show');
+Route::post('/payment/upload', [PaymentController::class, 'upload'])->name('payment.upload');
 Route::post('/payment/order', [PaymentController::class, 'order'])->name('payment.order');
 Route::post('/payment/cancel', [PaymentController::class, 'cancel'])->name('payment.cancel');
 Route::get('/payment/check', [PaymentController::class, 'checkStatus'])->name('payment.check');
@@ -48,8 +48,12 @@ Route::get('/admin/pembayaran', [PembayaranController::class, 'index'])
 Route::post('/admin/pembayaran/{id}/status', [PembayaranController::class, 'updateStatus']);
 
 
-// halaman form (punya kamu)
-Route::get('/cek_reservasi', [ReservationController::class, 'cek_reservasi']);
+// ─── RESERVATION (USER) ───────────────────────────────────────
+Route::get('/reservation', fn() => view('pages.reservation'));
+Route::post('/reservation/check', [ReservationController::class, 'check'])->name('reservation.check');
+
+// ✅ TAMBAH INI
+Route::get('/reservation/cek', [ReservationController::class, 'cek_reservasi'])->name('reservation.cek');
 
 Route::get('/welcome', fn() => view('welcome'));
 Route::get('/app',     fn() => view('app'));
@@ -95,9 +99,7 @@ Route::post('/resetpassword', [ResetPasswordController::class, 'update'])->name(
 Route::get('/profil', [ProfilController::class, 'index'])->name('profil');
 Route::put('/profile/update', [ProfilController::class, 'update']);
 
-// ─── RESERVATION (USER) ───────────────────────────────────────
-Route::get('/reservation', fn() => view('pages.reservation'));
-Route::post('/reservation/check', [ReservationController::class, 'check'])->name('reservation.check');
+
 
 // ─── ADMIN ROUTES ─────────────────────────────────────────────
 Route::prefix('admin')->name('admin.')->group(function () {
@@ -122,12 +124,11 @@ Route::get('/users', [UserManagementController::class, 'index'])
     Route::get('/reservations', function () {
     return view('admin.admin_reservation');
 });
-    Route::get('/reservations/create',    [AdminReservationController::class, 'create']) ->name('reservations.create');
-    Route::post('/reservations',          [AdminReservationController::class, 'store'])  ->name('reservations.store');
-    Route::get('/reservations/{id}',      [AdminReservationController::class, 'show'])   ->name('reservations.show');
-    Route::get('/reservations/{id}/edit', [AdminReservationController::class, 'edit'])   ->name('reservations.edit');
-    Route::put('/reservations/{id}',      [AdminReservationController::class, 'update']) ->name('reservations.update');
-    Route::delete('/reservations/{id}',   [AdminReservationController::class, 'destroy'])->name('reservations.destroy');
+    // Reservation Management
+Route::get('/reservations',            [AdminReservationController::class, 'index'])  ->name('reservations.index');
+Route::post('/reservations',           [AdminReservationController::class, 'store'])  ->name('reservations.store');
+Route::put('/reservations/{id}',       [AdminReservationController::class, 'update']) ->name('reservations.update');
+Route::delete('/reservations/{id}',    [AdminReservationController::class, 'destroy'])->name('reservations.destroy');
 
 
 // 🔹 FACILITY MANAGEMENT ⭐
