@@ -5,22 +5,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // ── Flatpickr date range ──────────────────────────────
     const el = document.querySelector("#dateRange");
-
-    if (el) {
-        flatpickr(el, {
-            mode: "range",
-            dateFormat: "d M Y",
-            minDate: "today",
-            showMonths: 2,
-            disableMobile: true,
-            onChange: function(selectedDates) {
-                if (selectedDates.length === 2) {
-                    const fmt = (d) => d.toISOString().split('T')[0];
-                    document.getElementById('checkIn').value  = fmt(selectedDates[0]);
-                    document.getElementById('checkOut').value = fmt(selectedDates[1]);
-                }
+if (el) {
+    flatpickr(el, {
+        mode: "range",
+        dateFormat: "d M Y",
+        minDate: "today",
+        showMonths: 2,
+        disableMobile: true,
+        onChange: function(selectedDates) {
+            if (selectedDates.length === 2) {
+                const fmt = (d) => {
+                    const year  = d.getFullYear();
+                    const month = String(d.getMonth() + 1).padStart(2, '0');
+                    const day   = String(d.getDate()).padStart(2, '0');
+                    return `${year}-${month}-${day}`;
+                };
+                document.getElementById('checkIn').value  = fmt(selectedDates[0]);
+                document.getElementById('checkOut').value = fmt(selectedDates[1]);
             }
-        });
+        }
+    });
 
         // Restore tampilan kalau balik dari hasil search
         const checkIn  = document.getElementById('checkIn')?.value;
@@ -102,6 +106,7 @@ window.addToOrder = function(button) {
     selectedOrders.push({ id: Date.now(), room, package: pkg, price });
 
     renderOrders();
+    updateBookingLink(); // ← tambahan
     document.getElementById('orderCount').innerText = selectedOrders.length;
     document.getElementById('sidebarCount').innerText = selectedOrders.length + ' rooms';
     document.getElementById('viewOrderBtn').classList.remove('hidden');
@@ -111,6 +116,7 @@ window.addToOrder = function(button) {
 window.removeOrder = function(id) {
     selectedOrders = selectedOrders.filter(item => item.id !== id);
     renderOrders();
+    updateBookingLink(); // ← tambahan
 
     const count = selectedOrders.length;
     document.getElementById('orderCount').innerText = count;
@@ -155,4 +161,33 @@ function renderOrders() {
 
     orderList.innerHTML = html;
     document.getElementById('sidebarTotal').innerText = 'Rp ' + total.toLocaleString('id-ID');
+}
+
+// ── Update link "View reservation" sesuai order ───────────
+function updateBookingLink() {
+    const link = document.getElementById('bookingLink');
+    if (!link) return;
+
+    if (selectedOrders.length === 0) {
+        link.href = '#';
+        return;
+    }
+
+    const first     = selectedOrders[0];
+    const checkIn   = document.getElementById('checkIn')?.value  || '';
+    const checkOut  = document.getElementById('checkOut')?.value || '';
+    const total     = selectedOrders.reduce((s, i) => s + i.price, 0);
+    const guests    = document.getElementById('roomsInput')?.value || 1;
+
+    const params = new URLSearchParams({
+        room_name:   first.room,
+        room_type:   first.room,
+        offer:       first.package,
+        total_price: total,
+        check_in:    checkIn,
+        check_out:   checkOut,
+        guest_total: guests,
+    });
+
+    link.href = '/booking?' + params.toString();
 }
