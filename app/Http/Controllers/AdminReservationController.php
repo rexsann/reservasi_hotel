@@ -2,143 +2,99 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\Reservation;
 use App\Models\Room;
-use App\Models\User;
 use Illuminate\Http\Request;
- 
+use Carbon\Carbon;
+
 class AdminReservationController extends Controller
 {
-    /**
-     * Tampilkan daftar reservasi + filter.
-     */
     public function index(Request $request)
     {
-        $query = Reservation::with(['user', 'room']);
- 
-        // Filter: search by customer name
+        $query = Reservation::query();
+
         if ($request->filled('search')) {
-            $query->whereHas('user', function ($q) use ($request) {
-                $q->where('name', 'like', '%' . $request->search . '%');
-            });
+            $query->where('name', 'like', '%' . $request->search . '%')
+                  ->orWhere('email', 'like', '%' . $request->search . '%');
         }
- 
-        // Filter: status
+
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
- 
-        // Filter: check_in date
+
         if ($request->filled('date')) {
             $query->whereDate('check_in', $request->date);
         }
- 
-        $reservations = $query->latest()->paginate(10)->withQueryString();
- 
-        // Stat cards
-        $total     = Reservation::count();
-        $confirmed = Reservation::where('status', 'confirmed')->count();
-        $pending   = Reservation::where('status', 'pending')->count();
-        $canceled  = Reservation::where('status', 'canceled')->count();
- 
-       return view('admin.admin_reservation', compact(
-    'reservations',
-    'total',
-    'confirmed',
-    'pending',
-    'canceled'
-));
+
+        $reservations = $query->latest()->get();
+
+        $aktif   = $reservations->whereIn('status', ['Pending Payment', 'Waiting Verification', 'Confirmed', 'Checked In']);
+        $riwayat = $reservations->whereIn('status', ['Checked Out', 'Cancelled']);
+
+        $total    = $reservations->count();
+        $confirmed = $reservations->where('status', 'Confirmed')->count();
+        $pending   = $reservations->where('status', 'Pending Payment')->count();
+        $canceled  = $reservations->where('status', 'Cancelled')->count();
+
+        $income = $reservations->where('status', 'Checked Out')->sum('total_price');
+        $lost   = $reservations->where('status', 'Cancelled')->sum('total_price');
+
+        return view('admin.admin_reservation', compact(
+            'reservations',
+            'aktif',
+            'riwayat',
+            'total',
+            'confirmed',
+            'pending',
+            'canceled',
+            'income',
+            'lost'
+        ));
     }
- 
-    /**
-     * Form tambah reservasi baru.
-     */
-    public function create()
-    {
-        $rooms = Room::where('status', 'available')->get();
-        $users = User::where('role', 'user')->get();
- 
-        return view('admin.admin_reservation', compact('rooms', 'users'));
-    }
- 
-    /**
-     * Simpan reservasi baru.
-     */
+
     public function store(Request $request)
     {
         $request->validate([
-            'user_id'    => 'required|exists:users,id',
-            'room_id'    => 'required|exists:rooms,id',
+            'name'       => 'required|string|max:255',
+            'email'      => 'required|email|max:255',
+            'room_name'  => 'required|string',
+            'room_type'  => 'required|string',
             'check_in'   => 'required|date|after_or_equal:today',
             'check_out'  => 'required|date|after:check_in',
-            'status'     => 'required|in:pending,confirmed,canceled',
+            'total_price' => 'required|numeric',
         ]);
- 
-        Reservation::create($request->only([
-            'user_id', 'room_id', 'check_in', 'check_out', 'status'
-        ]));
- 
-        return redirect()
-            ->route('admin.admin_reservations')
-            ->with('success', 'Reservasi berhasil ditambahkan.');
+
+        Reservation::create([
+            'name'        => $request->name,
+            'email'       => $request->email,
+            'room_name'   => $request->room_name,
+            'room_type'   => $request->room_type,
+            'offer'       => $request->offer,
+            'check_in'    => $request->check_in,
+            'check_out'   => $request->check_out,
+            'guest_total' => $request->guest_total ?? 1,
+            'total_price' => $request->total_price,
+            'status'      => 'Pending Payment',
+        ]);
+
+        return response()->json(['success' => true]);
     }
- 
-    /**
-     * Detail satu reservasi (untuk modal atau halaman terpisah).
-     */
-    public function show($id)
-    {
-        $reservation = Reservation::with(['user', 'room'])->findOrFail($id);
- 
-        return view('admin.admin_reservation_show', compact('reservation'));
-    }
- 
-    /**
-     * Form edit reservasi.
-     */
-    public function edit($id)
-    {
-        $reservation = Reservation::with(['user', 'room'])->findOrFail($id);
-        $rooms = Room::all();
-        $users = User::where('role', 'user')->get();
- 
-        return view('admin.admin_reservation_edit', compact('reservation', 'rooms', 'users'));
-    }
- 
-    /**
-     * Update reservasi.
-     */
+
     public function update(Request $request, $id)
     {
         $reservation = Reservation::findOrFail($id);
- 
-        $request->validate([
-            'user_id'   => 'required|exists:users,id',
-            'room_id'   => 'required|exists:rooms,id',
-            'check_in'  => 'required|date',
-            'check_out' => 'required|date|after:check_in',
-            'status'    => 'required|in:pending,confirmed,canceled',
+
+        $reservation->update([
+            'status' => $request->status,
         ]);
- 
-        $reservation->update($request->only([
-            'user_id', 'room_id', 'check_in', 'check_out', 'status'
-        ]));
- 
-        return redirect()
-            ->route('admin.admin_reservations')
-            ->with('success', 'Reservasi berhasil diperbarui.');
+
+        return response()->json(['success' => true]);
     }
- 
-    /**
-     * Hapus reservasi.
-     */
+
     public function destroy($id)
     {
         Reservation::findOrFail($id)->delete();
- 
-        return redirect()
-            ->route('admin.admin_reservations')
-            ->with('success', 'Reservasi berhasil dihapus.');
+
+        return response()->json(['success' => true]);
     }
 }
