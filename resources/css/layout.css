@@ -1,5 +1,6 @@
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+.admin-layout * { box-sizing: border-box; margin: 0; padding: 0; }
 
         :root {
             --sidebar-bg: #0b1e10;
@@ -15,12 +16,12 @@
             --border-soft: #e4e7ec;
         }
 
-        body {
-            font-family: 'DM Sans', sans-serif;
-            background-color: var(--main-bg);
-            overflow: hidden;
-            color: #1a1a2e;
-        }
+        .admin-layout {
+    font-family: 'DM Sans', sans-serif;
+    background-color: var(--main-bg);
+    overflow: hidden;
+    color: #1a1a2e;
+}
 
         /* ══ SIDEBAR ══ */
         .sidebar {
