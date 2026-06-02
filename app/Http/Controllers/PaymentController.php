@@ -3,43 +3,72 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Reservation;
+use App\Models\Payment;
 
 class PaymentController extends Controller
 {
-    public function fillData()
+    public function showPayment(Request $request)
     {
-        return view('booking.fill-data');
+        $reservation = Reservation::findOrFail($request->reservation);
+
+        return view('booking.payment', compact('reservation'));
     }
 
-    public function index()
+    public function upload(Request $request)
     {
-        return redirect()->route('payment.show');
+        $request->validate([
+            'proof_image'    => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'reservation_id' => 'required',
+        ]);
+
+        $reservation = Reservation::findOrFail($request->reservation_id);
+
+        $path = $request->file('proof_image')->store('payment_proofs', 'public');
+
+        Payment::create([
+            'reservation_id' => $reservation->id,
+            'payment_method' => 'Transfer Bank',
+            'proof_image'    => $path,
+            'amount'         => $reservation->total_price,
+            'status'         => 'Waiting Verification',
+            'paid_at'        => now(),
+        ]);
+
+        $reservation->update(['status' => 'Waiting Verification']);
+
+        return back()->with('success', 'Bukti pembayaran berhasil diupload!');
     }
 
-    public function showPayment()
+    public function order(Request $request)
     {
-        return view('booking.payment');
+        $reservation = Reservation::findOrFail($request->reservation_id);
+        $reservation->update(['status' => 'Waiting Verification']);
+
+        return redirect()->route('payment.confirmation', ['reservation' => $reservation->id]);
     }
 
-    public function order()
+    public function cancel(Request $request)
     {
-        return redirect()->route('payment.confirmation');
+        $reservation = Reservation::findOrFail($request->reservation_id);
+        $reservation->update(['status' => 'Cancelled']);
+
+        return redirect('/');
     }
 
-    public function cancel()
+    public function confirmation(Request $request)
     {
-        return redirect()->route('home');
+        $reservation = Reservation::findOrFail($request->reservation);
+
+        return view('pages.confirmation', compact('reservation'));
     }
 
-    public function confirmation()
-{
-    $status = session('status', 'pending');
-    return view('booking.confirmation', compact('status'));
-}
+    public function checkStatus(Request $request)
+    {
+        $reservation = Reservation::findOrFail($request->reservation);
 
-public function checkStatus()
-{
-    //simulasi
-    return redirect()->route('payment.confirmation')->with('status', 'confirmed');
-}
+        return response()->json([
+            'status' => $reservation->status
+        ]);
+    }
 }
