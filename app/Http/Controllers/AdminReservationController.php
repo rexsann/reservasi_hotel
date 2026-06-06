@@ -31,7 +31,7 @@ class AdminReservationController extends Controller
         $aktif   = $reservations->whereIn('status', ['Pending Payment', 'Waiting Verification', 'Confirmed', 'Checked In']);
         $riwayat = $reservations->whereIn('status', ['Checked Out', 'Cancelled']);
 
-        $total    = $reservations->count();
+        $total     = $reservations->count();
         $confirmed = $reservations->where('status', 'Confirmed')->count();
         $pending   = $reservations->where('status', 'Pending Payment')->count();
         $canceled  = $reservations->where('status', 'Cancelled')->count();
@@ -55,12 +55,12 @@ class AdminReservationController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name'       => 'required|string|max:255',
-            'email'      => 'required|email|max:255',
-            'room_name'  => 'required|string',
-            'room_type'  => 'required|string',
-            'check_in'   => 'required|date|after_or_equal:today',
-            'check_out'  => 'required|date|after:check_in',
+            'name'        => 'required|string|max:255',
+            'email'       => 'required|email|max:255',
+            'room_name'   => 'required|string',
+            'room_type'   => 'required|string',
+            'check_in'    => 'required|date|after_or_equal:today',
+            'check_out'   => 'required|date|after:check_in',
             'total_price' => 'required|numeric',
         ]);
 
@@ -80,16 +80,43 @@ class AdminReservationController extends Controller
         return response()->json(['success' => true]);
     }
 
-    public function update(Request $request, $id)
-    {
-        $reservation = Reservation::findOrFail($id);
+   public function update(Request $request, $id)
+{
+    $reservation = Reservation::findOrFail($id);
 
-        $reservation->update([
-            'status' => $request->status,
-        ]);
+    $data = ['status' => $request->status];
 
-        return response()->json(['success' => true]);
+    // Kalau ganti kamar
+    if ($request->room_id) {
+        $newRoom = Room::find($request->room_id);
+        if ($newRoom) {
+            // Kamar lama dikembalikan jadi Available (kalau beda kamar)
+            if ($reservation->room_id && $reservation->room_id != $newRoom->id) {
+                Room::where('id', $reservation->room_id)
+                    ->update(['status' => 'Available']);
+            }
+
+            $data['room_id']   = $newRoom->id;
+            $data['room_name'] = $newRoom->room_name;
+            $data['room_type'] = $newRoom->type;
+
+            // Kamar baru jadi Occupied
+            $newRoom->update(['status' => 'Occupied']);
+        }
     }
+
+    // Kalau reservasi selesai/dibatalkan, kembalikan kamar jadi Available
+    if (in_array($request->status, ['Checked Out', 'Cancelled'])) {
+        if ($reservation->room_id) {
+            Room::where('id', $reservation->room_id)
+                ->update(['status' => 'Available']);
+        }
+    }
+
+    $reservation->update($data);
+
+    return response()->json(['success' => true]);
+}
 
     public function destroy($id)
     {
@@ -97,4 +124,28 @@ class AdminReservationController extends Controller
 
         return response()->json(['success' => true]);
     }
+
+    // Method baru: ambil kamar tersedia sesuai tanggal reservasi
+    public function availableRooms(Request $request)
+{
+    $checkin   = $request->checkin;
+    $checkout  = $request->checkout;
+    $excludeId = $request->exclude_reservation;
+    $type      = $request->type; // filter by room type
+
+    $bookedRoomIds = Reservation::where('id', '!=', $excludeId)
+        ->whereNotIn('status', ['Cancelled', 'Checked Out'])
+        ->where('check_in', '<', $checkout)
+        ->where('check_out', '>', $checkin)
+        ->pluck('room_id');
+
+    $rooms = Room::whereNotIn('id', $bookedRoomIds)
+        ->where('status', 'Available')
+        ->when($type, fn($q) => $q->where('type', $type)) // filter type
+        ->select('id', 'room_name', 'type', 'offer', 'price_per_night')
+        ->orderBy('id')
+        ->get();
+
+    return response()->json(['rooms' => $rooms]);
+}
 }
