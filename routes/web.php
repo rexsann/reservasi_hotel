@@ -125,10 +125,11 @@ Route::get('/users', [UserManagementController::class, 'index'])
     return view('admin.admin_reservation');
 });
     // Reservation Management
-Route::get('/reservations',            [AdminReservationController::class, 'index'])  ->name('reservations.index');
-Route::post('/reservations',           [AdminReservationController::class, 'store'])  ->name('reservations.store');
-Route::put('/reservations/{id}',       [AdminReservationController::class, 'update']) ->name('reservations.update');
-Route::delete('/reservations/{id}',    [AdminReservationController::class, 'destroy'])->name('reservations.destroy');
+ Route::get('/reservations/available-rooms', [AdminReservationController::class, 'availableRooms'])->name('reservations.available-rooms');
+    Route::get('/reservations',              [AdminReservationController::class, 'index'])  ->name('reservations.index');
+    Route::post('/reservations',             [AdminReservationController::class, 'store'])  ->name('reservations.store');
+    Route::put('/reservations/{id}',         [AdminReservationController::class, 'update']) ->name('reservations.update');
+    Route::delete('/reservations/{id}',      [AdminReservationController::class, 'destroy'])->name('reservations.destroy');
 
 
 // 🔹 FACILITY MANAGEMENT ⭐
