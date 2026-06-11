@@ -8,15 +8,10 @@ $allBenefits = [
     'Daily Housekeeping', 'Smart TV Entertainment', 'Coffee & Tea Amenities',
     '24-Hour Front Desk', 'Early Check-In','Laundry Service', 'Balcony Access','Welcome Drink', 
 ];
-$types = [
-    'Standard' => ['class' => 'standard', 'desc' => 'Affordable room for all guests'],
-    'Superior' => ['class' => 'superior', 'desc' => 'Modern comfort with premium facilities'],
-    'Deluxe'   => ['class' => 'deluxe',   'desc' => 'Luxurious experience with elegant touches'],
-];
 @endphp
 
 <div class="grid lg:grid-cols-3 gap-5">
-
+    
     {{-- FORM --}}
     <div class="lg:col-span-1">
         <div class="form-panel">
@@ -41,10 +36,10 @@ $types = [
                     </div>
                     <div class="field-group">
                         <label class="field-label">Room Type</label>
-                        <select name="room_type" class="field-select">
-                            <option value="Standard">Standard</option>
-                            <option value="Superior">Superior</option>
-                            <option value="Deluxe">Deluxe</option>
+                        <select name="room_type_id" class="field-select">
+                            @foreach($types as $type)
+                                <option value="{{ $type->id }}">{{ $type->name }}</option>
+                            @endforeach
                         </select>
                     </div>
                     <div class="field-group">
@@ -79,110 +74,162 @@ $types = [
     </div>
 
     {{-- LIST --}}
-    <div class="lg:col-span-2">
-        @foreach($types as $type => $meta)
-        @php $offerList = $offers->where('room_type', $type); @endphp
+<div class="lg:col-span-2">
+
+    @foreach($types as $type)
+
+        @php
+            $offerList = $offers->where('room_type_id', $type->id);
+        @endphp
+
         <div style="margin-bottom:22px;">
-            <div class="type-header {{ $meta['class'] }}">
+
+            <div class="type-header">
                 <div>
-                    <div class="type-header-name">{{ $type }}</div>
-                    <div class="type-header-sub">{{ $meta['desc'] }}</div>
+                    <div class="type-header-name">
+                        {{ $type->name }}
+                    </div>
+
+                    <div class="type-header-sub">
+                        Room Type
+                    </div>
                 </div>
-                <span class="type-count-badge">{{ $offerList->count() }} offer</span>
+
+                <span class="type-count-badge">
+                    {{ $offerList->count() }} Offer
+                </span>
             </div>
 
             @forelse($offerList as $offer)
-            @php $benefits = json_decode($offer->benefits, true) ?? []; @endphp
-            <div class="offer-card">
-                <div class="offer-card-top">
-                    <div>
-                        <div class="offer-card-name">{{ $offer->name }}</div>
+
+                @php
+                    $benefits = json_decode($offer->benefits, true) ?? [];
+                @endphp
+
+                <div class="offer-card">
+
+                    <div class="offer-card-top">
+                        <div>
+                            <div class="offer-card-name">
+                                {{ $offer->name }}
+                            </div>
+                        </div>
+
+                        <div class="offer-price-pill">
+                            <div class="offer-price-num">
+                                Rp {{ number_format($offer->price,0,',','.') }}
+                            </div>
+
+                            <span class="offer-price-night">
+                                per night
+                            </span>
+                        </div>
                     </div>
-                    <div class="offer-price-pill">
-                        <div class="offer-price-num">Rp {{ number_format($offer->price, 0, ',', '.') }}</div>
-                        <span class="offer-price-night">per night</span>
-                    </div>
-                </div>
-                @if(count($benefits))
-                <div class="offer-tags-row">
-                    @foreach($benefits as $i => $b)
-                    <span class="offer-tag tag-{{ $i % 8 }}">{{ $b }}</span>
-                    @endforeach
-                </div>
-                @endif
-                <div class="offer-card-actions">
-                    <button
-                        type="button"
-                        class="btn-edit"
-                        onclick='openEditModal(
-                            {{ $offer->id }},
-                            {{ $offer->price }},
-                            @json($benefits)
-                        )'>
-                        <svg width="10" height="10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                        </svg>
-                        Edit
-                    </button>
-                    <form action="/admin/offers/{{ $offer->id }}" method="POST" style="margin:0;">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" onclick="return confirm('Delete offer \'{{ addslashes($offer->name) }}\'?')" class="btn-delete">
-                            <svg width="10" height="10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                            </svg>
-                            Delete
+
+                    @if(count($benefits))
+                        <div class="offer-tags-row">
+                            @foreach($benefits as $i => $b)
+                                <span class="offer-tag tag-{{ $i % 8 }}">
+                                    {{ $b }}
+                                </span>
+                            @endforeach
+                        </div>
+                    @endif
+
+                    <div class="offer-card-actions">
+
+                        <button
+                            type="button"
+                            class="btn-edit"
+                            onclick='openEditModal(
+                                {{ $offer->id }},
+                                {{ $offer->price }},
+                                @json($benefits)
+                            )'>
+                            Edit
                         </button>
-                    </form>
+
+                        <form
+                            action="/admin/offers/{{ $offer->id }}"
+                            method="POST"
+                            style="margin:0;"
+                        >
+                            @csrf
+                            @method('DELETE')
+
+                            <button
+                                type="submit"
+                                class="btn-delete"
+                                onclick="return confirm('Delete offer?')"
+                            >
+                                Delete
+                            </button>
+
+                        </form>
+
+                    </div>
+
                 </div>
-            </div>
+
             @empty
-            <div class="offer-empty">No offers available for {{ $type }}</div>
+
+                <div class="offer-empty">
+                    No offers available for {{ $type->name }}
+                </div>
+
             @endforelse
+
         </div>
-        @endforeach
-    </div>
+
+    @endforeach
+
 </div>
 
 {{-- EDIT MODAL --}}
-<div id="edit-modal" class="modal-backdrop" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; z-index:9999; align-items:center; justify-content:center; background:rgba(0,0,0,0.5);" onclick="handleBackdropClick(event)">
-    <div class="modal-box" style="position:relative; max-height:90vh; overflow-y:auto;" onclick="event.stopPropagation()">
-        <div class="modal-header">
-            <div>
-                <div class="modal-title">Edit Offer</div>
-                <div class="modal-title-sub">Update offer details</div>
-            </div>
+<div id="edit-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:9999; align-items:center; justify-content:center;"
+    onclick="handleBackdropClick(event)">
+    <div style="background:white; border-radius:16px; padding:28px; width:100%; max-width:480px; margin:16px;">
+
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <h3 style="font-size:15px; font-weight:700; color:#1e293b;">Edit Offer</h3>
+            <button type="button" onclick="closeEditModal()" style="color:#94a3b8; background:none; border:none; cursor:pointer; font-size:20px; line-height:1;">×</button>
         </div>
+
         <form id="edit-form" method="POST">
             @csrf
             @method('PUT')
-            <div class="modal-body">
-                <div class="field-group">
-                    <label class="field-label">Price per Night</label>
-                    <div class="price-wrap">
-                        <span class="price-prefix">Rp</span>
-                        <input type="number" id="edit-price" name="price" min="0" class="field-input">
-                    </div>
-                </div>
-                <div class="field-group">
-                    <label class="field-label" style="margin-bottom:8px;">Benefits</label>
-                    <div class="benefits-grid">
-                        @foreach($allBenefits as $b)
-                        <label class="benefit-chip-label">
-                            <input type="checkbox" name="benefits[]" value="{{ $b }}" class="edit-benefit-cb">
-                            <div class="benefit-chip">{{ $b }}</div>
-                        </label>
-                        @endforeach
-                    </div>
+
+            <div class="field-group">
+                <label class="field-label">Price per Night</label>
+                <div class="price-wrap">
+                    <span class="price-prefix">Rp</span>
+                    <input type="number" name="price" id="edit-price" min="0" class="field-input">
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn-cancel" onclick="closeEditModal()">Cancel</button>
-                <button type="submit" class="btn-update">Save Changes</button>
+
+            <div class="field-group">
+                <label class="field-label" style="margin-bottom:8px;">Benefits</label>
+                <div class="benefits-grid">
+                    @foreach($allBenefits as $b)
+                    <label class="benefit-chip-label">
+                        <input type="checkbox" name="benefits[]" value="{{ $b }}" class="edit-benefit-cb">
+                        <div class="benefit-chip">{{ $b }}</div>
+                    </label>
+                    @endforeach
+                </div>
+            </div>
+
+            <div style="display:flex; gap:10px; margin-top:20px;">
+                <button type="button" onclick="closeEditModal()"
+                    style="flex:1; padding:10px; border:1px solid #e2e8f0; border-radius:10px; background:white; color:#64748b; font-size:13px; cursor:pointer;">
+                    Cancel
+                </button>
+                <button type="submit" class="btn-save" style="flex:1; margin:0;">
+                    Save Changes
+                </button>
             </div>
         </form>
+
     </div>
 </div>
 
