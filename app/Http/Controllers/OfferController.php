@@ -4,29 +4,34 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Offer;
+use App\Models\RoomType;
+use App\Models\Room;
+use App\Models\Facility;
 
 class OfferController extends Controller
 {
-    public function index()
-    {
-        $offers = Offer::orderBy('room_type')
-            ->orderBy('name')
-            ->get();
+   public function index()
+{
+    $offers = Offer::with('roomType')
+        ->orderBy('name')
+        ->get();
 
-        return view('admin.offers', compact('offers'));
-    }
+    $types = RoomType::orderBy('name')->get();
+
+    return view('admin.offers', compact('offers', 'types'));
+}
 
     public function store(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'room_type' => 'required|string',
+            'room_type_id' => 'required|exists:room_types,id',
             'price' => 'required|numeric|min:0',
         ]);
 
-        Offer::create([
+                Offer::create([
             'name' => $request->name,
-            'room_type' => $request->room_type,
+            'room_type_id' => $request->room_type_id,
             'price' => $request->price,
             'benefits' => json_encode($request->benefits ?? []),
         ]);
