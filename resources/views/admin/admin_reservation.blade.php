@@ -92,6 +92,7 @@
                         data-kode="{{ $res->reservation_code }}"
                         data-total="{{ $res->total_price }}"
                         data-room="{{ $res->room_name }}"
+                        data-room-id="{{ $res->room_id }}"
                         data-type="{{ $res->room_type }}">
 
                         <td class="px-4 py-4 text-center text-xs text-gray-400">
@@ -335,7 +336,7 @@
 
     {{-- MODAL EDIT --}}
     <div id="modal-edit" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-        <div class="relative bg-white rounded-2xl shadow-lg border border-gray-100 w-full max-w-md">
+        <div class="relative bg-white rounded-2xl shadow-lg border border-gray-100 w-full max-w-md max-h-[90vh] overflow-y-auto">
             <div class="flex items-center justify-between p-5 border-b border-gray-100">
                 <div>
                     <h3 class="text-base font-semibold text-gray-800" id="edit-modal-title">Edit Reservation</h3>
@@ -370,6 +371,20 @@
                             class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-gray-50 text-gray-500">
                     </div>
                 </div>
+
+                {{-- FIELD BARU: PILIH NOMOR KAMAR --}}
+                <div>
+                    <label class="block text-xs font-medium text-gray-500 mb-1">
+                        Nomor Kamar
+                        <span class="ml-1 text-blue-600 text-[10px] font-semibold bg-blue-50 px-1.5 py-0.5 rounded-full">ganti kamar</span>
+                    </label>
+                    <select id="e-room-number"
+                        class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-400">
+                        <option value="">-- Memuat kamar... --</option>
+                    </select>
+                    <p class="text-[10px] text-gray-400 mt-1">Menampilkan kamar tersedia pada tanggal reservasi ini</p>
+                </div>
+
                 <div>
                     <label class="block text-xs font-medium text-gray-500 mb-1">Ubah Status</label>
                     <select id="e-status" onchange="onStatusChange()"
@@ -427,22 +442,62 @@
 
     // ── MODAL EDIT ──
     function openEdit(id) {
-        const row = document.getElementById('row-' + id);
-        if (!row) return;
+    const row = document.getElementById('row-' + id);
+    if (!row) return;
 
-        currentEditId = id;
+    currentEditId = id;
 
-        document.getElementById('edit-modal-title').textContent = 'Edit Reservasi #' + String(id).padStart(3, '0');
-        document.getElementById('edit-modal-sub').textContent   = row.dataset.name + ' · ' + row.dataset.email;
-        document.getElementById('e-name').value   = row.dataset.name;
-        document.getElementById('e-email').value  = row.dataset.email;
-        document.getElementById('e-room').value   = row.dataset.room;
-        document.getElementById('e-type').value   = row.dataset.type;
-        document.getElementById('e-status').value = row.dataset.status;
+    document.getElementById('edit-modal-title').textContent = 'Edit Reservasi #' + String(id).padStart(3, '0');
+    document.getElementById('edit-modal-sub').textContent   = row.dataset.name + ' · ' + row.dataset.email;
+    document.getElementById('e-name').value   = row.dataset.name;
+    document.getElementById('e-email').value  = row.dataset.email;
+    document.getElementById('e-room').value   = row.dataset.room;
+    document.getElementById('e-type').value   = row.dataset.type;
+    document.getElementById('e-status').value = row.dataset.status;
 
-        onStatusChange();
-        document.getElementById('modal-edit').classList.remove('hidden');
-    }
+    const checkin       = row.dataset.checkin;
+    const checkout      = row.dataset.checkout;
+    const currentRoomId = row.dataset.roomId;
+    const roomType      = row.dataset.type; // ambil type dari row
+
+    loadAvailableRooms(id, checkin, checkout, currentRoomId, roomType);
+
+    onStatusChange();
+    document.getElementById('modal-edit').classList.remove('hidden');
+}
+
+function loadAvailableRooms(reservationId, checkin, checkout, currentRoomId, roomType) {
+    const select = document.getElementById('e-room-number');
+    select.innerHTML = '<option value="">Memuat kamar tersedia...</option>';
+    select.disabled = true;
+
+    fetch(`/admin/reservations/available-rooms?checkin=${checkin}&checkout=${checkout}&exclude_reservation=${reservationId}&type=${roomType}`)
+        .then(res => res.json())
+        .then(data => {
+            select.innerHTML = '<option value="">-- Pilih nomor kamar --</option>';
+
+            if (data.rooms && data.rooms.length > 0) {
+                data.rooms.forEach(room => {
+                    const opt = document.createElement('option');
+                    opt.value = room.id;
+                    opt.textContent = room.room_name; // pakai room_name sesuai kolom DB
+                    if (String(room.id) === String(currentRoomId)) {
+                        opt.selected = true;
+                    }
+                    select.appendChild(opt);
+                });
+            } else {
+                select.innerHTML = '<option value="">Tidak ada kamar tersedia</option>';
+            }
+
+            select.disabled = false;
+        })
+        .catch(() => {
+            select.innerHTML = '<option value="">Gagal memuat kamar</option>';
+            select.disabled = false;
+        });
+}
+    
 
     function closeEditModal() {
         document.getElementById('modal-edit').classList.add('hidden');
@@ -456,6 +511,7 @@
 
     function saveEdit() {
         const status = document.getElementById('e-status').value;
+        const roomId = document.getElementById('e-room-number').value;
         const id     = currentEditId;
 
         fetch(`/admin/reservations/${id}`, {
@@ -465,7 +521,10 @@
                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
                 'X-HTTP-Method-Override': 'PUT'
             },
-            body: JSON.stringify({ status: status })
+            body: JSON.stringify({
+                status:  status,
+                room_id: roomId || null
+            })
         })
         .then(res => res.json())
         .then(data => {
@@ -473,9 +532,10 @@
                 closeEditModal();
                 location.reload();
             } else {
-                alert('Gagal update status.');
+                alert('Gagal update: ' + (data.message || 'Terjadi kesalahan.'));
             }
-        });
+        })
+        .catch(() => alert('Server error.'));
     }
 
     // ── DELETE ──
