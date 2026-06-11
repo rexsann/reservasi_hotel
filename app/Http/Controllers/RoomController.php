@@ -5,33 +5,58 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Room;
 use App\Models\Offer;
+use App\Models\RoomType;
 
 class RoomController extends Controller
 {
     // tampilkan data room
     public function index()
     {
-        $rooms = Room::all();
-        $offers = Offer::all();
+        $rooms = Room::with([
+            'roomType.facilities',
+            'offer'
+        ])->get();
 
-        return view('admin.rooms', compact('rooms', 'offers'));
+        $offers = Offer::with('roomType')->get();
+        $types  = RoomType::orderBy('name')->get();
+
+        return view('admin.rooms', compact(
+            'rooms',
+            'offers',
+            'types'
+        ));
     }
 
     // halaman create
     public function create()
     {
-        return view('admin.create_room');
+        $types = RoomType::orderBy('name')->get();
+
+        $offers = Offer::with('roomType')
+            ->orderBy('name')
+            ->get();
+
+        return view('admin.create_room', compact(
+            'types',
+            'offers'
+        ));
     }
 
     // simpan room baru
     public function store(Request $request)
     {
+        $request->validate([
+            'room_name'    => 'required|string|max:255',
+            'room_type_id' => 'required|exists:room_types,id',
+            'offer_id'     => 'required|exists:offers,id',
+            'status'       => 'required|in:Available,Occupied,Maintenance',
+        ]);
+
         Room::create([
-            'room_name' => $request->room_name,
-            'type' => $request->type,
-            'offer' => $request->offer,
-            'price_per_night' => $request->price_per_night,
-            'status' => $request->status,
+            'room_name'    => $request->room_name,
+            'room_type_id' => $request->room_type_id,
+            'offer_id'     => $request->offer_id,
+            'status'       => $request->status,
         ]);
 
         return redirect('/admin/rooms')
@@ -40,41 +65,32 @@ class RoomController extends Controller
 
     // update room
     public function update(Request $request, $id)
-{
-    $request->validate([
-        'offer' => 'required',
-        'status' => 'required|in:Available,Occupied,Maintenance',
-    ]);
+    {
+        $request->validate([
+            'offer_id' => 'required|exists:offers,id',
+            'status'   => 'required|in:Available,Occupied,Maintenance',
+        ]);
 
-    $room = Room::findOrFail($id);
+        $room = Room::findOrFail($id);
 
-    // cari offer berdasarkan nama + type room
-    $offer = Offer::whereRaw('LOWER(TRIM(name)) = ?', [
-        strtolower(trim($request->offer))
-    ])
-    ->whereRaw('LOWER(TRIM(room_type)) = ?', [
-        strtolower(trim($room->type))
-    ])
-    ->first();
+        $room->update([
+            'offer_id' => $request->offer_id,
+            'status'   => $request->status,
+        ]);
 
-    if (!$offer) {
-        return back()->with('error', 'Offer not found');
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Room updated successfully'
+            ]);
+        }
+
+        return back()->with(
+            'success',
+            'Room updated successfully'
+        );
     }
 
-    // update data room
-    $room->offer = $offer->name;
-    $room->price_per_night = $offer->price;
-
-    // update status
-    $room->status = $request->status;
-
-    $room->save();
-
-    return redirect()->back()->with(
-        'success',
-        'Room updated successfully'
-    );
-}
     // delete room
     public function destroy($id)
     {
