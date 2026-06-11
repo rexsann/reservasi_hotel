@@ -7,6 +7,7 @@ use App\Models\Room;
 use App\Models\Offer;
 use App\Models\Facility;
 use App\Models\Reservation;
+use App\Models\RoomType;
 
 class HomeController extends Controller
 {
@@ -15,23 +16,32 @@ class HomeController extends Controller
         $checkIn  = $request->check_in;
         $checkOut = $request->check_out;
 
-        // Cari room_type yang sudah terisi di rentang tanggal
         $bookedTypes = [];
 
         if ($checkIn && $checkOut) {
             $bookedTypes = Reservation::whereIn('status', ['confirmed', 'pending'])
                 ->where(function ($q) use ($checkIn, $checkOut) {
                     $q->where('check_in', '<', $checkOut)
-                        ->where('check_out', '>', $checkIn);
+                      ->where('check_out', '>', $checkIn);
                 })
                 ->pluck('room_type')
                 ->toArray();
         }
 
-        $offers     = Offer::all();
+        $offers     = Offer::with('roomType')->get();
         $facilities = Facility::all();
-        $types = Offer::distinct()->pluck('room_type'); // ambil dari DB
+        $types      = RoomType::orderBy('name')->get();
 
-        return view('pages.home', compact('offers', 'facilities', 'bookedTypes', 'checkIn', 'checkOut', 'types'));
+        return view(
+            'pages.home',
+            compact(
+                'offers',
+                'facilities',
+                'bookedTypes',
+                'checkIn',
+                'checkOut',
+                'types'
+            )
+        );
     }
 }
