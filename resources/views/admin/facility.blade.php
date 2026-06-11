@@ -23,9 +23,11 @@
 
                 <div class="field-group">
                     <label class="field-label">Room Type</label>
-                    <select name="type" class="field-select">
-                        @foreach($rooms as $room)
-                            <option value="{{ $room->type }}">{{ $room->type }}</option>
+                    <select name="room_type_id" class="field-select">
+                        @foreach($types as $type)
+                            <option value="{{ $type->id }}">
+                                {{ $type->name }}
+                            </option>
                         @endforeach
                     </select>
                 </div>
@@ -54,52 +56,79 @@
     {{-- ════ LIST ════ --}}
     <div class="lg:col-span-2">
 
-        @php
-            $types = ['Standard', 'Superior', 'Deluxe'];
-        @endphp
-
         @foreach($types as $type)
+
             @php
-                $facilityList = $facilities->filter(fn($f) => $f->room_type === $type);
+                $facilityList = $facilities->filter(
+                    fn($f) => $f->room_type_id == $type->id
+                );
             @endphp
 
             <div class="type-card">
 
                 <div class="type-card-header">
                     <div class="type-card-header-left">
-                        <span class="type-name">{{ $type }}</span>
+                        <span class="type-name">{{ $type->name }}</span>
                     </div>
-                    <span class="type-count">{{ $facilityList->count() }} facilities</span>
+
+                    <span class="type-count">
+                        {{ $facilityList->count() }} facilities
+                    </span>
                 </div>
 
                 <div>
+
                     @forelse($facilityList as $facility)
+
                         <div class="facility-row">
+
                             <div class="facility-row-left">
-                                <span class="facility-name">{{ $facility->name }}</span>
+                                <span class="facility-name">
+                                    {{ $facility->name }}
+                                </span>
                             </div>
+
                             <form action="/admin/facility/{{ $facility->id }}" method="POST">
                                 @csrf
                                 @method('DELETE')
+
                                 <button
                                     type="submit"
                                     onclick="return confirm('Delete \'{{ $facility->name }}\'?')"
                                     class="btn-delete">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="none"
-                                        stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                        width="10"
+                                        height="10"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24">
+
+                                        <path stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                                     </svg>
+
                                     Delete
+
                                 </button>
                             </form>
+
                         </div>
+
                     @empty
-                        <p class="empty-facilities">No facilities added for {{ $type }}</p>
+
+                        <p class="empty-facilities">
+                            No facilities added for {{ $type->name }}
+                        </p>
+
                     @endforelse
+
                 </div>
 
             </div>
+
         @endforeach
 
     </div>
