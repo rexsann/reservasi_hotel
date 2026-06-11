@@ -317,91 +317,81 @@
     @else
 
         @foreach ($types as $type)
-            @php
-                $typeOffers = $offers->where('room_type', $type);
-                $typeFacilities = $facilities->where('room_type', $type);
-            @endphp
+    @php
+        $typeOffers     = $offers->where('room_type_id', $type->id);
+        $typeFacilities = $facilities->where('room_type_id', $type->id);
+    @endphp
 
-            @if ($typeOffers->count() == 0)
-                @continue
-            @endif
+    @if ($typeOffers->count() == 0)
+        @continue
+    @endif
 
-            <div class="room-item bg-white rounded-3xl border shadow-sm overflow-hidden">
+    <div class="room-item bg-white rounded-3xl border shadow-sm overflow-hidden">
+        <div class="grid md:grid-cols-3">
 
-                <div class="grid md:grid-cols-3">
+            <!-- LEFT -->
+            <div class="p-6 md:border-r">
+                <img src="https://picsum.photos/800/500" class="rounded-2xl w-full h-56 object-cover">
+                <h4 class="mt-5 font-bold text-2xl">{{ $type->name }}</h4>
+                <p class="text-sm text-gray-500">1 Bed • 2 Guest</p>
 
-                    <!-- LEFT -->
-                    <div class="p-6 md:border-r">
-
-                        <img src="https://picsum.photos/800/500" class="rounded-2xl w-full h-56 object-cover">
-
-                        <h4 class="mt-5 font-bold text-2xl">{{ $type }}</h4>
-
-                        <p class="text-sm text-gray-500">1 Bed • 2 Guest</p>
-
-                        <!-- FACILITY PREVIEW -->
-                        <div class="mt-3 flex flex-wrap gap-2">
-                            @foreach ($typeFacilities->take(3) as $facility)
-                                <span class="text-xs border px-2 py-1 rounded-full">
-                                    {{ $facility->name }}
-                                </span>
-                            @endforeach
-                        </div>
-
-                        <!-- DETAIL BUTTON -->
-                        <button onclick="openModal(this)" data-name="{{ $type }}" data-bed="1 Bed"
-                            data-guest="2 Guest"
-                            data-facilities="{{ $typeFacilities->pluck('name')->join(', ') }}"
-                            class="mt-6 w-full bg-gray-900 text-white py-3 rounded-xl">
-                            See Details
-                        </button>
-
-                    </div>
-
-                    <!-- RIGHT -->
-                    <div class="md:col-span-2 p-6 bg-gray-50">
-
-                        @foreach ($typeOffers as $offer)
-                            @php
-                                $benefits = json_decode($offer->benefits, true) ?? [];
-                            @endphp
-
-                            <div class="bg-white border rounded-2xl p-5 flex justify-between mb-4">
-
-                                <div>
-                                    <h5 class="font-semibold">{{ $offer->name }}</h5>
-                                    @php $count = count($benefits); @endphp
-                                    <div
-                                        class="text-sm text-gray-500 mt-2 {{ $count > 3 ? 'grid grid-cols-2 gap-x-4 gap-y-1' : 'flex flex-col gap-y-1' }}">
-                                        @foreach ($benefits as $b)
-                                            <span>✔ {{ $b }}</span>
-                                        @endforeach
-                                    </div>
-                                </div>
-
-                                <div class="text-right">
-
-                                    <p class="font-bold text-blue-600">
-                                        Rp {{ number_format($offer->price, 0, ',', '.') }}
-                                    </p>
-
-                                    <button onclick="addToOrder(this)" data-room="{{ $type }}"
-                                        data-package="{{ $offer->name }}" data-price="{{ $offer->price }}"
-                                        class="mt-3 bg-blue-600 text-white px-4 py-2 rounded-xl">
-                                        Add
-                                    </button>
-
-                                </div>
-
-                            </div>
-                        @endforeach
-
-                    </div>
-
+                <!-- FACILITY PREVIEW -->
+                <div class="mt-3 flex flex-wrap gap-2">
+                    @foreach ($typeFacilities->take(3) as $facility)
+                        <span class="text-xs border px-2 py-1 rounded-full">
+                            {{ $facility->name }}
+                        </span>
+                    @endforeach
                 </div>
 
+                <!-- DETAIL BUTTON -->
+                <button onclick="openModal(this)"
+                    data-name="{{ $type->name }}"
+                    data-bed="1 Bed"
+                    data-guest="2 Guest"
+                    data-facilities="{{ $typeFacilities->pluck('name')->join(', ') }}"
+                    class="mt-6 w-full bg-gray-900 text-white py-3 rounded-xl">
+                    See Details
+                </button>
             </div>
-        @endforeach
+
+            <!-- RIGHT -->
+            <div class="md:col-span-2 p-6 bg-gray-50">
+                @foreach ($typeOffers as $offer)
+                    @php
+                        $benefits = json_decode($offer->benefits, true) ?? [];
+                    @endphp
+
+                    <div class="bg-white border rounded-2xl p-5 flex justify-between mb-4">
+                        <div>
+                            <h5 class="font-semibold">{{ $offer->name }}</h5>
+                            @php $count = count($benefits); @endphp
+                            <div class="text-sm text-gray-500 mt-2 {{ $count > 3 ? 'grid grid-cols-2 gap-x-4 gap-y-1' : 'flex flex-col gap-y-1' }}">
+                                @foreach ($benefits as $b)
+                                    <span>✔ {{ $b }}</span>
+                                @endforeach
+                            </div>
+                        </div>
+
+                        <div class="text-right">
+                            <p class="font-bold text-blue-600">
+                                Rp {{ number_format($offer->price, 0, ',', '.') }}
+                            </p>
+                            <button onclick="addToOrder(this)"
+                                data-room="{{ $type->name }}"
+                                data-package="{{ $offer->name }}"
+                                data-price="{{ $offer->price }}"
+                                class="mt-3 bg-blue-600 text-white px-4 py-2 rounded-xl">
+                                Add
+                            </button>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+
+        </div>
+    </div>
+@endforeach
 
     @endif
 
