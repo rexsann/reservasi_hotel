@@ -23,6 +23,7 @@ use App\Http\Controllers\OfferController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\PembayaranController;
 use App\Http\Controllers\UserManagementController;
+use App\Http\Controllers\RoomTypeController;
 
 // ─── PUBLIC ROUTES ────────────────────────────────────────────
 Route::get('/',            [HomeController::class, 'index']);
@@ -111,6 +112,14 @@ Route::prefix('admin')->name('admin.')->group(function () {
 Route::get('/users', [UserManagementController::class, 'index'])
     ->name('users');
 
+
+    // ── Room Type Management ─────────────────────────────────
+   
+    Route::get('/room-types',         [RoomTypeController::class, 'index'])  ->name('room-types.index');
+    Route::post('/room-types',        [RoomTypeController::class, 'store'])  ->name('room-types.store');
+    Route::put('/room-types/{id}',    [RoomTypeController::class, 'update']) ->name('room-types.update');
+    Route::delete('/room-types/{id}', [RoomTypeController::class, 'destroy'])->name('room-types.destroy');
+   
     // Room Management
     Route::get('/rooms',           [RoomController::class, 'index'])  ->name('rooms.index');
     Route::get('/rooms/create',    [RoomController::class, 'create']) ->name('rooms.create');
@@ -118,12 +127,7 @@ Route::get('/users', [UserManagementController::class, 'index'])
     Route::get('/rooms/{id}/edit', [RoomController::class, 'edit'])   ->name('rooms.edit');
     Route::put('/rooms/{id}',      [RoomController::class, 'update']) ->name('rooms.update');
     Route::delete('/rooms/{id}',   [RoomController::class, 'destroy'])->name('rooms.destroy');
-    Route::get('/rooms', [RoomController::class, 'index']);
 
-    // Reservation Management
-    Route::get('/reservations', function () {
-    return view('admin.admin_reservation');
-});
     // Reservation Management
  Route::get('/reservations/available-rooms', [AdminReservationController::class, 'availableRooms'])->name('reservations.available-rooms');
     Route::get('/reservations',              [AdminReservationController::class, 'index'])  ->name('reservations.index');
