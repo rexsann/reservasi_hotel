@@ -4,14 +4,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Stayzy — Admin Panel</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.css" rel="stylesheet" />
+
+    {{-- Fonts --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
-    
+
+    {{-- Flowbite — load duluan supaya bisa di-override --}}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.css" rel="stylesheet" />
+
+    {{-- App & admin CSS --}}
     @vite(['resources/css/app.css', 'resources/css/admin.css', 'resources/js/app.js'])
 
+    {{-- CSS per-halaman — load paling akhir supaya menang dari Flowbite --}}
+    @yield('styles')
 </head>
 
 <body class="admin-layout">
@@ -69,6 +77,15 @@
                           d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0H5m14 0h2M5 21H3M9 7h1m-1 4h1m4-4h1m-1 4h1m-2 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
                 </svg>
                 Rooms
+            </a>
+
+            <a href="/admin/room-types"
+                class="nav-item {{ request()->is('admin/room-types*') ? 'active' : '' }}">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M4 7h16M4 12h16M4 17h16"/>
+                </svg>
+                Room Types
             </a>
 
             <a href="/admin/facility"
@@ -134,6 +151,7 @@
                     @elseif(request()->is('admin/reservations*')) Reservations
                     @elseif(request()->is('admin/users*'))        Users Management
                     @elseif(request()->is('admin/rooms*'))        Rooms Management
+                    @elseif(request()->is('admin/room-types*'))   Room Types Management
                     @elseif(request()->is('admin/facility*'))     Facility Management
                     @elseif(request()->is('admin/offers*'))       Offer Management
                     @elseif(request()->is('admin/pembayaran*'))   Pembayaran
@@ -152,6 +170,9 @@
 
                     @elseif(request()->is('admin/rooms*'))        
                         Manage room listings and availability
+
+                    @elseif(request()->is('admin/room-types*'))
+                        Manage available room categories and types
 
                     @elseif(request()->is('admin/facility*'))     
                         Manage facilities available for each room type
