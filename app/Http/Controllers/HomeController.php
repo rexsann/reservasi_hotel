@@ -24,7 +24,7 @@ class HomeController extends Controller
                     $q->where('check_in', '<', $checkOut)
                       ->where('check_out', '>', $checkIn);
                 })
-                ->pluck('room_type')
+                ->pluck('room_type_id')
                 ->toArray();
         }
 
