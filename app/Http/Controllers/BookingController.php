@@ -4,25 +4,28 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Reservation;
+use App\Models\RoomType;  // ← tambah ini
+use App\Models\Offer;     // ← tambah ini
 
 class BookingController extends Controller
 {
-    public function index(Request $request)
+     public function index(Request $request)
     {
         $room = (object)[
-            'id'    => null,
-            'name'  => $request->room_name,
-            'type'  => $request->room_type,
-            'offer' => $request->offer,
-            'image' => null,
+            'id'           => null,
+            'name'         => $request->room_name,
+            'room_type_id' => $request->room_type_id,
+            'offer_id'     => $request->offer_id,
         ];
 
+        $roomType   = RoomType::find($request->room_type_id);
+        $offer      = Offer::find($request->offer_id);
         $checkIn    = $request->check_in;
         $checkOut   = $request->check_out;
         $guestTotal = $request->guest_total ?? 1;
         $totalPrice = $request->total_price ?? 0;
 
-        return view('pages.booking', compact('room', 'checkIn', 'checkOut', 'guestTotal', 'totalPrice'));
+        return view('pages.booking', compact('room', 'roomType', 'offer', 'checkIn', 'checkOut', 'guestTotal', 'totalPrice'));
     }
 
     public function store(Request $request)
@@ -38,9 +41,8 @@ class BookingController extends Controller
             'name'           => trim($request->first_name . ' ' . $request->last_name),
             'email'          => $request->email,
             'room_id'        => $request->room_id,
-            'room_name'      => $request->room_name,
-            'room_type'      => $request->room_type,
-            'offer'          => $request->offer,
+            'room_type_id' => $request->room_type_id,
+            'offer_id'     => $request->offer_id,
             'check_in'       => $request->check_in,
             'check_out'      => $request->check_out,
             'guest_total'    => $request->guest_total,
