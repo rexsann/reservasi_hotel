@@ -5,26 +5,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // ── Flatpickr date range ──────────────────────────────
     const el = document.querySelector("#dateRange");
-if (el) {
-    flatpickr(el, {
-        mode: "range",
-        dateFormat: "d M Y",
-        minDate: "today",
-        showMonths: 2,
-        disableMobile: true,
-        onChange: function(selectedDates) {
-            if (selectedDates.length === 2) {
-                const fmt = (d) => {
-                    const year  = d.getFullYear();
-                    const month = String(d.getMonth() + 1).padStart(2, '0');
-                    const day   = String(d.getDate()).padStart(2, '0');
-                    return `${year}-${month}-${day}`;
-                };
-                document.getElementById('checkIn').value  = fmt(selectedDates[0]);
-                document.getElementById('checkOut').value = fmt(selectedDates[1]);
+    if (el) {
+        flatpickr(el, {
+            mode: "range",
+            dateFormat: "d M Y",
+            minDate: "today",
+            showMonths: 2,
+            disableMobile: true,
+            onChange: function (selectedDates) {
+                if (selectedDates.length === 2) {
+                    const fmt = (d) => {
+                        const year  = d.getFullYear();
+                        const month = String(d.getMonth() + 1).padStart(2, '0');
+                        const day   = String(d.getDate()).padStart(2, '0');
+                        return `${year}-${month}-${day}`;
+                    };
+                    document.getElementById('checkIn').value  = fmt(selectedDates[0]);
+                    document.getElementById('checkOut').value = fmt(selectedDates[1]);
+                }
             }
-        }
-    });
+        });
 
         // Restore tampilan kalau balik dari hasil search
         const checkIn  = document.getElementById('checkIn')?.value;
@@ -45,9 +45,9 @@ if (el) {
 
 });
 
-// ── Global functions (dipanggil dari onclick di blade) ────
+// ── Search ────────────────────────────────────────────────
 
-window.handleSearch = function() {
+window.handleSearch = function () {
     const checkIn  = document.getElementById('checkIn').value;
     const checkOut = document.getElementById('checkOut').value;
 
@@ -65,10 +65,12 @@ window.handleSearch = function() {
     window.location.href = '/?' + params.toString() + '#rooms';
 };
 
-window.openModal = function(btn) {
-    document.getElementById('modalBadge').innerText    = btn.dataset.name;
-    document.getElementById('modalTitle').innerText    = btn.dataset.name + ' Room';
-    document.getElementById('modalBedText').innerText  = btn.dataset.bed;
+// ── Modal ─────────────────────────────────────────────────
+
+window.openModal = function (btn) {
+    document.getElementById('modalBadge').innerText     = btn.dataset.name;
+    document.getElementById('modalTitle').innerText     = btn.dataset.name + ' Room';
+    document.getElementById('modalBedText').innerText   = btn.dataset.bed;
     document.getElementById('modalGuestText').innerText = btn.dataset.guest;
 
     const facilities = btn.dataset.facilities.split(',');
@@ -79,18 +81,20 @@ window.openModal = function(btn) {
         }
     });
     document.getElementById('modalFacilities').innerHTML = html;
-    document.getElementById('roomModal').style.display = 'flex';
+    document.getElementById('roomModal').style.display  = 'flex';
 };
 
-window.closeModal = function() {
+window.closeModal = function () {
     document.getElementById('roomModal').style.display = 'none';
 };
 
-window.openOrderSidebar = function() {
+// ── Sidebar ───────────────────────────────────────────────
+
+window.openOrderSidebar = function () {
     document.getElementById('orderSidebar').classList.remove('translate-x-full');
 };
 
-window.closeOrderSidebar = function() {
+window.closeOrderSidebar = function () {
     document.getElementById('orderSidebar').classList.add('translate-x-full');
 };
 
@@ -98,28 +102,34 @@ window.closeOrderSidebar = function() {
 
 let selectedOrders = [];
 
-window.addToOrder = function(button) {
-    const room    = button.dataset.room;
-    const pkg     = button.dataset.package;
-    const price   = parseInt(button.dataset.price);
-
-    selectedOrders.push({ id: Date.now(), room, package: pkg, price });
+window.addToOrder = function (button) {
+    selectedOrders.push({
+        id:         Date.now(),
+        room:       button.dataset.room,
+        roomTypeId: button.dataset.roomTypeId,
+        offerId:    button.dataset.offerId,
+        package:    button.dataset.package,
+        price:      parseInt(button.dataset.price),
+    });
 
     renderOrders();
-    updateBookingLink(); // ← tambahan
-    document.getElementById('orderCount').innerText = selectedOrders.length;
-    document.getElementById('sidebarCount').innerText = selectedOrders.length + ' rooms';
+    updateBookingLink();
+
+    const count = selectedOrders.length;
+    document.getElementById('orderCount').innerText    = count;
+    document.getElementById('sidebarCount').innerText  = count + ' rooms';
     document.getElementById('viewOrderBtn').classList.remove('hidden');
     document.getElementById('viewOrderBtn').classList.add('flex');
 };
 
-window.removeOrder = function(id) {
+window.removeOrder = function (id) {
     selectedOrders = selectedOrders.filter(item => item.id !== id);
+
     renderOrders();
-    updateBookingLink(); // ← tambahan
+    updateBookingLink();
 
     const count = selectedOrders.length;
-    document.getElementById('orderCount').innerText = count;
+    document.getElementById('orderCount').innerText   = count;
     document.getElementById('sidebarCount').innerText = count + ' rooms';
 
     if (count === 0) {
@@ -163,30 +173,33 @@ function renderOrders() {
     document.getElementById('sidebarTotal').innerText = 'Rp ' + total.toLocaleString('id-ID');
 }
 
-// ── Update link "View reservation" sesuai order ───────────
+// ── Update link "View reservation" ───────────────────────
+
 function updateBookingLink() {
     const link = document.getElementById('bookingLink');
     if (!link) return;
 
     if (selectedOrders.length === 0) {
         link.href = '#';
+        link.classList.add('opacity-50', 'pointer-events-none');
         return;
     }
 
-    const first     = selectedOrders[0];
-    const checkIn   = document.getElementById('checkIn')?.value  || '';
-    const checkOut  = document.getElementById('checkOut')?.value || '';
-    const total     = selectedOrders.reduce((s, i) => s + i.price, 0);
-    const guests    = document.getElementById('roomsInput')?.value || 1;
+    link.classList.remove('opacity-50', 'pointer-events-none');
+
+    const first    = selectedOrders[0];
+    const checkIn  = document.getElementById('checkIn')?.value  || '';
+    const checkOut = document.getElementById('checkOut')?.value || '';
+    const total    = selectedOrders.reduce((s, i) => s + i.price, 0);
+    const guests   = document.getElementById('roomsInput')?.value || 1;
 
     const params = new URLSearchParams({
-        room_name:   first.room,
-        room_type:   first.room,
-        offer:       first.package,
-        total_price: total,
-        check_in:    checkIn,
-        check_out:   checkOut,
-        guest_total: guests,
+        room_type_id: first.roomTypeId,
+        offer_id:     first.offerId,
+        check_in:     checkIn,
+        check_out:    checkOut,
+        guest_total:  guests,
+        total_price:  total,
     });
 
     link.href = '/booking?' + params.toString();
