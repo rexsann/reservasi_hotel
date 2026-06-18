@@ -14,13 +14,15 @@
     {{-- Ever Reserved --}}
     <div class="stat-card reserved">
         <div class="stat-label">Ever Reserved</div>
-        <div class="stat-number">{{ $users->where('total_reservations', '>', 0)->count() }}</div>
+        {{-- Ganti: total_reservations → reservations_count --}}
+        <div class="stat-number">{{ $users->where('reservations_count', '>', 0)->count() }}</div>
     </div>
 
     {{-- No Reservation --}}
     <div class="stat-card none">
         <div class="stat-label">No Reservation</div>
-        <div class="stat-number">{{ $users->where('total_reservations', 0)->count() }}</div>
+        {{-- Ganti: total_reservations → reservations_count --}}
+        <div class="stat-number">{{ $users->where('reservations_count', 0)->count() }}</div>
     </div>
 
 </div>
@@ -81,13 +83,13 @@
 
                 {{-- Reservations --}}
                 <td>
-                    @if($user->total_reservations > 0)
+                    @if($user->reservations_count > 0)
                         <span class="res-badge">
                             <svg width="11" height="11" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                                       d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                             </svg>
-                            {{ $user->total_reservations }}x
+                            {{ $user->reservations_count }}x
                         </span>
                     @else
                         <span class="res-badge zero">—</span>

@@ -90,8 +90,11 @@ Route::get('/login',       [LoginController::class, 'index'])->name('login');
 Route::post('/login',      [LoginController::class, 'authenticate']);
 Route::post('/logout',      [LoginController::class, 'logout'])->name('logout');
 
-Route::get('/lupapassword', [LupaPasswordController::class, 'index']);
+// ============ FORGOT PASSWORD ROUTES ============
+
+Route::get('/lupapassword', [LupaPasswordController::class, 'index'])->name('lupapassword.form');
 Route::post('/lupapassword', [LupaPasswordController::class, 'sendOtp'])->name('lupapassword');
+Route::post('/resend-otp', [LupaPasswordController::class, 'resendOtp'])->name('resend.otp');
 Route::get('/verification', [CodeVerificationController::class, 'index'])->name('verification');
 Route::post('/verification', [CodeVerificationController::class, 'verify'])->name('verification.post');
 Route::get('/resetpassword', [ResetPasswordController::class, 'index'])->name('resetpassword');
@@ -99,6 +102,7 @@ Route::post('/resetpassword', [ResetPasswordController::class, 'update'])->name(
 
 Route::get('/profil', [ProfilController::class, 'index'])->name('profil');
 Route::put('/profile/update', [ProfilController::class, 'update']);
+Route::put('/profile/password', [ProfilController::class, 'updatePassword'])->name('profile.password');
 
 
 
