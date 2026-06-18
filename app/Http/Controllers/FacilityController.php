@@ -10,7 +10,7 @@ class FacilityController extends Controller
 {
     public function index()
     {
-        $types = RoomType::orderBy('name')->get();
+        $types = RoomType::orderBy('id', 'asc')->get();
 
         $facilities = Facility::with('roomType')->get();
 
