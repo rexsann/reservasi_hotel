@@ -98,6 +98,16 @@ window.closeOrderSidebar = function () {
     document.getElementById('orderSidebar').classList.add('translate-x-full');
 };
 
+// ── Helpers ───────────────────────────────────────────────
+
+function getNights() {
+    const checkIn  = document.getElementById('checkIn')?.value;
+    const checkOut = document.getElementById('checkOut')?.value;
+    if (!checkIn || !checkOut) return 1;
+    const diff = new Date(checkOut) - new Date(checkIn);
+    return Math.max(1, Math.round(diff / (1000 * 60 * 60 * 24)));
+}
+
 // ── Order logic ───────────────────────────────────────────
 
 let selectedOrders = [];
@@ -140,6 +150,7 @@ window.removeOrder = function (id) {
 
 function renderOrders() {
     const orderList = document.getElementById('orderList');
+    const nights    = getNights();
     let total = 0;
     let html  = '';
 
@@ -147,17 +158,18 @@ function renderOrders() {
         html = `<div class="text-center text-gray-400 text-sm py-12">No reservation selected yet</div>`;
     } else {
         selectedOrders.forEach(item => {
-            total += item.price;
+            const itemTotal = item.price * nights;
+            total += itemTotal;
             html  += `
                 <div class="border-b border-gray-100 pb-4 mb-4 last:border-0 last:mb-0">
                     <div class="flex justify-between items-start">
                         <div>
                             <p class="text-sm font-medium text-gray-900">${item.room}</p>
                             <p class="text-xs text-gray-500 mt-0.5">${item.package}</p>
-                            <p class="text-xs text-gray-400 mt-0.5">1 room · 1 night</p>
+                            <p class="text-xs text-gray-400 mt-0.5">1 room · ${nights} night${nights > 1 ? 's' : ''}</p>
                         </div>
                         <div class="text-right">
-                            <p class="text-sm font-semibold text-gray-900">Rp ${item.price.toLocaleString('id-ID')}</p>
+                            <p class="text-sm font-semibold text-gray-900">Rp ${itemTotal.toLocaleString('id-ID')}</p>
                             <button onclick="removeOrder(${item.id})"
                                 class="text-xs text-red-400 hover:text-red-600 mt-1">
                                 Remove
@@ -187,19 +199,22 @@ function updateBookingLink() {
 
     link.classList.remove('opacity-50', 'pointer-events-none');
 
-    const first    = selectedOrders[0];
     const checkIn  = document.getElementById('checkIn')?.value  || '';
     const checkOut = document.getElementById('checkOut')?.value || '';
-    const total    = selectedOrders.reduce((s, i) => s + i.price, 0);
-    const guests   = document.getElementById('roomsInput')?.value || 1;
+    const nights   = getNights();
+    const total    = selectedOrders.reduce((s, i) => s + i.price * nights, 0);
+    const guests   = document.getElementById('guestsInput')?.value || 1;
 
     const params = new URLSearchParams({
-        room_type_id: first.roomTypeId,
-        offer_id:     first.offerId,
-        check_in:     checkIn,
-        check_out:    checkOut,
-        guest_total:  guests,
-        total_price:  total,
+        check_in:    checkIn,
+        check_out:   checkOut,
+        guest_total: guests,
+        total_price: total,
+    });
+
+    selectedOrders.forEach(item => {
+        params.append('room_type_ids[]', item.roomTypeId);
+        params.append('offer_ids[]', item.offerId);
     });
 
     link.href = '/booking?' + params.toString();
