@@ -52,48 +52,48 @@
                 @endif
 
                 <form method="POST" action="{{ route('booking.store') }}" class="space-y-5">
-                    @csrf
+    @csrf
 
-                    <!-- Hidden fields dari data kamar/reservasi -->
-                    <input type="hidden" name="room_id" value="{{ $room->id }}">
-                    <input type="hidden" name="room_name" value="{{ $room->name }}">
-                    <input type="hidden" name="room_type_id" value="{{ $room->room_type_id ?? null }}">
-                    <input type="hidden" name="offer_id" value="{{ $room->offer_id ?? null }}">
-                    <input type="hidden" name="check_in" value="{{ $checkIn }}">
-                    <input type="hidden" name="check_out" value="{{ $checkOut }}">
-                    <input type="hidden" name="guest_total" value="{{ $guestTotal }}">
-                    <input type="hidden" name="total_price" value="{{ $totalPrice }}">
+    {{-- Hidden fields untuk semua kamar --}}
+    @foreach ($rooms as $item)
+        <input type="hidden" name="room_type_ids[]" value="{{ $item['roomType']->id }}">
+        <input type="hidden" name="offer_ids[]"     value="{{ $item['offer']->id }}">
+    @endforeach
+    <input type="hidden" name="check_in"     value="{{ $checkIn }}">
+    <input type="hidden" name="check_out"    value="{{ $checkOut }}">
+    <input type="hidden" name="guest_total"  value="{{ $guestTotal }}">
+    <input type="hidden" name="total_price"  value="{{ $totalPrice }}">
 
-                    <!-- CHECKBOX -->
-                    <label class="flex items-center gap-2 mb-6">
-                        <input type="checkbox" name="booking_for_self" value="1" class="w-5 h-5">
-                        <span>I am booking for myself</span>
-                    </label>
+    <!-- CHECKBOX -->
+    <label class="flex items-center gap-2 mb-6">
+        <input type="checkbox" name="booking_for_self" value="1" class="w-5 h-5">
+        <span>I am booking for myself</span>
+    </label>
 
-                    <!-- CONTACT -->
-                    <h2 class="font-semibold mb-1">Contact Detail</h2>
-                    <p class="text-sm text-gray-500 mb-4">
-                        Reservation information will be sent to this contact detail
-                    </p>
+    <!-- CONTACT -->
+    <h2 class="font-semibold mb-1">Contact Detail</h2>
+    <p class="text-sm text-gray-500 mb-4">
+        Reservation information will be sent to this contact detail
+    </p>
 
-                    <!-- EMAIL -->
-                    <input type="email" name="email" placeholder="Email Address" value="{{ old('email') }}"
-                        class="w-full mb-4 px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none @error('email') border-red-400 @enderror">
+    <!-- EMAIL -->
+    <input type="email" name="email" placeholder="Email Address" value="{{ old('email') }}"
+        class="w-full mb-4 px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none @error('email') border-red-400 @enderror">
 
-                    <!-- NAME -->
-                    <div class="grid grid-cols-2 gap-4 mb-6">
-                        <input type="text" name="first_name" placeholder="First Name" value="{{ old('first_name') }}"
-                            class="px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none @error('first_name') border-red-400 @enderror">
-                        <input type="text" name="last_name" placeholder="Last Name" value="{{ old('last_name') }}"
-                            class="px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none @error('last_name') border-red-400 @enderror">
-                    </div>
+    <!-- NAME -->
+    <div class="grid grid-cols-2 gap-4 mb-6">
+        <input type="text" name="first_name" placeholder="First Name" value="{{ old('first_name') }}"
+            class="px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none @error('first_name') border-red-400 @enderror">
+        <input type="text" name="last_name" placeholder="Last Name" value="{{ old('last_name') }}"
+            class="px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none @error('last_name') border-red-400 @enderror">
+    </div>
 
-                    <!-- BUTTON -->
-                    <button type="submit"
-                        class="w-full bg-blue-600 text-white py-3 rounded-full font-semibold hover:bg-blue-700 transition">
-                        Review Reservation
-                    </button>
-                </form>
+    <!-- BUTTON -->
+    <button type="submit"
+        class="w-full bg-blue-600 text-white py-3 rounded-full font-semibold hover:bg-blue-700 transition">
+        Review Reservation
+    </button>
+</form>
             </div>
 
             <!-- RIGHT: SUMMARY -->
@@ -141,15 +141,22 @@
                 <div class="mb-4">
                     <p class="text-sm text-gray-500">Price Detail</p>
                     <div class="border rounded-xl p-3 mt-2 text-sm">
-                        <p class="font-medium">{{ $roomType->name ?? 'Standard' }}</p>
-                        <p class="text-gray-500 text-xs mt-1">{{ $offer->name ?? '-' }}</p>
+                        @foreach ($rooms as $item)
+    <div class="border rounded-xl p-3 mt-2 text-sm">
+        <p class="font-medium">{{ $item['roomType']->name ?? 'Standard' }}</p>
+        <p class="text-gray-500 text-xs mt-1">{{ $item['offer']->name ?? '-' }}</p>
+        <p class="text-blue-600 text-xs font-semibold mt-1">
+            Rp {{ number_format($item['offer']->price, 0, ',', '.') }}
+        </p>
+    </div>
+@endforeach
                     </div>
                 </div>
 
                 <!-- TOTAL -->
                 <div class="flex justify-between items-center mt-6">
                     <span class="text-gray-500">Total Price</span>
-                    <span class="text-2xl font-bold">${{ number_format($totalPrice, 2) }}</span>
+                    <span class="text-2xl font-bold">Rp {{ number_format($totalPrice, 0, ',', '.') }}</span>
                 </div>
 
                 <p class="text-xs text-gray-400 mt-4">
