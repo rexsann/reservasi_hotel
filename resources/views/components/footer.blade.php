@@ -1,5 +1,5 @@
 <!-- FOOTER -->
-<footer class="bg-gray-900 text-gray-300 pt-12 pb-6">
+<footer class="bg-emerald-950 text-gray-300 pt-12 pb-6">
     <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-4 gap-10"> <!-- 🏨 ABOUT HOTEL -->
         <div>
             <h2 class="text-xl font-semibold text-white mb-4">🏨 Stayzy Hotel</h2>
