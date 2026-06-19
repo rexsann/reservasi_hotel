@@ -100,7 +100,9 @@ Route::post('/resetpassword', [ResetPasswordController::class, 'update'])->name(
 Route::get('/profil', [ProfilController::class, 'index'])->name('profil');
 Route::put('/profile/update', [ProfilController::class, 'update']);
 
-
+// Halaman invoice (tab baru, bisa print/save PDF)
+Route::get('/reservation/invoice', [ReservationController::class, 'invoice'])
+    ->name('reservation.invoice');
 
 // ─── ADMIN ROUTES ─────────────────────────────────────────────
 Route::prefix('admin')->name('admin.')->group(function () {

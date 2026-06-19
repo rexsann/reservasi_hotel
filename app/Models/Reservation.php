@@ -29,13 +29,16 @@ class Reservation extends Model
     ];
 
     protected static function boot()
-    {
-        parent::boot();
+{
+    parent::boot();
 
-        static::creating(function ($model) {
+    static::creating(function ($model) {
+        // ✅ Hanya generate kalau belum ada reservation_code
+        if (empty($model->reservation_code)) {
             $model->reservation_code = 'RES-' . strtoupper(uniqid());
-        });
-    }
+        }
+    });
+}
 
     public function payments()
     {
