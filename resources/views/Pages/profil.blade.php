@@ -244,34 +244,57 @@
 
     <!-- CHANGE PASSWORD -->
     <div class="card">
-      <div class="section-label">Security</div>
-      <div class="section-title">Change Password</div>
+  <div class="section-label">Security</div>
+  <div class="section-title">Change Password</div>
 
-      <form action="/profile/password" method="POST">
-        @csrf
-        @method('PUT')
-
-        <div class="form-3col">
-          <div class="form-group">
-            <label>Current Password</label>
-            <input type="password" name="current_password" placeholder="Current password">
-          </div>
-          <div class="form-group">
-            <label>New Password</label>
-            <input type="password" name="new_password" placeholder="New password">
-          </div>
-          <div class="form-group">
-            <label>Confirm Password</label>
-            <input type="password" name="new_password_confirmation" placeholder="Repeat new password">
-          </div>
-        </div>
-
-        <div class="btn-row">
-          <button type="submit" class="btn-primary">Update Password</button>
-          <button type="reset" class="btn-ghost">Cancel</button>
-        </div>
-      </form>
+  @if (session('success'))
+    <div style="background: #d1fae5; border: 1px solid #6ee7b7; color: #065f46; padding: 12px 16px; border-radius: 8px; margin-bottom: 20px;">
+      ✓ {{ session('success') }}
     </div>
+  @endif
+
+  @if ($errors->any())
+    <div style="background: #fee2e2; border: 1px solid #fca5a5; color: #991b1b; padding: 12px 16px; border-radius: 8px; margin-bottom: 20px;">
+      @foreach ($errors->all() as $error)
+        <p>✗ {{ $error }}</p>
+      @endforeach
+    </div>
+  @endif
+
+  <form action="{{ route('profile.password') }}" method="POST">
+    @csrf
+    @method('PUT')
+
+    <div class="form-3col">
+      <div class="form-group">
+        <label>Current Password</label>
+        <input type="password" name="current_password" placeholder="Current password" required>
+        @error('current_password')
+          <span style="color: #dc2626; font-size: 12px;">{{ $message }}</span>
+        @enderror
+      </div>
+      <div class="form-group">
+        <label>New Password</label>
+        <input type="password" name="new_password" placeholder="New password" required>
+        @error('new_password')
+          <span style="color: #dc2626; font-size: 12px;">{{ $message }}</span>
+        @enderror
+      </div>
+      <div class="form-group">
+        <label>Confirm Password</label>
+        <input type="password" name="new_password_confirmation" placeholder="Repeat new password" required>
+        @error('new_password_confirmation')
+          <span style="color: #dc2626; font-size: 12px;">{{ $message }}</span>
+        @enderror
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button type="submit" class="btn-primary">Update Password</button>
+      <button type="reset" class="btn-ghost">Cancel</button>
+    </div>
+  </form>
+</div>
 
   </div>
 </div>
