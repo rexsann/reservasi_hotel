@@ -1,5 +1,5 @@
 <!-- Navbar -->
-<nav class="bg-[#C8A96A]/90 backdrop-blur-md fixed w-full top-0 z-50 shadow-md border-b border-white/20">
+<nav class="bg-[#355E3B]/90 backdrop-blur-md fixed w-full top-0 z-50 shadow-md border-b border-white/20">
     <div class="max-w-screen-xl mx-auto flex items-center justify-between px-6 py-4">
 
         <!-- LEFT : Logo -->
