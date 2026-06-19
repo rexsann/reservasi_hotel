@@ -35,13 +35,19 @@ class ReservationController extends Controller
         $code  = $request->query('code');
         $email = $request->query('email');
 
-        $data = Reservation::where('reservation_code', $code)
-                            ->where('email', $email)
-                            ->first();
+        // Ambil semua rows dalam group (multi-room support)
+        $rooms = Reservation::with(['roomType', 'offer'])
+            ->where('reservation_code', $code)
+            ->where('email', $email)
+            ->get();
 
-        if (!$data) {
+        if ($rooms->isEmpty()) {
             return redirect()->back()->with('error', 'Reservasi tidak ditemukan.');
         }
+
+        // Data utama dari row pertama
+        $data = $rooms->first();
+        $data->rooms_detail = $rooms; // semua kamar dalam group
 
         return view('pages.cek_reservasi', compact('data'));
     }
@@ -63,4 +69,24 @@ class ReservationController extends Controller
             'status' => $data->status
         ]);
     }
+
+    public function invoice(Request $request)
+{
+    $code  = $request->query('code');
+    $email = $request->query('email');
+
+    $rooms = Reservation::with(['roomType', 'offer'])
+        ->where('reservation_code', $code)
+        ->where('email', $email)
+        ->get();
+
+    if ($rooms->isEmpty()) {
+        abort(404);
+    }
+
+    $data = $rooms->first();
+    $data->rooms_detail = $rooms;
+
+    return view('pages.invoice', compact('data'));
+}
 }
