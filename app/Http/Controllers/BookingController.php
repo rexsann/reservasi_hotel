@@ -40,14 +40,13 @@ class BookingController extends Controller
     {
         $request->validate([
             'first_name' => 'required|string|max:255',
-            'last_name'  => 'nullable|string|max:255',
             'email'      => 'required|email|max:255',
         ]);
 
         $roomTypeIds = $request->input('room_type_ids', []);
         $offerIds    = $request->input('offer_ids', []);
         $groupCode   = 'RSV-' . strtoupper(uniqid());
-        $name        = trim($request->first_name . ' ' . $request->last_name);
+        $name        = trim($request->first_name);
 
         $firstReservation = null;
 
