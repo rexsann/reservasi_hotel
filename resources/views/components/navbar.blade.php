@@ -10,7 +10,7 @@
                 <img src="{{ asset('images/logo_hotel.png') }}" alt="Stayzy Hotel Logo"
                     class="w-14 h-14 rounded-xl object-cover shadow-md border-2 border-white">
 
-                <!-- Nama Hotel -->
+                <!-- Hotel Name -->
                 <span class="text-2xl font-bold text-gray-900 tracking-wide">
                     Stayzy Hotel
                 </span>
@@ -72,7 +72,7 @@
                             {{ session('user_name') ?? 'Guest' }}
                         </p>
                         <p class="text-sm text-gray-500">
-                            {{ session('email') ?? '-' }}
+                            {{ session('user_email') ?? '-' }}
                         </p>
                     </div>
 
@@ -80,11 +80,11 @@
                     <div class="py-2">
 
                         <a href="/profil" class="flex items-center gap-3 px-5 py-3 hover:bg-gray-50 transition">
-                            👤 Profil
+                            👤 Profile
                         </a>
 
                         <a href="/history" class="flex items-center gap-3 px-5 py-3 hover:bg-gray-50 transition">
-                            📖 Riwayat Reservasi
+                            📖 Reservation History
                         </a>
 
                     </div>
