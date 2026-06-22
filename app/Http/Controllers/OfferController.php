@@ -13,10 +13,11 @@ class OfferController extends Controller
    public function index()
 {
     $offers = Offer::with('roomType')
-        ->orderBy('name')
+        ->orderBy('id', 'asc')
         ->get();
 
-    $types = RoomType::orderBy('name')->get();
+    $types = RoomType::orderBy('id', 'asc')
+        ->get();
 
     return view('admin.offers', compact('offers', 'types'));
 }
