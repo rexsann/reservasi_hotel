@@ -30,7 +30,7 @@ class HomeController extends Controller
 
         $offers     = Offer::with('roomType')->get();
         $facilities = Facility::all();
-        $types      = RoomType::orderBy('name')->get();
+        $types = RoomType::orderBy('id')->get();
 
         return view(
             'pages.home',
