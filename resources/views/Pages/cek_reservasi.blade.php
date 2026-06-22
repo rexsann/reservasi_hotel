@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Detail Reservasi')
+@section('title', 'Reservation Detail')
 
 @section('content')
 @php
@@ -26,12 +26,12 @@
     };
 
     $bannerMsg = match($data->status) {
-        'Confirmed'            => 'Reservasi Anda telah dikonfirmasi. Silakan datang sesuai jadwal check-in.',
-        'Checked In'           => 'Anda sedang menginap. Selamat beristirahat!',
-        'Checked Out'          => 'Terima kasih telah menginap bersama kami. Sampai jumpa kembali!',
-        'Cancelled'            => 'Reservasi Anda telah dibatalkan.',
-        'Waiting Verification' => 'Pembayaran Anda sedang diverifikasi oleh tim kami.',
-        default                => 'Reservasi Anda sedang diproses.',
+        'Confirmed'            => 'Your reservation has been confirmed. Please arrive on your scheduled check-in date.',
+        'Checked In'           => 'You are currently checked in. Enjoy your stay!',
+        'Checked Out'          => 'Thank you for staying with us. See you again soon!',
+        'Cancelled'            => 'Your reservation has been cancelled.',
+        'Waiting Verification' => 'Your payment is being verified by our team.',
+        default                => 'Your reservation is being processed.',
     };
 @endphp
 
@@ -41,10 +41,10 @@
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-4">
         <div class="flex justify-between items-start">
             <div>
-                <p class="text-xs text-gray-400 mb-1">Kode Booking</p>
+                <p class="text-xs text-gray-400 mb-1">Booking Code</p>
                 <h1 class="text-2xl font-bold text-gray-800 tracking-wide">{{ $data->reservation_code }}</h1>
                 <p class="text-xs text-gray-400 mt-1">
-                    Dibuat {{ \Carbon\Carbon::parse($data->created_at)->format('d M Y, H:i') }}
+                    Created {{ \Carbon\Carbon::parse($data->created_at)->format('d M Y, H:i') }}
                 </p>
             </div>
             <span class="px-3 py-1.5 text-xs font-semibold rounded-full {{ $badgeClass }}">
@@ -57,16 +57,16 @@
         </div>
     </div>
 
-    {{-- DATA TAMU + TANGGAL --}}
+    {{-- GUEST DATA + DATES --}}
     <div class="grid md:grid-cols-2 gap-5">
         <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
             <h2 class="text-sm font-semibold text-gray-700 mb-4 flex items-center gap-2">
                 <span class="w-1 h-4 bg-blue-500 rounded-full inline-block"></span>
-                Data Tamu
+                Guest Information
             </h2>
             <div class="space-y-3 text-sm">
                 <div>
-                    <p class="text-xs text-gray-400">Nama</p>
+                    <p class="text-xs text-gray-400">Name</p>
                     <p class="font-medium text-gray-800">{{ $data->name }}</p>
                 </div>
                 <div>
@@ -74,8 +74,8 @@
                     <p class="font-medium text-gray-800">{{ $data->email }}</p>
                 </div>
                 <div>
-                    <p class="text-xs text-gray-400">Jumlah Tamu</p>
-                    <p class="font-medium text-gray-800">{{ $data->guest_total }} Orang</p>
+                    <p class="text-xs text-gray-400">Number of Guests</p>
+                    <p class="font-medium text-gray-800">{{ $data->guest_total }} Guest(s)</p>
                 </div>
             </div>
         </div>
@@ -83,7 +83,7 @@
         <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
             <h2 class="text-sm font-semibold text-gray-700 mb-4 flex items-center gap-2">
                 <span class="w-1 h-4 bg-blue-500 rounded-full inline-block"></span>
-                Jadwal Menginap
+                Stay Schedule
             </h2>
             <div class="space-y-3 text-sm">
                 <div class="flex justify-between">
@@ -99,12 +99,12 @@
                     </span>
                 </div>
                 <div class="flex justify-between border-t pt-3">
-                    <span class="text-gray-400">Durasi</span>
-                    <span class="font-semibold text-blue-600">{{ $nights }} Malam</span>
+                    <span class="text-gray-400">Duration</span>
+                    <span class="font-semibold text-blue-600">{{ $nights }} Night(s)</span>
                 </div>
                 @if($data->checked_in_at)
                 <div class="flex justify-between">
-                    <span class="text-gray-400">Waktu Check-in</span>
+                    <span class="text-gray-400">Check-in Time</span>
                     <span class="font-medium text-gray-800">
                         {{ \Carbon\Carbon::parse($data->checked_in_at)->format('d M Y, H:i') }}
                     </span>
@@ -112,7 +112,7 @@
                 @endif
                 @if($data->checked_out_at)
                 <div class="flex justify-between">
-                    <span class="text-gray-400">Waktu Check-out</span>
+                    <span class="text-gray-400">Check-out Time</span>
                     <span class="font-medium text-gray-800">
                         {{ \Carbon\Carbon::parse($data->checked_out_at)->format('d M Y, H:i') }}
                     </span>
@@ -122,14 +122,14 @@
         </div>
     </div>
 
-    {{-- DETAIL KAMAR --}}
+    {{-- ROOM DETAILS --}}
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
         <h2 class="text-sm font-semibold text-gray-700 mb-4 flex items-center gap-2">
             <span class="w-1 h-4 bg-blue-500 rounded-full inline-block"></span>
-            Detail Kamar
+            Room Details
             @if($isMulti)
                 <span class="ml-1 text-xs font-semibold bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full">
-                    {{ $rooms->count() }} Kamar
+                    {{ $rooms->count() }} Rooms
                 </span>
             @endif
         </h2>
@@ -143,23 +143,23 @@
             @endphp
             <div class="rounded-xl border border-gray-100 bg-gray-50 p-4 text-sm">
                 @if($isMulti)
-                <p class="text-xs font-semibold text-blue-600 mb-3">Kamar {{ $i + 1 }}</p>
+                <p class="text-xs font-semibold text-blue-600 mb-3">Room {{ $i + 1 }}</p>
                 @endif
                 <div class="grid grid-cols-2 gap-y-2.5">
-                    <span class="text-gray-400">Tipe Kamar</span>
+                    <span class="text-gray-400">Room Type</span>
                     <span class="font-medium text-gray-800 text-right">{{ $room->roomType?->name ?? '—' }}</span>
 
-                    <span class="text-gray-400">Nomor Kamar</span>
+                    <span class="text-gray-400">Room Number</span>
                     <span class="font-medium text-gray-800 text-right">{{ $room->room_name ?? '—' }}</span>
 
-                    <span class="text-gray-400">Penawaran</span>
+                    <span class="text-gray-400">Offer</span>
                     <span class="font-medium text-gray-800 text-right">{{ $room->offer?->name ?? '—' }}</span>
 
-                    <span class="text-gray-400">Harga / Malam</span>
+                    <span class="text-gray-400">Price / Night</span>
                     <span class="font-medium text-gray-800 text-right">Rp {{ number_format($roomPrice, 0, ',', '.') }}</span>
 
                     @if($isMulti)
-                    <span class="text-gray-400 border-t pt-2">Subtotal ({{ $roomNights }} malam)</span>
+                    <span class="text-gray-400 border-t pt-2">Subtotal ({{ $roomNights }} night(s))</span>
                     <span class="font-semibold text-gray-800 text-right border-t pt-2">
                         Rp {{ number_format($roomSubtotal, 0, ',', '.') }}
                     </span>
@@ -170,11 +170,11 @@
         </div>
     </div>
 
-    {{-- RINGKASAN PEMBAYARAN --}}
+    {{-- PAYMENT SUMMARY --}}
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-3">
         <h2 class="text-sm font-semibold text-gray-700 flex items-center gap-2">
             <span class="w-1 h-4 bg-blue-500 rounded-full inline-block"></span>
-            Ringkasan Pembayaran
+            Payment Summary
         </h2>
 
         @if($isMulti)
@@ -184,12 +184,12 @@
                 $roomSubtotal = ($room->offer?->price ?? 0) * $roomNights;
             @endphp
             <div class="flex justify-between text-sm">
-                <span class="text-gray-400">Kamar {{ $i + 1 }} ({{ $room->roomType?->name ?? '—' }}) × {{ $roomNights }} malam</span>
+                <span class="text-gray-400">Room {{ $i + 1 }} ({{ $room->roomType?->name ?? '—' }}) × {{ $roomNights }} night(s)</span>
                 <span class="text-gray-700">Rp {{ number_format($roomSubtotal, 0, ',', '.') }}</span>
             </div>
             @endforeach
             <div class="border-t pt-3 flex justify-between text-sm">
-                <span class="text-gray-400">{{ $rooms->count() }} kamar</span>
+                <span class="text-gray-400">{{ $rooms->count() }} room(s)</span>
                 <span class="text-gray-700">Rp {{ number_format($totalPrice, 0, ',', '.') }}</span>
             </div>
         @else
@@ -197,14 +197,14 @@
                 $roomNights = \Carbon\Carbon::parse($rooms->first()->check_in)->diffInDays($rooms->first()->check_out);
             @endphp
             <div class="flex justify-between text-sm">
-                <span class="text-gray-400">{{ $roomNights }} malam</span>
+                <span class="text-gray-400">{{ $roomNights }} night(s)</span>
                 <span class="text-gray-700">Rp {{ number_format($totalPrice, 0, ',', '.') }}</span>
             </div>
         @endif
 
         @if($data->paid_at)
         <div class="flex justify-between text-sm">
-            <span class="text-gray-400">Dibayar Pada</span>
+            <span class="text-gray-400">Paid On</span>
             <span class="text-gray-700">{{ \Carbon\Carbon::parse($data->paid_at)->format('d M Y, H:i') }}</span>
         </div>
         @endif
