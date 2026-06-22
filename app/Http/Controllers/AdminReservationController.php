@@ -6,6 +6,7 @@ use App\Models\Reservation;
 use App\Models\Room;
 use App\Models\RoomType;
 use App\Models\Offer;
+use App\Models\Payment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -29,29 +30,30 @@ class AdminReservationController extends Controller
         $reservations = $query->latest()->get();
 
         $grouped = $reservations->groupBy('reservation_code')->map(function ($group) {
-    $first = $group->first();
+            $first = $group->first();
 
-    $first->room_types_list = $group
-        ->map(fn($r) => ($r->room_name ? $r->room_name . ' · ' : '') . ($r->roomType?->name ?? ''))
-        ->filter()
-        ->join(', ');
+            $first->room_types_list = $group
+                ->map(fn($r) => ($r->room_name ? $r->room_name . ' · ' : '') . ($r->roomType?->name ?? ''))
+                ->filter()
+                ->join(', ');
 
-    $first->room_count = $group->count();
+            $first->room_count = $group->count();
 
-    // Jumlahkan total_price semua kamar dalam group
-    $first->total_price = $group->sum('total_price');
+            // Jumlahkan total_price semua kamar dalam group
+            $first->total_price = $group->sum('total_price');
 
-    $first->group_members = $group->map(fn($r) => [
-        'id'           => $r->id,
-        'room_id'      => $r->room_id,
-        'room_type_id' => $r->room_type_id,
-        'room_name'    => $r->room_name ?? '—',
-        'room_type'    => $r->roomType?->name ?? '—',
-    ])->values()->toJson();
+            $first->group_members = $group->map(fn($r) => [
+                'id'           => $r->id,
+                'room_id'      => $r->room_id,
+                'room_type_id' => $r->room_type_id,
+                'room_name'    => $r->room_name ?? '—',
+                'room_type'    => $r->roomType?->name ?? '—',
+            ])->values()->toJson();
 
-    return $first;
-})->values();
-        $aktif   = $grouped->whereIn('status', [
+            return $first;
+        })->values();
+
+        $aktif = $grouped->whereIn('status', [
             'Pending Payment', 'Waiting Verification', 'Confirmed', 'Checked In'
         ])->values();
 
@@ -92,8 +94,12 @@ class AdminReservationController extends Controller
             $nights          = Carbon::parse($request->check_in)->diffInDays(Carbon::parse($request->check_out));
             $reservationCode = 'RSV-' . strtoupper(uniqid());
 
+            $totalAmount = 0;
+
             foreach ($request->rooms as $room) {
-                $offer = Offer::findOrFail($room['offer_id']);
+                $offer    = Offer::findOrFail($room['offer_id']);
+                $subtotal = $offer->price * $nights;
+                $totalAmount += $subtotal;
 
                 Reservation::create([
                     'name'             => $request->name,
@@ -106,10 +112,26 @@ class AdminReservationController extends Controller
                     'check_in'         => $request->check_in,
                     'check_out'        => $request->check_out,
                     'guest_total'      => 1,
-                    'total_price'      => $offer->price * $nights,
+                    'total_price'      => $subtotal,
                     'status'           => 'Pending Payment',
                 ]);
             }
+
+            // Ambil reservation pertama dari group ini sebagai pemilik Payment
+            $primaryReservation = Reservation::where('reservation_code', $reservationCode)->first();
+
+            // Buat Payment otomatis untuk reservasi manual oleh admin
+            Payment::create([
+                'reservation_id' => $primaryReservation->id,
+                'payment_method' => 'Manual / Cash',
+                'proof_image'    => 'manual-input',
+                'amount'         => $totalAmount,
+                'status'         => 'Waiting Verification',
+            ]);
+
+            // Samakan status reservation dengan status payment yang baru dibuat
+            Reservation::where('reservation_code', $reservationCode)
+                ->update(['status' => 'Waiting Verification']);
 
             return response()->json(['success' => true]);
 
