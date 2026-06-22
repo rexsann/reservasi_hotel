@@ -35,8 +35,21 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // ── Auto scroll ke #rooms setelah search ─────────────
+    // ── Restore dari URL ──────────────────────────────────
     const urlParams = new URLSearchParams(window.location.search);
+
+    const savedRooms  = urlParams.get('rooms');
+    const savedGuests = urlParams.get('guests');
+    if (savedRooms)  {
+        const el = document.getElementById('roomsInput');
+        if (el) el.value = savedRooms;
+    }
+    if (savedGuests) {
+        const el = document.getElementById('guestsInput');
+        if (el) el.value = savedGuests;
+    }
+
+    // ── Auto scroll ke #rooms setelah search ─────────────
     if (urlParams.get('check_in') && urlParams.get('check_out')) {
         setTimeout(() => {
             document.getElementById('rooms')?.scrollIntoView({ behavior: 'smooth' });
@@ -50,6 +63,8 @@ document.addEventListener("DOMContentLoaded", () => {
 window.handleSearch = function () {
     const checkIn  = document.getElementById('checkIn').value;
     const checkOut = document.getElementById('checkOut').value;
+    const rooms    = document.getElementById('roomsInput')?.value  || 1;
+    const guests   = document.getElementById('guestsInput')?.value || 1;
 
     if (!checkIn || !checkOut) {
         alert('Please select check-in and check-out date');
@@ -61,7 +76,7 @@ window.handleSearch = function () {
         return;
     }
 
-    const params = new URLSearchParams({ check_in: checkIn, check_out: checkOut });
+    const params = new URLSearchParams({ check_in: checkIn, check_out: checkOut, rooms, guests });
     window.location.href = '/?' + params.toString() + '#rooms';
 };
 
@@ -108,11 +123,23 @@ function getNights() {
     return Math.max(1, Math.round(diff / (1000 * 60 * 60 * 24)));
 }
 
+function getRooms() {
+    return parseInt(document.getElementById('roomsInput')?.value) || 1;
+}
+
 // ── Order logic ───────────────────────────────────────────
 
 let selectedOrders = [];
 
 window.addToOrder = function (button) {
+    const required = getRooms();
+
+    // Tolak kalau sudah melebihi jumlah rooms yang diminta
+    if (selectedOrders.length >= required) {
+        alert(`You can only select ${required} room${required > 1 ? 's' : ''} based on your request.`);
+        return;
+    }
+
     selectedOrders.push({
         id:         Date.now(),
         room:       button.dataset.room,
@@ -151,6 +178,8 @@ window.removeOrder = function (id) {
 function renderOrders() {
     const orderList = document.getElementById('orderList');
     const nights    = getNights();
+    const required  = getRooms();
+    const count     = selectedOrders.length;
     let total = 0;
     let html  = '';
 
@@ -183,15 +212,37 @@ function renderOrders() {
 
     orderList.innerHTML = html;
     document.getElementById('sidebarTotal').innerText = 'Rp ' + total.toLocaleString('id-ID');
+
+    // ── Progress hint di sidebar ──────────────────────────
+    const bookingLink  = document.getElementById('bookingLink');
+    const progressHint = document.getElementById('roomProgressHint');
+
+    if (count < required) {
+        // Belum cukup — disable tombol booking & tampilkan hint
+        if (bookingLink) {
+            bookingLink.classList.add('opacity-50', 'pointer-events-none');
+        }
+        if (progressHint) {
+            progressHint.innerText = `Select ${required - count} more room${(required - count) > 1 ? 's' : ''} (${count}/${required})`;
+            progressHint.classList.remove('hidden');
+        }
+    } else {
+        // Sudah sesuai — aktifkan tombol booking & sembunyikan hint
+        if (progressHint) {
+            progressHint.classList.add('hidden');
+        }
+        updateBookingLink();
+    }
 }
 
 // ── Update link "View reservation" ───────────────────────
 
 function updateBookingLink() {
-    const link = document.getElementById('bookingLink');
+    const link     = document.getElementById('bookingLink');
+    const required = getRooms();
     if (!link) return;
 
-    if (selectedOrders.length === 0) {
+    if (selectedOrders.length === 0 || selectedOrders.length < required) {
         link.href = '#';
         link.classList.add('opacity-50', 'pointer-events-none');
         return;
@@ -202,6 +253,7 @@ function updateBookingLink() {
     const checkIn  = document.getElementById('checkIn')?.value  || '';
     const checkOut = document.getElementById('checkOut')?.value || '';
     const nights   = getNights();
+    const rooms    = getRooms();
     const total    = selectedOrders.reduce((s, i) => s + i.price * nights, 0);
     const guests   = document.getElementById('guestsInput')?.value || 1;
 
@@ -209,6 +261,7 @@ function updateBookingLink() {
         check_in:    checkIn,
         check_out:   checkOut,
         guest_total: guests,
+        rooms:       rooms,
         total_price: total,
     });
 
