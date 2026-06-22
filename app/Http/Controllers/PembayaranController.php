@@ -23,17 +23,29 @@ class PembayaranController extends Controller
     {
         $payment = Payment::findOrFail($id);
         $payment->status = $request->status;
-        $payment->save();
 
         if ($request->status === 'Paid') {
-            $payment->reservation->update(['status' => 'Confirmed']);
+            $payment->paid_at = now();
+        }
+
+        $payment->save();
+
+        $reservation     = $payment->reservation;
+        $reservationCode = $reservation->reservation_code;
+
+        if ($request->status === 'Paid') {
+            // Update SEMUA reservation dalam group yang sama (multi-room),
+            // bukan cuma reservation yang nempel langsung ke Payment
+            Reservation::where('reservation_code', $reservationCode)
+                ->update(['status' => 'Confirmed']);
 
             // Kirim invoice ke email guest
-            Mail::to($payment->reservation->email)
+            Mail::to($reservation->email)
                 ->send(new InvoiceMail($payment));
 
         } elseif ($request->status === 'Rejected') {
-            $payment->reservation->update(['status' => 'Pending Payment']);
+            Reservation::where('reservation_code', $reservationCode)
+                ->update(['status' => 'Pending Payment']);
         }
 
         return response()->json(['message' => 'Status updated']);
