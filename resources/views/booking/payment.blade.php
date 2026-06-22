@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Pembayaran')
+@section('title', 'Payment')
 
 @section('content')
 <div class="pt-32 px-6 max-w-6xl mx-auto pb-20">
@@ -31,11 +31,11 @@
 
     <div class="bg-white rounded-2xl shadow p-6 flex flex-col gap-4">
 
-      <h2 class="text-lg font-semibold text-gray-800">Instruksi Pembayaran</h2>
+      <h2 class="text-lg font-semibold text-gray-800">Payment Instructions</h2>
 
       <div class="flex items-start gap-3 bg-blue-50 border border-blue-200 text-blue-700 p-4 rounded-xl text-sm">
         <span>ℹ️</span>
-        <p>Silakan lakukan pembayaran ke nomor rekening berikut, lalu upload bukti pembayaran.</p>
+        <p>Please make your payment to the account number below, then upload your proof of payment.</p>
       </div>
 
       <div class="border rounded-xl p-5 space-y-3">
@@ -49,75 +49,77 @@
 
         <div class="grid grid-cols-2 gap-4 text-sm mt-3">
           <div>
-            <p class="text-gray-500">Nama Pemilik</p>
+            <p class="text-gray-500">Account Holder</p>
             <p class="font-medium">Stayzy Hotel</p>
           </div>
           <div>
-            <p class="text-gray-500">Nomor Rekening</p>
+            <p class="text-gray-500">Account Number</p>
             <p class="font-medium">9913 6678 9012</p>
           </div>
           <div class="col-span-2">
-            <p class="text-gray-500">Catatan</p>
-            <p class="font-medium">Gunakan nomor reservasi sebagai referensi transfer.</p>
+            <p class="text-gray-500">Note</p>
+            <p class="font-medium">Use your reservation number as the transfer reference.</p>
           </div>
         </div>
       </div>
 
       <div class="flex items-start gap-3 bg-yellow-50 border border-yellow-200 text-yellow-700 p-4 rounded-xl text-sm">
         <span>⚠️</span>
-        <p>Pastikan jumlah transfer sesuai total pembayaran.</p>
+        <p>Make sure the transfer amount matches the total payment.</p>
       </div>
 
-      {{-- Form Upload Bukti Pembayaran --}}
+      {{-- Proof of Payment Upload Form --}}
       <div class="border-t pt-4 flex-1 flex flex-col justify-between gap-3">
 
-        <h2 class="text-base font-semibold text-gray-800">Upload Bukti Pembayaran</h2>
+        <h2 class="text-base font-semibold text-gray-800">Upload Proof of Payment</h2>
 
-        <form action="{{ route('payment.upload') }}" method="POST" enctype="multipart/form-data" class="flex flex-col gap-3">
+        <form id="uploadBuktiForm" action="{{ route('payment.upload') }}" method="POST" enctype="multipart/form-data" class="flex flex-col gap-3">
           @csrf
           <input type="hidden" name="reservation_id" value="{{ $reservation->id }}">
 
           <div class="grid grid-cols-2 gap-3 flex-1">
 
-            {{-- Box Upload --}}
+            {{-- Upload Box --}}
             <div class="border-2 border-dashed rounded-xl p-4 flex flex-col items-center justify-center gap-2 text-center flex-1">
               <div class="text-2xl">☁️</div>
               <p class="text-xs text-gray-500">JPG, PNG, PDF (Max. 5MB)</p>
 
-              @if(session('success'))
-                <p class="text-xs text-green-500">{{ session('success') }}</p>
-              @elseif($errors->has('proof_image'))
-                <p class="text-xs text-red-500">{{ $errors->first('proof_image') }}</p>
-              @else
-                <p class="text-xs text-red-500">Belum ada bukti diupload.</p>
-              @endif
+              <p id="uploadFeedback" class="text-xs text-red-500">
+                @if(session('success'))
+                  {{ session('success') }}
+                @elseif($errors->has('proof_image'))
+                  {{ $errors->first('proof_image') }}
+                @else
+                  No proof uploaded yet.
+                @endif
+              </p>
 
               <input type="file" name="proof_image" id="uploadBukti" class="hidden"
                 onchange="document.getElementById('namaFile').innerText = this.files[0].name">
               <label for="uploadBukti"
                 class="bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs cursor-pointer hover:bg-blue-700 transition">
-                Pilih File
+                Choose File
               </label>
               <p id="namaFile" class="text-xs text-gray-400 mt-1"></p>
             </div>
 
-            {{-- Ketentuan Upload --}}
+            {{-- Upload Requirements --}}
             <div class="bg-blue-50 border border-blue-200 text-blue-700 p-3 rounded-xl text-xs flex flex-col justify-center gap-1">
-              <p class="font-semibold text-sm mb-1">Ketentuan Upload</p>
+              <p class="font-semibold text-sm mb-1">Upload Requirements</p>
               <ul class="list-disc list-inside space-y-1">
-                <li>Bukti harus jelas</li>
-                <li>Nominal harus sesuai</li>
-                <li>Verifikasi maks. 1x24 jam</li>
+                <li>Proof must be clear</li>
+                <li>Amount must match</li>
+                <li>Verification within 1x24 hours</li>
               </ul>
             </div>
 
           </div>
 
           <div class="flex items-center justify-between bg-gray-50 border rounded-xl p-3 gap-3">
-            <p class="text-gray-500 text-xs">Admin akan verifikasi setelah bukti diupload.</p>
-            <button type="submit"
+            <p class="text-gray-500 text-xs">Admin will verify once the proof has been uploaded.</p>
+            <button type="submit" id="uploadSubmitBtn"
               class="shrink-0 bg-blue-600 text-white px-4 py-1.5 rounded-lg text-sm hover:bg-blue-700 transition">
-              Kirim Bukti
+              Submit Proof
             </button>
           </div>
 
@@ -129,30 +131,30 @@
 
     <div class="bg-white rounded-2xl shadow p-6 flex flex-col gap-4">
 
-      <h2 class="text-lg font-semibold text-gray-800">Informasi Pembayaran</h2>
+      <h2 class="text-lg font-semibold text-gray-800">Payment Information</h2>
 
-      {{-- Informasi Reservasi --}}
+      {{-- Reservation Information --}}
       <div class="space-y-3 text-sm">
         <div class="flex justify-between">
-          <span class="text-gray-500">No. Reservasi</span>
+          <span class="text-gray-500">Reservation No.</span>
           <span class="font-medium">{{ $reservation->reservation_code }}</span>
         </div>
         <div class="flex justify-between">
-          <span class="text-gray-500">Tamu</span>
+          <span class="text-gray-500">Guest</span>
           <span class="font-medium">{{ $reservation->name }}</span>
         </div>
         <div class="flex justify-between">
-          <span class="text-gray-500">Kamar</span>
-          <span class="font-medium">{{ $reservation->room_name }} - {{ $reservation->room_type }}</span>
-        </div>
+  <span class="text-gray-500">Room</span>
+  <span class="font-medium">{{ $reservation->roomType->name ?? '-' }}</span>
+</div>
         <div class="flex justify-between">
-          <span class="text-gray-500">Tanggal Menginap</span>
+          <span class="text-gray-500">Stay Dates</span>
           <span class="font-medium text-right">
             {{ \Carbon\Carbon::parse($reservation->check_in)->format('d M Y') }} -
             {{ \Carbon\Carbon::parse($reservation->check_out)->format('d M Y') }}
             <br>
             <span class="text-xs text-gray-400">
-              ({{ \Carbon\Carbon::parse($reservation->check_in)->diffInDays($reservation->check_out) }} Malam)
+              ({{ \Carbon\Carbon::parse($reservation->check_in)->diffInDays($reservation->check_out) }} Night(s))
             </span>
           </span>
         </div>
@@ -160,20 +162,39 @@
 
       <hr>
 
-      {{-- Rincian Pembayaran --}}
+      {{-- Payment Breakdown --}}
       <div class="space-y-3 text-sm">
-        <h3 class="font-semibold text-gray-700">Rincian Pembayaran</h3>
+        <h3 class="font-semibold text-gray-700">Payment Breakdown</h3>
         <div class="flex justify-between">
-          <span class="text-gray-500">Harga Kamar</span>
-          <span>Rp {{ number_format($reservation->total_price, 0, ',', '.') }}</span>
+          <span class="text-gray-500">Room Price</span>
+          <span>Rp {{ number_format($totalPrice, 0, ',', '.') }}</span>
         </div>
         <div class="flex justify-between font-semibold text-blue-600 text-base pt-2 border-t">
-          <span>Total Pembayaran</span>
-          <span>Rp {{ number_format($reservation->total_price, 0, ',', '.') }}</span>
+          <span>Total Payment</span>
+          <span>Rp {{ number_format($totalPrice, 0, ',', '.') }}</span>
         </div>
       </div>
 
       <hr>
+
+      {{-- Payment Deadline --}}
+      @if(in_array($reservation->status, ['Pending Payment', 'Waiting Verification']))
+        @php
+          $deadlineBase = $reservation->status === 'Waiting Verification'
+            ? $reservation->paid_at
+            : $reservation->created_at;
+          $deadline = \Carbon\Carbon::parse($deadlineBase)->addHours(24);
+        @endphp
+        <div id="paymentDeadlineBox" data-deadline="{{ $deadline->toIso8601String() }}"
+          class="flex items-start gap-3 bg-orange-50 border border-orange-200 text-orange-700 p-4 rounded-xl text-sm">
+          <span>⏰</span>
+          <div class="flex-1">
+            <p class="font-semibold">Payment deadline</p>
+            <p id="paymentCountdown" class="text-base font-bold">Calculating...</p>
+            <p class="text-xs text-orange-500 mt-1">The reservation will be automatically cancelled if this deadline is missed.</p>
+          </div>
+        </div>
+      @endif
 
       {{-- Status --}}
       <div class="flex justify-between items-center">
@@ -181,13 +202,13 @@
           <span class="text-gray-500">Status</span>
           <span id="statusDesc" class="text-sm text-yellow-600">
             @if($reservation->status === 'Waiting Verification')
-              Sedang diverifikasi admin...
+              Being verified by admin...
             @elseif($reservation->status === 'Confirmed')
-              Reservasi telah dikonfirmasi!
+              Reservation confirmed!
             @elseif($reservation->status === 'Cancelled')
-              Reservasi dibatalkan.
+              Reservation cancelled.
             @else
-              Menunggu pembayaran...
+              Awaiting payment...
             @endif
           </span>
         </div>
@@ -200,17 +221,17 @@
         </span>
       </div>
 
-      {{-- Tombol Cek Status --}}
+      {{-- Check Status Button --}}
       <button onclick="cekStatus({{ $reservation->id }})"
         class="w-full bg-blue-600 text-white py-4 rounded-2xl hover:bg-blue-700 transition text-sm font-medium">
-        🔄 Cek Status Pembayaran
+        🔄 Check Payment Status
       </button>
 
       <div class="bg-gray-50 border rounded-xl p-4 mt-auto">
-        <p class="font-semibold text-gray-700 text-base mb-1">Butuh Bantuan?</p>
-        <p class="text-gray-500 text-sm mb-3">Hubungi kami jika mengalami kendala saat pembayaran.</p>
+        <p class="font-semibold text-gray-700 text-base mb-1">Need Help?</p>
+        <p class="text-gray-500 text-sm mb-3">Contact us if you run into any issues with your payment.</p>
         <button class="w-full bg-gray-800 text-white py-3 rounded-2xl hover:bg-black transition text-base font-medium">
-          Hubungi Customer Service
+          Contact Customer Service
         </button>
       </div>
 
@@ -225,26 +246,130 @@
     const badge = document.getElementById('statusBadge');
     const desc = document.getElementById('statusDesc');
 
-    badge.innerText = "⏳ Mengecek...";
+    badge.innerText = "⏳ Checking...";
     badge.className = "px-4 py-2 text-sm font-semibold rounded-full bg-gray-100 text-gray-600";
-    desc.innerText = "Sedang mengecek status...";
+    desc.innerText = "Checking status...";
 
-    fetch(`/cek-status/${id}`)
+    fetch(`{{ route('payment.check') }}?reservation=${id}`)
       .then(res => res.json())
       .then(data => {
-        if (data.status === 'Confirmed' || data.status === 'Checked In') {
+        if (data.status === 'Confirmed') {
           badge.innerText = "✅ " + data.status;
           badge.className = "px-4 py-2 text-sm font-semibold rounded-full bg-green-100 text-green-700";
-          desc.innerText = "Reservasi kamu telah dikonfirmasi!";
+          desc.innerText = "Your reservation has been confirmed!";
         } else if (data.status === 'Cancelled') {
-          badge.innerText = "❌ Dibatalkan";
+          badge.innerText = "❌ Cancelled";
           badge.className = "px-4 py-2 text-sm font-semibold rounded-full bg-red-100 text-red-700";
-          desc.innerText = "Reservasi dibatalkan, silakan hubungi admin.";
+          desc.innerText = "Reservation cancelled, please contact admin.";
         } else {
           badge.innerText = "⏳ " + data.status;
           badge.className = "px-4 py-2 text-sm font-semibold rounded-full bg-yellow-100 text-yellow-700";
-          desc.innerText = "Sedang diverifikasi admin...";
+          desc.innerText = "Being verified by admin...";
         }
       });
   }
+
+  // Payment deadline countdown (24 hours)
+  function startPaymentCountdown() {
+    const box = document.getElementById('paymentDeadlineBox');
+    if (!box) return;
+
+    const deadline = new Date(box.dataset.deadline).getTime();
+    const countdownEl = document.getElementById('paymentCountdown');
+
+    function tick() {
+      const now = Date.now();
+      const diff = deadline - now;
+
+      if (diff <= 0) {
+        countdownEl.innerText = "Time's up, waiting for status update...";
+        box.classList.remove('bg-orange-50', 'border-orange-200', 'text-orange-700');
+        box.classList.add('bg-red-50', 'border-red-200', 'text-red-700');
+        clearInterval(timer);
+        return;
+      }
+
+      const hours   = Math.floor(diff / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+      countdownEl.innerText = `${hours}h ${minutes}m ${seconds}s`;
+    }
+
+    tick();
+    const timer = setInterval(tick, 1000);
+  }
+
+  // Upload proof of payment via AJAX (no page reload)
+  function initUploadForm() {
+    const form = document.getElementById('uploadBuktiForm');
+    if (!form) return;
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+
+      const btn = document.getElementById('uploadSubmitBtn');
+      const feedback = document.getElementById('uploadFeedback');
+      const fileInput = document.getElementById('uploadBukti');
+
+      if (!fileInput.files.length) {
+        feedback.innerText = 'Please choose a proof of payment file first.';
+        feedback.className = 'text-xs text-red-500';
+        return false;
+      }
+
+      const originalBtnText = btn.innerText;
+      btn.disabled = true;
+      btn.innerText = 'Submitting...';
+      feedback.innerText = 'Uploading...';
+      feedback.className = 'text-xs text-gray-500';
+
+      const formData = new FormData(form);
+
+      fetch(form.action, {
+        method: 'POST',
+        headers: { 'Accept': 'application/json' },
+        body: formData,
+      })
+        .then(async (res) => {
+          const data = await res.json();
+          if (!res.ok) throw data;
+          return data;
+        })
+        .then((data) => {
+          feedback.innerText = data.message || 'Proof of payment uploaded successfully!';
+          feedback.className = 'text-xs text-green-500';
+
+          // Remove the deadline box once status is Waiting Verification
+          const deadlineBox = document.getElementById('paymentDeadlineBox');
+          if (deadlineBox) deadlineBox.remove();
+
+          // Update status badge & description without reloading
+          const badge = document.getElementById('statusBadge');
+          const desc = document.getElementById('statusDesc');
+          if (badge && desc && data.status === 'Waiting Verification') {
+            badge.innerHTML = '⏳ Waiting Verification';
+            badge.className = 'px-4 py-2 text-sm font-semibold rounded-full bg-yellow-100 text-yellow-700';
+            desc.innerText = 'Being verified by admin...';
+          }
+
+          btn.innerText = 'Submitted ✓';
+        })
+        .catch((err) => {
+          const msg = err?.errors?.proof_image?.[0] || err?.message || 'Failed to upload proof of payment.';
+          feedback.innerText = msg;
+          feedback.className = 'text-xs text-red-500';
+          btn.disabled = false;
+          btn.innerText = originalBtnText;
+        });
+
+      return false;
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    startPaymentCountdown();
+    initUploadForm();
+  });
 </script>
