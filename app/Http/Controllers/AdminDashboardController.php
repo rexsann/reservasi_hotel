@@ -47,14 +47,7 @@ class AdminDashboardController extends Controller
             'Checked Out'
         ])->sum('total_price');
 
-        // ======================
-        // TODAY CHECKIN
-        // ======================
-
-        $todayCheckin = Reservation::whereDate(
-            'check_in',
-            Carbon::today()
-        )->count();
+        $cancelledReservations = Reservation::where('status', 'Cancelled')->count();
 
         // ======================
         // LATEST RESERVATION
@@ -75,7 +68,7 @@ class AdminDashboardController extends Controller
             'pendingReservations',
 
             'income',
-            'todayCheckin',
+            'cancelledReservations',
 
             'latestReservations'
         ));
