@@ -3,6 +3,10 @@
 @section('title', 'Payment')
 
 @section('content')
+
+{{-- SweetAlert2 CDN --}}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <div class="pt-32 px-6 max-w-6xl mx-auto pb-20">
 
   <div class="mb-10">
@@ -69,63 +73,71 @@
       </div>
 
       {{-- Proof of Payment Upload Form --}}
-      <div class="border-t pt-4 flex-1 flex flex-col justify-between gap-3">
+<div class="border-t pt-4 flex-1 flex flex-col justify-between gap-3">
 
-        <h2 class="text-base font-semibold text-gray-800">Upload Proof of Payment</h2>
+  <h2 class="text-base font-semibold text-gray-800">Upload Proof of Payment</h2>
 
-        <form id="uploadBuktiForm" action="{{ route('payment.upload') }}" method="POST" enctype="multipart/form-data" class="flex flex-col gap-3">
-          @csrf
-          <input type="hidden" name="reservation_id" value="{{ $reservation->id }}">
-
-          <div class="grid grid-cols-2 gap-3 flex-1">
-
-            {{-- Upload Box --}}
-            <div class="border-2 border-dashed rounded-xl p-4 flex flex-col items-center justify-center gap-2 text-center flex-1">
-              <div class="text-2xl">☁️</div>
-              <p class="text-xs text-gray-500">JPG, PNG, PDF (Max. 5MB)</p>
-
-              <p id="uploadFeedback" class="text-xs text-red-500">
-                @if(session('success'))
-                  {{ session('success') }}
-                @elseif($errors->has('proof_image'))
-                  {{ $errors->first('proof_image') }}
-                @else
-                  No proof uploaded yet.
-                @endif
-              </p>
-
-              <input type="file" name="proof_image" id="uploadBukti" class="hidden"
-                onchange="document.getElementById('namaFile').innerText = this.files[0].name">
-              <label for="uploadBukti"
-                class="bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs cursor-pointer hover:bg-blue-700 transition">
-                Choose File
-              </label>
-              <p id="namaFile" class="text-xs text-gray-400 mt-1"></p>
-            </div>
-
-            {{-- Upload Requirements --}}
-            <div class="bg-blue-50 border border-blue-200 text-blue-700 p-3 rounded-xl text-xs flex flex-col justify-center gap-1">
-              <p class="font-semibold text-sm mb-1">Upload Requirements</p>
-              <ul class="list-disc list-inside space-y-1">
-                <li>Proof must be clear</li>
-                <li>Amount must match</li>
-                <li>Verification within 1x24 hours</li>
-              </ul>
-            </div>
-
-          </div>
-
-          <div class="flex items-center justify-between bg-gray-50 border rounded-xl p-3 gap-3">
-            <p class="text-gray-500 text-xs">Admin will verify once the proof has been uploaded.</p>
-            <button type="submit" id="uploadSubmitBtn"
-              class="shrink-0 bg-blue-600 text-white px-4 py-1.5 rounded-lg text-sm hover:bg-blue-700 transition">
-              Submit Proof
-            </button>
-          </div>
-
-        </form>
-
+  @if(in_array($reservation->status, ['Waiting Verification', 'Confirmed']))
+    {{-- Sudah upload, tampilkan info --}}
+    <div class="flex items-start gap-3 bg-green-50 border border-green-200 text-green-700 p-4 rounded-xl text-sm">
+      <span>✅</span>
+      <div>
+        <p class="font-semibold">Proof already submitted</p>
+        <p class="text-xs mt-1 text-green-600">Your proof of payment has been uploaded and is being processed. You cannot re-upload.</p>
       </div>
+    </div>
+  @else
+    {{-- Belum upload, tampilkan form --}}
+    <form id="uploadBuktiForm" action="{{ route('payment.upload') }}" method="POST" enctype="multipart/form-data" class="flex flex-col gap-3">
+      @csrf
+      <input type="hidden" name="reservation_id" value="{{ $reservation->id }}">
+
+      <div class="grid grid-cols-2 gap-3 flex-1">
+        <div class="border-2 border-dashed rounded-xl p-4 flex flex-col items-center justify-center gap-2 text-center flex-1">
+          <div class="text-2xl">☁️</div>
+          <p class="text-xs text-gray-500">JPG, PNG, PDF (Max. 3MB)</p>
+
+          <p id="uploadFeedback" class="text-xs text-red-500">
+            @if(session('success'))
+              {{ session('success') }}
+            @elseif($errors->has('proof_image'))
+              {{ $errors->first('proof_image') }}
+            @else
+              No proof uploaded yet.
+            @endif
+          </p>
+
+          <input type="file" name="proof_image" id="uploadBukti" class="hidden"
+            onchange="document.getElementById('namaFile').innerText = this.files[0].name">
+          <label for="uploadBukti"
+            class="bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs cursor-pointer hover:bg-blue-700 transition">
+            Choose File
+          </label>
+          <p id="namaFile" class="text-xs text-gray-400 mt-1"></p>
+        </div>
+
+        <div class="bg-blue-50 border border-blue-200 text-blue-700 p-3 rounded-xl text-xs flex flex-col justify-center gap-1">
+          <p class="font-semibold text-sm mb-1">Upload Requirements</p>
+          <ul class="list-disc list-inside space-y-1">
+            <li>Proof must be clear</li>
+            <li>Amount must match</li>
+            <li>Verification within 1x24 hours</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between bg-gray-50 border rounded-xl p-3 gap-3">
+        <p class="text-gray-500 text-xs">Admin will verify once the proof has been uploaded.</p>
+        <button type="submit" id="uploadSubmitBtn"
+          class="shrink-0 bg-blue-600 text-white px-4 py-1.5 rounded-lg text-sm hover:bg-blue-700 transition">
+          Submit Proof
+        </button>
+      </div>
+
+    </form>
+  @endif
+
+</div>
 
     </div>
 
@@ -144,9 +156,9 @@
           <span class="font-medium">{{ $reservation->name }}</span>
         </div>
         <div class="flex justify-between">
-  <span class="text-gray-500">Room</span>
-  <span class="font-medium">{{ $reservation->roomType->name ?? '-' }}</span>
-</div>
+          <span class="text-gray-500">Room</span>
+          <span class="font-medium">{{ $reservation->roomType->name ?? '-' }}</span>
+        </div>
         <div class="flex justify-between">
           <span class="text-gray-500">Stay Dates</span>
           <span class="font-medium text-right">
@@ -313,9 +325,19 @@
       const feedback = document.getElementById('uploadFeedback');
       const fileInput = document.getElementById('uploadBukti');
 
+      // Validasi: file belum dipilih
       if (!fileInput.files.length) {
         feedback.innerText = 'Please choose a proof of payment file first.';
         feedback.className = 'text-xs text-red-500';
+
+        Swal.fire({
+          icon: 'warning',
+          title: 'No File Selected',
+          text: 'Please choose a proof of payment file before submitting.',
+          confirmButtonColor: '#2563eb',
+          confirmButtonText: 'OK',
+        });
+
         return false;
       }
 
@@ -341,11 +363,11 @@
           feedback.innerText = data.message || 'Proof of payment uploaded successfully!';
           feedback.className = 'text-xs text-green-500';
 
-          // Remove the deadline box once status is Waiting Verification
+          // Hapus deadline box setelah upload sukses
           const deadlineBox = document.getElementById('paymentDeadlineBox');
           if (deadlineBox) deadlineBox.remove();
 
-          // Update status badge & description without reloading
+          // Update status badge & desc tanpa reload
           const badge = document.getElementById('statusBadge');
           const desc = document.getElementById('statusDesc');
           if (badge && desc && data.status === 'Waiting Verification') {
@@ -355,6 +377,15 @@
           }
 
           btn.innerText = 'Submitted ✓';
+
+          // ✅ SweetAlert sukses
+          Swal.fire({
+            icon: 'success',
+            title: 'Proof Submitted!',
+            text: 'Your proof of payment has been uploaded. Admin will verify within 1×24 hours.',
+            confirmButtonColor: '#2563eb',
+            confirmButtonText: 'OK',
+          });
         })
         .catch((err) => {
           const msg = err?.errors?.proof_image?.[0] || err?.message || 'Failed to upload proof of payment.';
@@ -362,6 +393,15 @@
           feedback.className = 'text-xs text-red-500';
           btn.disabled = false;
           btn.innerText = originalBtnText;
+
+          // ❌ SweetAlert gagal
+          Swal.fire({
+            icon: 'error',
+            title: 'Upload Failed!',
+            text: msg,
+            confirmButtonColor: '#dc2626',
+            confirmButtonText: 'Try Again',
+          });
         });
 
       return false;

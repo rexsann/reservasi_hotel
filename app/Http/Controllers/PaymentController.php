@@ -23,7 +23,7 @@ class PaymentController extends Controller
     {
         try {
             $request->validate([
-                'proof_image'    => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
+                'proof_image' => 'required|file|mimes:jpg,jpeg,png,pdf|max:3072',
                 'reservation_id' => 'required',
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -35,6 +35,14 @@ class PaymentController extends Controller
         }
 
         $reservation = Reservation::findOrFail($request->reservation_id);
+
+// Cegah upload ulang jika sudah Waiting Verification atau Confirmed
+if (in_array($reservation->status, ['Waiting Verification', 'Confirmed'])) {
+    return response()->json([
+        'success' => false,
+        'message' => 'Proof of payment has already been submitted.',
+    ], 403);
+}
 
         // Sum semua kamar dalam group yang sama
         $total = Reservation::where('reservation_code', $reservation->reservation_code)
