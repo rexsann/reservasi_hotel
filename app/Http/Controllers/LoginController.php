@@ -33,6 +33,7 @@ class LoginController extends Controller
             Session::put('user_id',   $user->id);
             Session::put('user_name', $user->name);
             Session::put('user_role', $user->role);
+            Session::put('user_email', $user->email); // ← tambah ini
 
             if ($user->role === 'admin') {
                 return redirect('/admin/dashboard')
