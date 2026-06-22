@@ -63,6 +63,7 @@
     <input type="hidden" name="check_out"    value="{{ $checkOut }}">
     <input type="hidden" name="guest_total"  value="{{ $guestTotal }}">
     <input type="hidden" name="total_price"  value="{{ $totalPrice }}">
+    <input type="hidden" name="rooms_count"  value="{{ $roomsCount }}">
 
     <!-- CHECKBOX -->
     <label class="flex items-center gap-2 mb-6">
@@ -81,11 +82,9 @@
         class="w-full mb-4 px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none @error('email') border-red-400 @enderror">
 
     <!-- NAME -->
-    <div class="grid grid-cols-2 gap-4 mb-6">
-        <input type="text" name="first_name" placeholder="First Name" value="{{ old('first_name') }}"
-            class="px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none @error('first_name') border-red-400 @enderror">
-        <input type="text" name="last_name" placeholder="Last Name" value="{{ old('last_name') }}"
-            class="px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none @error('last_name') border-red-400 @enderror">
+    <div class="mb-6">
+        <input type="text" name="first_name" placeholder="Full Name" value="{{ old('first_name') }}"
+            class="w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none @error('first_name') border-red-400 @enderror">
     </div>
 
     <!-- BUTTON -->
@@ -179,17 +178,10 @@
 
         checkbox.addEventListener('change', function() {
             if (this.checked) {
-                // Pisah name jadi first & last
-                const parts = userData.name.trim().split(' ');
-                const firstName = parts[0] ?? '';
-                const lastName = parts.slice(1).join(' ') ?? '';
-
-                document.querySelector('input[name="first_name"]').value = firstName;
-                document.querySelector('input[name="last_name"]').value = lastName;
+                document.querySelector('input[name="first_name"]').value = userData.name;
                 document.querySelector('input[name="email"]').value = userData.email;
             } else {
                 document.querySelector('input[name="first_name"]').value = '';
-                document.querySelector('input[name="last_name"]').value = '';
                 document.querySelector('input[name="email"]').value = '';
             }
         });
