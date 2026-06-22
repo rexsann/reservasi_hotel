@@ -281,40 +281,40 @@
 
                         <div class="grid grid-cols-1 md:grid-cols-12 gap-4 mt-6">
 
-    <div class="md:col-span-6">
-        <label class="text-xs text-gray-500">Stay Date</label>
-        <input type="text" id="dateRange" class="w-full px-4 py-3 border rounded-2xl"
-            placeholder="Select check-in - check-out" readonly>
-        <input type="hidden" id="checkIn" value="{{ $checkIn ?? '' }}">
-        <input type="hidden" id="checkOut" value="{{ $checkOut ?? '' }}">
-    </div>
+                            <div class="md:col-span-6">
+                                <label class="text-xs text-gray-500">Stay Date</label>
+                                <input type="text" id="dateRange" class="w-full px-4 py-3 border rounded-2xl"
+                                    placeholder="Select check-in - check-out" readonly>
+                                <input type="hidden" id="checkIn" value="{{ $checkIn ?? '' }}">
+                                <input type="hidden" id="checkOut" value="{{ $checkOut ?? '' }}">
+                            </div>
 
-    <div class="md:col-span-2">
-        <label class="text-xs text-gray-500">Rooms</label>
-        <input type="number" id="roomsInput" min="1" value="1"
-            class="w-full px-3 py-3 border rounded-xl">
-    </div>
+                            <div class="md:col-span-2">
+                                <label class="text-xs text-gray-500">Rooms</label>
+                                <input type="number" id="roomsInput" min="1" value="{{ request('rooms', 1) }}"
+                                    class="w-full px-3 py-3 border rounded-xl">
+                            </div>
 
-    <div class="md:col-span-2">
-        <label class="text-xs text-gray-500">Guests</label>
-        <input type="number" id="guestsInput" min="1" value="2"
-            class="w-full px-3 py-3 border rounded-xl">
-    </div>
+                            <div class="md:col-span-2">
+                                <label class="text-xs text-gray-500">Guests</label>
+                                <input type="number" id="guestsInput" min="1" value="{{ request('guests', 1) }}"
+                                    class="w-full px-3 py-3 border rounded-xl">
+                            </div>
 
-    <div class="md:col-span-2 flex items-end">
-        <button onclick="handleSearch()" class="w-full bg-blue-600 text-white py-3 rounded-xl">
-            Search
-        </button>
-    </div>
+                            <div class="md:col-span-2 flex items-end">
+                                <button onclick="handleSearch()" class="w-full bg-blue-600 text-white py-3 rounded-xl">
+                                    Search
+                                </button>
+                            </div>
 
-</div>
+                        </div>
 
                     </div>
                 </div>
 
                 <!-- =========================
-                                        ROOM LIST
-                                    ========================== -->
+                                                    ROOM LIST
+                                                ========================== -->
                 <div class="max-w-screen-xl mx-auto px-4 space-y-12" id="roomContainer">
 
                     @if (!$checkIn || !$checkOut)
@@ -406,8 +406,8 @@
 
                 </div>
                 <!-- =========================
-                                    MODAL DETAIL
-                                ========================== -->
+                                                MODAL DETAIL
+                                            ========================== -->
                 <div id="roomModal" style="display:none"
                     class="fixed inset-0 bg-black/50 items-center justify-center z-[9999] p-4">
 
@@ -459,8 +459,8 @@
                 </div>
 
                 <!-- =========================
-                                    VIEW ORDER BUTTON
-                                ========================== -->
+                                                VIEW ORDER BUTTON
+                                            ========================== -->
                 <div class="fixed bottom-8 right-8 z-40">
                     <button id="viewOrderBtn" onclick="openOrderSidebar()"
                         class="hidden items-center gap-2 bg-teal-700 text-white px-5 py-3 rounded-2xl shadow-lg text-sm font-medium">
@@ -474,8 +474,8 @@
                 </div>
 
                 <!-- =========================
-                                    ORDER SIDEBAR
-                                ========================== -->
+                                                ORDER SIDEBAR
+                                            ========================== -->
                 <div id="orderSidebar"
                     class="fixed inset-y-0 right-0 w-[380px] bg-white shadow-2xl translate-x-full transition-transform duration-300 flex flex-col z-[999]">
 
@@ -502,6 +502,7 @@
                             <span class="text-sm text-gray-500">Total</span>
                             <span class="text-lg font-semibold text-gray-900" id="sidebarTotal">Rp 0</span>
                         </div>
+                        <p id="roomProgressHint" class="hidden text-xs text-center text-amber-500 mb-2"></p>
                         <a id="bookingLink" href="/booking"
                             class="block w-full text-center bg-teal-700 text-white py-3 rounded-xl text-sm font-medium hover:bg-teal-800 transition">
                             View reservation →
