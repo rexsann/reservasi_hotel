@@ -746,6 +746,7 @@
         }
 
         // ── LOAD AVAILABLE ROOMS ─────────────────────────────────────────────────
+        // ── LOAD AVAILABLE ROOMS ─────────────────────────────────────────────────
         function fetchAvailableRooms(reservationId, checkin, checkout, roomTypeId) {
             const params = new URLSearchParams({
                 checkin,
@@ -759,9 +760,13 @@
                 .then(data => data.rooms || []);
         }
 
+        // Simpan semua data rooms per index secara global agar bisa di-filter ulang
+        let allRoomData = [];
+
         async function buildRoomSelectors() {
             const container = document.getElementById('e-room-selectors');
             container.innerHTML = '';
+            allRoomData = [];
 
             const allRooms = await Promise.all(
                 currentGroup.map(item =>
@@ -769,32 +774,76 @@
                 )
             );
 
+            // Simpan data rooms per index
             currentGroup.forEach((item, i) => {
-                const rooms    = allRooms[i];
+                allRoomData[i] = allRooms[i];
+            });
+
+            // Render semua selector
+            currentGroup.forEach((item, i) => {
                 const label    = currentGroup.length > 1
                     ? `Room ${i + 1} — <span class="font-normal text-gray-400">${item.roomType}</span>`
                     : 'Room Number';
                 const selectId = `e-room-select-${i}`;
 
+                container.innerHTML += `
+                    <div>
+                        <label class="block text-xs font-medium text-gray-500 mb-1">${label}</label>
+                        <select id="${selectId}" data-index="${i}"
+                            onchange="onRoomSelectChange()"
+                            class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </select>
+                    </div>`;
+            });
+
+            // Isi options awal
+            refreshRoomOptions();
+        }
+
+        // Ambil semua nilai yang sedang dipilih di semua dropdown (kecuali index tertentu)
+        function getSelectedRoomIds(excludeIndex = -1) {
+            return currentGroup
+                .map((_, i) => {
+                    if (i === excludeIndex) return null;
+                    const sel = document.getElementById(`e-room-select-${i}`);
+                    return sel ? sel.value : null;
+                })
+                .filter(v => v && v !== '');
+        }
+
+        // Re-render options semua dropdown berdasarkan pilihan saat ini
+        function refreshRoomOptions() {
+            currentGroup.forEach((item, i) => {
+                const sel      = document.getElementById(`e-room-select-${i}`);
+                if (!sel) return;
+
+                const selected    = sel.value; // simpan nilai sekarang
+                const takenIds    = getSelectedRoomIds(i); // room yang dipakai dropdown lain
+                const rooms       = allRoomData[i] || [];
+                const available   = rooms.filter(r => !takenIds.includes(String(r.id)));
+
                 let options = '<option value="">-- Select room --</option>';
-                if (rooms.length > 0) {
-                    rooms.forEach(room => {
-                        const selected = String(room.id) === String(item.roomId) ? 'selected' : '';
-                        options += `<option value="${room.id}" ${selected}>${room.room_name}</option>`;
+                if (available.length > 0) {
+                    available.forEach(room => {
+                        const isSelected = String(room.id) === String(selected) ? 'selected' : '';
+                        options += `<option value="${room.id}" ${isSelected}>${room.room_name}</option>`;
                     });
                 } else {
                     options = '<option value="">No rooms available</option>';
                 }
 
-                container.innerHTML += `
-                    <div>
-                        <label class="block text-xs font-medium text-gray-500 mb-1">${label}</label>
-                        <select id="${selectId}" data-index="${i}"
-                            class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            ${options}
-                        </select>
-                    </div>`;
+                sel.innerHTML = options;
+
+                // Restore pilihan sebelumnya kalau masih tersedia
+                if (selected && available.some(r => String(r.id) === String(selected))) {
+                    sel.value = selected;
+                }
             });
+        }
+
+        // Dipanggil tiap kali user ganti pilihan
+        function onRoomSelectChange() {
+            refreshRoomOptions();
         }
 
         // ── STATUS CHANGE ────────────────────────────────────────────────────────
