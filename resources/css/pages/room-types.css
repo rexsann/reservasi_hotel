@@ -46,7 +46,7 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    background: #16a34a;
+    background: #2daf10;;
     color: #fff;
     border: none;
     border-radius: 8px;
@@ -57,7 +57,7 @@
     white-space: nowrap;
     width: auto;
 }
-.rt-btn-add:hover { background: #15803d; }
+.rt-btn-add:hover { background: #2daf10;; }
 
 /* Table */
 .rt-table-wrap {
@@ -73,7 +73,7 @@
     table-layout: fixed;
 }
 .rt-th {
-    background: #16a34a;
+    background: #2daf10;;
     color: rgba(255,255,255,0.75);
     padding: 11px 16px;
     text-align: left;
@@ -141,7 +141,7 @@
 
 /* Inline input */
 .rt-input {
-    border: 1.5px solid #16a34a;
+    border: 1.5px solid #2daf10;
     border-radius: 7px;
     padding: 6px 10px;
     font-size: 13px;
@@ -185,11 +185,11 @@
 .rt-btn-delete:hover { background: #fee2e2; }
 
 .rt-btn-save {
-    background: #16a34a;
+    background: #2daf10;
     color: #fff;
     border: none;
 }
-.rt-btn-save:hover { background: #15803d; }
+.rt-btn-save:hover { background: #2daf10; }
 .rt-btn-save:disabled { opacity: 0.6; cursor: not-allowed; }
 
 .rt-btn-cancel {
@@ -220,7 +220,7 @@
     to   { opacity: 1; transform: scale(1) translateY(0); }
 }
 .rt-modal-header {
-    background: #16a34a;
+    background: #2daf10;
     padding: 14px 18px;
     display: flex;
     align-items: center;
@@ -263,7 +263,7 @@
     box-sizing: border-box;
 }
 .rt-modal-input:focus {
-    border-color: #16a34a;
+    border-color: #2daf10;
     box-shadow: 0 0 0 3px rgba(22,163,74,0.1);
 }
 .rt-error { font-size: 11.5px; color: #dc2626; margin-top: 5px; }
@@ -290,7 +290,7 @@
     padding: 10px;
     border-radius: 8px;
     border: none;
-    background: #16a34a;
+    background: #2daf10;
     color: #fff;
     font-size: 13px;
     font-weight: 600;
