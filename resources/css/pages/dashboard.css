@@ -1,12 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap');
 
 /* ==================================================
-   DASHBOARD
+   DASHBOARD — Stayzy Hotel
 ================================================== */
 
 * { font-family: 'Plus Jakarta Sans', sans-serif; }
 
-/* ===== STAT GRID ===== */
+/* ─────────────────────────────────────────────────
+   STAT GRID
+───────────────────────────────────────────────── */
 .stat-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -16,47 +18,47 @@
 
 .stat-card {
     background: #fff;
-    border: 1px solid #e8f5e9;
-    border-radius: 16px;
-    padding: 22px;
-    box-shadow: 0 2px 12px rgba(45,175,16,.06);
-    transition: .2s;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    padding: 22px 22px 20px;
     position: relative;
     overflow: hidden;
+    transition: transform .2s, box-shadow .2s;
 }
 
 .stat-card:hover {
     transform: translateY(-3px);
-    box-shadow: 0 10px 28px rgba(45,175,16,.10);
+    box-shadow: 0 12px 32px rgba(0,0,0,.08);
 }
 
+/* accent bar kiri */
+.stat-card-accent {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 4px;
+    height: 100%;
+    border-radius: 18px 0 0 18px;
+}
+
+/* lingkaran dekoratif kanan atas */
 .stat-card::before {
     content: '';
     position: absolute;
-    right: -30px;
-    top: -30px;
-    width: 110px;
-    height: 110px;
+    right: -28px;
+    top: -28px;
+    width: 100px;
+    height: 100px;
     border-radius: 50%;
-    background: rgba(45,175,16,.05);
-}
-
-.stat-card::after {
-    content: '';
-    position: absolute;
-    right: -10px;
-    top: -10px;
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
-    background: rgba(45,175,16,.04);
+    background: rgba(34,197,94,.06);
+    pointer-events: none;
 }
 
 .stat-card-top {
     display: flex;
+    align-items: center;
     justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 18px;
+    margin-bottom: 16px;
 }
 
 .stat-card-label {
@@ -67,34 +69,40 @@
     color: #94a3b8;
 }
 
+/* icon */
 .stat-card-icon {
-    width: 42px;
-    height: 42px;
-    border-radius: 12px;
-    background: linear-gradient(135deg, #f0fdf4, #dcfce7);
-    border: 1px solid #bbf7d0;
-    color: #16a34a;
+    width: 40px;
+    height: 40px;
+    border-radius: 11px;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    position: relative;
-    z-index: 1;
 }
 
 .stat-card-icon svg {
-    width: 19px;
-    height: 19px;
+    width: 18px;
+    height: 18px;
 }
 
+.stat-card-icon.blue   { background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
+.stat-card-icon.green  { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
+.stat-card-icon.amber  { background: #fffbeb; color: #d97706; border: 1px solid #fde68a; }
+.stat-card-icon.red    { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+.stat-card-icon.orange { background: #fff7ed; color: #ea580c; border: 1px solid #fed7aa; }
+
 .stat-card-value {
-    font-family: 'Plus Jakarta Sans', sans-serif;
     font-size: 36px;
     font-weight: 800;
     line-height: 1;
     color: #0f172a;
-    margin-bottom: 6px;
     letter-spacing: -.02em;
+    margin-bottom: 6px;
+}
+
+.stat-card-value.income {
+    font-size: 22px;
+    letter-spacing: -.01em;
 }
 
 .stat-card-sub {
@@ -103,102 +111,38 @@
     font-weight: 500;
 }
 
-.stat-badge {
-    display: inline-flex;
+/* chips confirmed / pending */
+.stat-chips {
+    display: flex;
     align-items: center;
     gap: 6px;
-    margin-top: 10px;
-    background: #f0fdf4;
-    color: #15803d;
-    border: 1px solid #bbf7d0;
-    border-radius: 999px;
-    padding: 5px 12px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+}
+
+.chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
     font-size: 11px;
     font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 999px;
 }
 
-/* ===== QUICK STATS ===== */
-.quick-band {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-    margin-bottom: 28px;
-}
-
-.quick-card {
-    background: #fff;
-    border: 1px solid #e8f5e9;
-    border-radius: 16px;
-    padding: 18px 20px;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    box-shadow: 0 2px 12px rgba(45,175,16,.06);
-    transition: .2s;
-}
-
-.quick-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(0,0,0,.07);
-}
-
-.quick-card-icon {
-    width: 46px;
-    height: 46px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.chip-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
     flex-shrink: 0;
 }
 
-.quick-card-icon svg {
-    width: 20px;
-    height: 20px;
-}
+.chip-green { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
+.chip-amber { background: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
 
-.quick-card-icon.available {
-    background: linear-gradient(135deg, #f0fdf4, #dcfce7);
-    color: #16a34a;
-    border: 1px solid #bbf7d0;
-}
-
-.quick-card-icon.occupied {
-    background: linear-gradient(135deg, #fef2f2, #fee2e2);
-    color: #dc2626;
-    border: 1px solid #fecaca;
-}
-
-.quick-card-icon.checkin {
-    background: linear-gradient(135deg, #eff6ff, #dbeafe);
-    color: #2563eb;
-    border: 1px solid #bfdbfe;
-}
-
-.quick-card-label {
-    font-size: 11px;
-    color: #94a3b8;
-    margin-bottom: 4px;
-    text-transform: uppercase;
-    letter-spacing: .07em;
-    font-weight: 700;
-}
-
-.quick-card-value {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 28px;
-    font-weight: 800;
-    line-height: 1;
-    letter-spacing: -.02em;
-}
-
-.quick-card-value.available { color: #16a34a; }
-.quick-card-value.occupied  { color: #dc2626; }
-.quick-card-value.checkin   { color: #2563eb; }
-
-
-
-/* ===== TABLE HEADER ===== */
+/* ─────────────────────────────────────────────────
+   TABLE HEADER
+───────────────────────────────────────────────── */
 .table-section-head {
     display: flex;
     align-items: center;
@@ -229,20 +173,20 @@
     padding: 8px 16px;
     border-radius: 10px;
     text-decoration: none;
-    transition: .15s;
+    transition: background .15s;
 }
 
-.table-link:hover {
-    background: #dcfce7;
-}
+.table-link:hover { background: #dcfce7; }
 
-/* ===== TABLE ===== */
+/* ─────────────────────────────────────────────────
+   TABLE
+───────────────────────────────────────────────── */
 .table-wrapper {
     background: #fff;
-    border: 1px solid #e8f5e9;
-    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
     overflow: hidden;
-    box-shadow: 0 2px 12px rgba(45,175,16,.06);
+    box-shadow: 0 2px 12px rgba(0,0,0,.04);
 }
 
 .table-wrapper table {
@@ -250,43 +194,43 @@
     border-collapse: collapse;
 }
 
+/* thead — green gradient brand */
 .table-wrapper thead {
-    background: linear-gradient(135deg, #2daf10, #22c55e);
+    background: linear-gradient(135deg, #16a34a, #22c55e);
 }
 
 .table-wrapper th {
-    padding: 14px 18px;
+    padding: 13px 18px;
     text-align: left;
     font-size: 11px;
     font-weight: 700;
-    color: #fff;
+    color: rgba(255,255,255,.85);
     text-transform: uppercase;
     letter-spacing: .09em;
+    white-space: nowrap;
 }
 
 .table-wrapper td {
-    padding: 15px 18px;
+    padding: 14px 18px;
+    vertical-align: middle;
 }
 
 .table-wrapper tbody tr {
     border-bottom: 1px solid #f1f5f9;
-    transition: .12s;
+    transition: background .1s;
 }
 
-.table-wrapper tbody tr:last-child {
-    border-bottom: none;
-}
+.table-wrapper tbody tr:last-child { border-bottom: none; }
+.table-wrapper tbody tr:hover { background: #fafdfb; }
 
-.table-wrapper tbody tr:hover {
-    background: #fafdfb;
-}
-
-/* ===== TABLE DETAIL ===== */
+/* ─────────────────────────────────────────────────
+   TABLE CELLS
+───────────────────────────────────────────────── */
 .td-id {
-    color: #cbd5e1;
-    font-size: 11px;
-    font-weight: 700;
     font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    color: #cbd5e1;
 }
 
 .td-code {
@@ -298,6 +242,7 @@
     border-radius: 7px;
     font-size: 11px;
     font-weight: 500;
+    white-space: nowrap;
 }
 
 .td-guest-name {
@@ -329,29 +274,50 @@
 .td-date {
     font-size: 12px;
     color: #475569;
-    white-space: nowrap;
     font-weight: 600;
+    white-space: nowrap;
 }
 
-/* ===== STATUS ===== */
+/* ─────────────────────────────────────────────────
+   STATUS BADGE
+───────────────────────────────────────────────── */
 .status-badge {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
+    gap: 6px;
     border-radius: 999px;
-    padding: 5px 13px;
+    padding: 5px 12px;
     font-size: 11px;
     font-weight: 700;
     white-space: nowrap;
 }
 
-.status-confirmed  { background: #f0fdf4; border: 1px solid #bbf7d0; color: #15803d; }
-.status-pending    { background: #fffbeb; border: 1px solid #fde68a; color: #b45309; }
-.status-cancelled  { background: #fef2f2; border: 1px solid #fecaca; color: #dc2626; }
-.status-checkedout { background: #f8fafc; border: 1px solid #e2e8f0; color: #64748b; }
-.status-default    { background: #eff6ff; border: 1px solid #bfdbfe; color: #2563eb; }
+/* dot di dalam badge */
+.status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
 
-/* ===== EMPTY ===== */
+.status-confirmed  { background: #f0fdf4; border: 1px solid #bbf7d0; color: #15803d; }
+.status-confirmed  .status-dot { background: #16a34a; }
+
+.status-pending    { background: #fffbeb; border: 1px solid #fde68a; color: #b45309; }
+.status-pending    .status-dot { background: #d97706; }
+
+.status-cancelled  { background: #fef2f2; border: 1px solid #fecaca; color: #dc2626; }
+.status-cancelled  .status-dot { background: #dc2626; }
+
+.status-checkedout { background: #f8fafc; border: 1px solid #e2e8f0; color: #64748b; }
+.status-checkedout .status-dot { background: #94a3b8; }
+
+.status-default    { background: #eff6ff; border: 1px solid #bfdbfe; color: #2563eb; }
+.status-default    .status-dot { background: #2563eb; }
+
+/* ─────────────────────────────────────────────────
+   EMPTY STATE
+───────────────────────────────────────────────── */
 .empty-row td {
     padding: 60px;
     text-align: center;
@@ -360,7 +326,9 @@
     font-weight: 500;
 }
 
-/* ===== RESPONSIVE ===== */
+/* ─────────────────────────────────────────────────
+   RESPONSIVE
+───────────────────────────────────────────────── */
 @media (max-width: 900px) {
     .stat-grid  { grid-template-columns: 1fr; }
     .quick-band { grid-template-columns: 1fr; }
