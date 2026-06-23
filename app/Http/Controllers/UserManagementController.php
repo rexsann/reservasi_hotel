@@ -12,18 +12,16 @@ class UserManagementController extends Controller
     $search = $request->search;
 
     $users = User::query()
+    ->when($search, function ($query) use ($search) {
 
-        ->when($search, function ($query) use ($search) {
+        $query->where('name', 'like', '%' . $search . '%')
+              ->orWhere('email', 'like', '%' . $search . '%');
 
-            $query->where('name', 'like', '%' . $search . '%')
-                  ->orWhere('email', 'like', '%' . $search . '%');
-                  
+    })
 
-        })
-
-        ->withCount('reservations')
-        ->latest()
-        ->get();
+    ->withCount('reservations')
+    ->orderBy('id', 'asc')
+    ->get();
 
     return view('admin.user_management', compact('users'));
 }
