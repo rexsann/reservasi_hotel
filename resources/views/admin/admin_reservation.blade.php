@@ -1,5 +1,9 @@
 @extends('Layouts.layout')
 
+@section('styles')
+    @vite(['resources/css/pages/reservation.css'])
+@endsection
+
 @section('content')
     {{-- HEADER --}}
     <div class="flex justify-between items-center mb-6">
@@ -49,14 +53,12 @@
                 <button onclick="switchTab('aktif')" id="tab-aktif"
                     class="tab-btn px-4 py-2.5 border-b-2 border-blue-600 text-blue-600 transition">
                     Active
-                    <span class="ml-1.5 bg-blue-100 text-blue-600 text-xs px-1.5 py-0.5 rounded-full">{{ $aktif->count() }}</span>
                 </button>
             </li>
             <li>
                 <button onclick="switchTab('riwayat')" id="tab-riwayat"
                     class="tab-btn px-4 py-2.5 border-b-2 border-transparent text-gray-400 hover:text-gray-600 transition">
                     History
-                    <span class="ml-1.5 bg-gray-100 text-gray-500 text-xs px-1.5 py-0.5 rounded-full">{{ $riwayat->count() }}</span>
                 </button>
             </li>
         </ul>
@@ -247,7 +249,7 @@
                         @endphp
                         <tr class="hover:bg-gray-50 transition"
                             data-search="{{ strtolower($res->name . ' ' . $res->email . ' ' . $res->reservation_code . ' ' . $res->room_name . ' ' . $res->roomType?->name) }}">
-                            <td class="px-4 py-3 text-gray-400 text-xs">#{{ str_pad($res->id, 3, '0', STR_PAD_LEFT) }}</td>
+                            <td class="px-4 py-3 text-gray-400 text-xs">{{ str_pad($res->id, 3, '0', STR_PAD_LEFT) }}</td>
                             <td class="px-4 py-3">
                                 @if ($res->reservation_code)
                                     <span class="text-xs font-semibold text-blue-600 bg-blue-50 px-2 py-1 rounded-lg">
@@ -510,16 +512,19 @@
 
         // ── TAB SWITCH ──────────────────────────────────────────────────────────
         function switchTab(tab) {
-            const isAktif = tab === 'aktif';
-            document.getElementById('panel-aktif').classList.toggle('hidden', !isAktif);
-            document.getElementById('panel-riwayat').classList.toggle('hidden', isAktif);
-            document.getElementById('filter-aktif').classList.toggle('hidden', !isAktif);
+    const isAktif = tab === 'aktif';
+    document.getElementById('panel-aktif').classList.toggle('hidden', !isAktif);
+    document.getElementById('panel-riwayat').classList.toggle('hidden', isAktif);
+    document.getElementById('filter-aktif').classList.toggle('hidden', !isAktif);
 
-            const activeClass   = 'tab-btn px-4 py-2.5 border-b-2 border-blue-600 text-blue-600 transition';
-            const inactiveClass = 'tab-btn px-4 py-2.5 border-b-2 border-transparent text-gray-400 hover:text-gray-600 transition';
-            document.getElementById('tab-aktif').className   = isAktif ? activeClass : inactiveClass;
-            document.getElementById('tab-riwayat').className = isAktif ? inactiveClass : activeClass;
-        }
+    const tabAktif   = document.getElementById('tab-aktif');
+    const tabRiwayat = document.getElementById('tab-riwayat');
+
+    tabAktif.style.borderBottom   = isAktif ? '2px solid #16a34a' : '2px solid transparent';
+    tabAktif.style.color          = isAktif ? '#16a34a' : '#9ca3af';
+    tabRiwayat.style.borderBottom = isAktif ? '2px solid transparent' : '2px solid #16a34a';
+    tabRiwayat.style.color        = isAktif ? '#9ca3af' : '#16a34a';
+}
 
         // ── SEARCH & FILTER ──────────────────────────────────────────────────────
         function filterTable() {
