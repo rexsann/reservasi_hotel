@@ -109,7 +109,7 @@ Route::get('/reservation/invoice', [ReservationController::class, 'invoice'])
     ->name('reservation.invoice');
 
 // ─── ADMIN ROUTES ─────────────────────────────────────────────
-Route::prefix('admin')->name('admin.')->group(function () {
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
 
     // Dashboard
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
