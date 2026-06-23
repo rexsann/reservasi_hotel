@@ -10,6 +10,43 @@ $allBenefits = [
 ];
 @endphp
 
+{{-- ═══ FLASH MESSAGES ═══ --}}
+@if (session('success'))
+    <div id="flash-success"
+         class="flex items-center gap-3 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl text-sm mb-5">
+        <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        <span>{{ session('success') }}</span>
+        <button onclick="document.getElementById('flash-success').remove()"
+                class="ml-auto text-green-400 hover:text-green-600">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+        </button>
+    </div>
+@endif
+
+@if ($errors->any())
+    <div id="flash-error"
+         class="flex items-center gap-3 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm mb-5">
+        <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        <ul class="list-none">
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+        <button onclick="document.getElementById('flash-error').remove()"
+                class="ml-auto text-red-400 hover:text-red-600">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+        </button>
+    </div>
+@endif
+
 <div class="grid lg:grid-cols-3 gap-5">
     
     {{-- FORM --}}
@@ -74,114 +111,81 @@ $allBenefits = [
     </div>
 
     {{-- LIST --}}
-<div class="lg:col-span-2">
+    <div class="lg:col-span-2">
 
-    @foreach($types as $type)
+        @foreach($types as $type)
 
-        @php
-            $offerList = $offers->where('room_type_id', $type->id);
-        @endphp
+            @php
+                $offerList = $offers->where('room_type_id', $type->id);
+            @endphp
 
-        <div style="margin-bottom:22px;">
+            <div class="type-section">
 
-            <div class="type-header">
-                <div>
-                    <div class="type-header-name">
-                        {{ $type->name }}
+                <div class="type-header">
+                    <div>
+                        <div class="type-header-name">{{ $type->name }}</div>
+                        <div class="type-header-sub">Room Type</div>
                     </div>
-
-                    <div class="type-header-sub">
-                        Room Type
-                    </div>
+                    <span class="type-count-badge">{{ $offerList->count() }} Offer</span>
                 </div>
 
-                <span class="type-count-badge">
-                    {{ $offerList->count() }} Offer
-                </span>
-            </div>
+                @forelse($offerList as $offer)
 
-            @forelse($offerList as $offer)
+                    @php
+                        $benefits = json_decode($offer->benefits, true) ?? [];
+                    @endphp
 
-                @php
-                    $benefits = json_decode($offer->benefits, true) ?? [];
-                @endphp
+                    <div class="offer-card">
 
-                <div class="offer-card">
-
-                    <div class="offer-card-top">
-                        <div>
-                            <div class="offer-card-name">
-                                {{ $offer->name }}
+                        <div class="offer-card-top">
+                            <div>
+                                <div class="offer-card-name">{{ $offer->name }}</div>
+                            </div>
+                            <div class="offer-price-pill">
+                                <div class="offer-price-num">Rp {{ number_format($offer->price,0,',','.') }}</div>
+                                <span class="offer-price-night">per night</span>
                             </div>
                         </div>
 
-                        <div class="offer-price-pill">
-                            <div class="offer-price-num">
-                                Rp {{ number_format($offer->price,0,',','.') }}
+                        @if(count($benefits))
+                            <div class="offer-tags-row">
+                                @foreach($benefits as $i => $b)
+                                    <span class="offer-tag tag-{{ $i % 8 }}">{{ $b }}</span>
+                                @endforeach
                             </div>
+                        @endif
 
-                            <span class="offer-price-night">
-                                per night
-                            </span>
-                        </div>
-                    </div>
-
-                    @if(count($benefits))
-                        <div class="offer-tags-row">
-                            @foreach($benefits as $i => $b)
-                                <span class="offer-tag tag-{{ $i % 8 }}">
-                                    {{ $b }}
-                                </span>
-                            @endforeach
-                        </div>
-                    @endif
-
-                    <div class="offer-card-actions">
-
-                        <button
-                            type="button"
-                            class="btn-edit"
-                            onclick='openEditModal(
-                                {{ $offer->id }},
-                                {{ $offer->price }},
-                                @json($benefits)
-                            )'>
-                            Edit
-                        </button>
-
-                        <form
-                            action="/admin/offers/{{ $offer->id }}"
-                            method="POST"
-                            style="margin:0;"
-                        >
-                            @csrf
-                            @method('DELETE')
+                        <div class="offer-card-actions">
 
                             <button
-                                type="submit"
-                                class="btn-delete"
-                                onclick="return confirm('Delete offer?')"
-                            >
-                                Delete
+                                type="button"
+                                class="btn-edit"
+                                onclick='openEditModal({{ $offer->id }}, {{ $offer->price }}, @json($benefits))'>
+                                Edit
                             </button>
 
-                        </form>
+                            <form action="/admin/offers/{{ $offer->id }}" method="POST" style="margin:0;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn-delete"
+                                        onclick="return confirm('Delete this offer?')">
+                                    Delete
+                                </button>
+                            </form>
+
+                        </div>
 
                     </div>
 
-                </div>
+                @empty
+                    <div class="offer-empty">No offers available for {{ $type->name }}</div>
+                @endforelse
 
-            @empty
+            </div>
 
-                <div class="offer-empty">
-                    No offers available for {{ $type->name }}
-                </div>
+        @endforeach
 
-            @endforelse
-
-        </div>
-
-    @endforeach
+    </div>
 
 </div>
 
@@ -224,9 +228,7 @@ $allBenefits = [
                     style="flex:1; padding:10px; border:1px solid #e2e8f0; border-radius:10px; background:white; color:#64748b; font-size:13px; cursor:pointer;">
                     Cancel
                 </button>
-                <button type="submit" class="btn-save" style="flex:1; margin:0;">
-                    Save Changes
-                </button>
+                <button type="submit" class="btn-save" style="flex:1; margin:0;">Save Changes</button>
             </div>
         </form>
 
@@ -236,37 +238,36 @@ $allBenefits = [
 <script>
 function openEditModal(id, price, benefits) {
     document.getElementById('edit-price').value = price;
-
     document.querySelectorAll('.edit-benefit-cb').forEach(cb => {
         cb.checked = benefits.includes(cb.value);
     });
-
     document.getElementById('edit-form').action = '/admin/offers/' + id;
-
-    // Pindahkan modal ke body agar position:fixed tidak terpengaruh parent
     var modal = document.getElementById('edit-modal');
     document.body.appendChild(modal);
-
     modal.style.display = 'flex';
     document.body.style.overflow = 'hidden';
 }
 
 function closeEditModal() {
-    document.getElementById('edit-modal').style.display = 'none'; {{-- FIXED: was 'flex', should be 'none' --}}
+    document.getElementById('edit-modal').style.display = 'none';
     document.body.style.overflow = '';
 }
 
 function handleBackdropClick(e) {
-    if (e.target.id === 'edit-modal') {
-        closeEditModal();
-    }
+    if (e.target.id === 'edit-modal') closeEditModal();
 }
 
 document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-        closeEditModal();
-    }
+    if (e.key === 'Escape') closeEditModal();
 });
+
+// Auto-dismiss flash alert setelah 4 detik
+setTimeout(() => {
+    const s = document.getElementById('flash-success');
+    const er = document.getElementById('flash-error');
+    if (s) s.remove();
+    if (er) er.remove();
+}, 4000);
 </script>
 
 @endsection
