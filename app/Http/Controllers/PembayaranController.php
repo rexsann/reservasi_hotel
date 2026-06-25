@@ -5,19 +5,26 @@ namespace App\Http\Controllers;
 use App\Models\Payment;
 use App\Models\Reservation;
 use App\Mail\InvoiceMail;
+use App\Mail\RejectionMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
 class PembayaranController extends Controller
 {
     public function index()
-    {
-        $pembayaran = Payment::with('reservation')
-            ->latest()
-            ->get();
+{
+    $pembayaran = Payment::with(['reservation.roomType'])
+        ->latest()
+        ->get()
+        ->map(function ($payment) {
+            $payment->groupReservations = Reservation::with('roomType')
+                ->where('reservation_code', $payment->reservation->reservation_code)
+                ->get();
+            return $payment;
+        });
 
-        return view('admin.pembayaran', compact('pembayaran'));
-    }
+    return view('admin.pembayaran', compact('pembayaran'));
+}
 
     public function updateStatus(Request $request, $id)
     {
@@ -45,7 +52,11 @@ class PembayaranController extends Controller
 
         } elseif ($request->status === 'Rejected') {
             Reservation::where('reservation_code', $reservationCode)
-                ->update(['status' => 'Pending Payment']);
+                ->update(['status' => 'Cancelled']);
+
+            // Kirim email penolakan ke tamu
+            Mail::to($reservation->email)
+                ->send(new RejectionMail($payment, $request->alasan));
         }
 
         return response()->json(['message' => 'Status updated']);
