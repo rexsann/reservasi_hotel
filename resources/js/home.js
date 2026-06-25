@@ -1,5 +1,6 @@
 import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
+import Swal from "sweetalert2";
 
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -26,10 +27,8 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
-        // Restore tampilan kalau balik dari hasil search
         const checkIn  = document.getElementById('checkIn')?.value;
         const checkOut = document.getElementById('checkOut')?.value;
-
         if (checkIn && checkOut) {
             el._flatpickr.setDate([checkIn, checkOut]);
         }
@@ -40,7 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const savedRooms  = urlParams.get('rooms');
     const savedGuests = urlParams.get('guests');
-    if (savedRooms)  {
+    if (savedRooms) {
         const el = document.getElementById('roomsInput');
         if (el) el.value = savedRooms;
     }
@@ -48,6 +47,30 @@ document.addEventListener("DOMContentLoaded", () => {
         const el = document.getElementById('guestsInput');
         if (el) el.value = savedGuests;
     }
+
+    // ── Validasi guest saat input berubah ─────────────────
+    const guestsInput = document.getElementById('guestsInput');
+    const roomsInput  = document.getElementById('roomsInput');
+
+    function validateGuests() {
+        const rooms     = parseInt(roomsInput?.value)  || 1;
+        const guests    = parseInt(guestsInput?.value) || 1;
+        const maxGuests = rooms * 2;
+
+        if (guests > maxGuests) {
+            guestsInput.value = maxGuests;
+            Swal.fire({
+                icon: 'warning',
+                title: 'Too Many Guests',
+                html: `Maximum <b>${maxGuests} guests</b> for <b>${rooms} room${rooms > 1 ? 's' : ''}</b>.<br>Each room fits up to 2 guests.`,
+                confirmButtonColor: '#2563eb',
+                confirmButtonText: 'Got it',
+            });
+        }
+    }
+
+    if (guestsInput) guestsInput.addEventListener('change', validateGuests);
+    if (roomsInput)  roomsInput.addEventListener('change', validateGuests);
 
     // ── Auto scroll ke #rooms setelah search ─────────────
     if (urlParams.get('check_in') && urlParams.get('check_out')) {
@@ -63,16 +86,40 @@ document.addEventListener("DOMContentLoaded", () => {
 window.handleSearch = function () {
     const checkIn  = document.getElementById('checkIn').value;
     const checkOut = document.getElementById('checkOut').value;
-    const rooms    = document.getElementById('roomsInput')?.value  || 1;
-    const guests   = document.getElementById('guestsInput')?.value || 1;
+    const rooms    = parseInt(document.getElementById('roomsInput')?.value)  || 1;
+    const guests   = parseInt(document.getElementById('guestsInput')?.value) || 1;
+    const maxGuests = rooms * 2;
 
     if (!checkIn || !checkOut) {
-        alert('Please select check-in and check-out date');
+        Swal.fire({
+            icon: 'warning',
+            title: 'Date Required',
+            text: 'Please select your check-in and check-out date.',
+            confirmButtonColor: '#2563eb',
+            confirmButtonText: 'OK',
+        });
         return;
     }
 
     if (checkIn >= checkOut) {
-        alert('Check-out must be after check-in');
+        Swal.fire({
+            icon: 'error',
+            title: 'Invalid Date',
+            text: 'Check-out date must be after check-in date.',
+            confirmButtonColor: '#2563eb',
+            confirmButtonText: 'Fix Date',
+        });
+        return;
+    }
+
+    if (guests > maxGuests) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Too Many Guests',
+            html: `You selected <b>${rooms} room${rooms > 1 ? 's' : ''}</b> but <b>${guests} guests</b>.<br>Maximum is <b>${maxGuests} guests</b> (2 per room).`,
+            confirmButtonColor: '#2563eb',
+            confirmButtonText: 'Got it',
+        });
         return;
     }
 
@@ -134,9 +181,14 @@ let selectedOrders = [];
 window.addToOrder = function (button) {
     const required = getRooms();
 
-    // Tolak kalau sudah melebihi jumlah rooms yang diminta
     if (selectedOrders.length >= required) {
-        alert(`You can only select ${required} room${required > 1 ? 's' : ''} based on your request.`);
+        Swal.fire({
+            icon: 'warning',
+            title: 'Room Limit Reached',
+            html: `You can only select <b>${required} room${required > 1 ? 's' : ''}</b> based on your request.<br>Remove a room first or increase your room count.`,
+            confirmButtonColor: '#2563eb',
+            confirmButtonText: 'OK',
+        });
         return;
     }
 
@@ -153,8 +205,8 @@ window.addToOrder = function (button) {
     updateBookingLink();
 
     const count = selectedOrders.length;
-    document.getElementById('orderCount').innerText    = count;
-    document.getElementById('sidebarCount').innerText  = count + ' rooms';
+    document.getElementById('orderCount').innerText   = count;
+    document.getElementById('sidebarCount').innerText = count + ' rooms';
     document.getElementById('viewOrderBtn').classList.remove('hidden');
     document.getElementById('viewOrderBtn').classList.add('flex');
 };
@@ -213,12 +265,10 @@ function renderOrders() {
     orderList.innerHTML = html;
     document.getElementById('sidebarTotal').innerText = 'Rp ' + total.toLocaleString('id-ID');
 
-    // ── Progress hint di sidebar ──────────────────────────
     const bookingLink  = document.getElementById('bookingLink');
     const progressHint = document.getElementById('roomProgressHint');
 
     if (count < required) {
-        // Belum cukup — disable tombol booking & tampilkan hint
         if (bookingLink) {
             bookingLink.classList.add('opacity-50', 'pointer-events-none');
         }
@@ -227,7 +277,6 @@ function renderOrders() {
             progressHint.classList.remove('hidden');
         }
     } else {
-        // Sudah sesuai — aktifkan tombol booking & sembunyikan hint
         if (progressHint) {
             progressHint.classList.add('hidden');
         }
