@@ -9,15 +9,18 @@ use App\Models\Payment;
 class PaymentController extends Controller
 {
     public function showPayment(Request $request)
-    {
-        $reservation = Reservation::findOrFail($request->reservation);
+{
+    $reservation = Reservation::with('roomType')->findOrFail($request->reservation);
 
-        // Hitung total semua kamar dalam group
-        $totalPrice = Reservation::where('reservation_code', $reservation->reservation_code)
-            ->sum('total_price');
+    // Ambil semua kamar dalam group yang sama
+    $groupReservations = Reservation::with('roomType')
+        ->where('reservation_code', $reservation->reservation_code)
+        ->get();
 
-        return view('booking.payment', compact('reservation', 'totalPrice'));
-    }
+    $totalPrice = $groupReservations->sum('total_price');
+
+    return view('booking.payment', compact('reservation', 'totalPrice', 'groupReservations'));
+}
 
     public function upload(Request $request)
     {
