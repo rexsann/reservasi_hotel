@@ -55,6 +55,7 @@ class AdminDashboardController extends Controller
 
         $latestReservations = Reservation::latest()
             ->take(5)
+            ->orderBy('id', 'desc')
             ->get();
 
         return view('admin.dashboard', compact(

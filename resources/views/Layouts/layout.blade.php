@@ -38,8 +38,6 @@
 
         <nav class="sidebar-nav">
 
-            <div class="nav-section-label">Main</div>
-
             <a href="/admin/dashboard"
                class="nav-item {{ request()->is('admin/dashboard') ? 'active' : '' }}">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -66,9 +64,6 @@
                 </svg>
                 Users
             </a>
-
-            <div class="sidebar-divider"></div>
-            <div class="nav-section-label">Hotel</div>
 
             <a href="/admin/rooms"
                class="nav-item {{ request()->is('admin/rooms*') ? 'active' : '' }}">

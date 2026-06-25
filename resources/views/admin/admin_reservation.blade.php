@@ -7,10 +7,6 @@
 @section('content')
     {{-- HEADER --}}
     <div class="flex justify-between items-center mb-6">
-        <div>
-            <h2 class="text-xl font-semibold text-gray-800">Reservations Management</h2>
-            <p class="text-sm text-gray-400">Manage your hotel reservations</p>
-        </div>
         <button onclick="openModalTambah()"
             class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
