@@ -43,7 +43,11 @@
             </div>
             <div class="flex justify-between text-sm">
                 <span class="text-gray-400">Room</span>
-                <span class="font-medium text-gray-700">{{ $item->reservation->room_name ?? '-' }}</span>
+                <div class="text-right space-y-0.5">
+                    @foreach ($item->groupReservations as $gr)
+                        <p class="font-medium text-gray-700">{{ $gr->roomType->name ?? '-' }}</p>
+                    @endforeach
+                </div>
             </div>
             <div class="flex justify-between text-sm">
                 <span class="text-gray-400">Stay Dates</span>
