@@ -9,6 +9,7 @@ class Reservation extends Model
     protected $table = 'reservation';
 
     protected $fillable = [
+        'user_id',
         'reservation_code',
         'invoice_code',
         'name',
@@ -43,6 +44,11 @@ class Reservation extends Model
     public function payments()
     {
         return $this->hasMany(Payment::class);
+    }
+
+        public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 
     // RELASI ROOM TYPE

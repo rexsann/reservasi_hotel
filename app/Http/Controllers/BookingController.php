@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Reservation;
+use Illuminate\Support\Facades\Auth;
 use App\Models\RoomType;
 use App\Models\Offer;
 use Carbon\Carbon;
@@ -69,6 +70,7 @@ class BookingController extends Controller
             $subtotal = $offer ? $offer->price * $nights : 0;
 
             $reservation = Reservation::create([
+                'user_id' => Auth::id(),
                 'reservation_code' => $groupCode,
                 'name'             => $name,
                 'email'            => $request->email,
