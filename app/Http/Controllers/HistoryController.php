@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\Reservation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,5 +15,10 @@ class HistoryController extends Controller
             ->latest()
             ->get();
         return view('pages.history', compact('reservasi'));
+
+        $reservasi = Reservation::with(['roomType', 'offer'])
+            ->where('user_id', auth()->id())
+            ->latest()
+            ->get();
     }
 }
