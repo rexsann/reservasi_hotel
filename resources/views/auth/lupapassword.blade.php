@@ -1,53 +1,68 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
     <meta charset="UTF-8">
-    <title>Forget Password</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forget Password - Stayzy Hotel</title>
+
+    @include('auth.partials.auth-style')
 </head>
 
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+<body class="stayzy-auth">
 
-    <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md">
+    <div class="stayzy-glow glow-tl"></div>
+    <div class="stayzy-glow glow-tr"></div>
+    <div class="stayzy-glow glow-bl"></div>
+    <div class="stayzy-glow glow-br"></div>
 
-        <h2 class="text-2xl font-bold text-center mb-6 text-gray-700">
-            Forget Password
-        </h2>
+    <div class="stayzy-blob blob-1"></div>
+    <div class="stayzy-blob blob-2"></div>
+    <div class="stayzy-blob blob-3"></div>
 
+    <div class="stayzy-card">
+
+        <div class="auth-header">
+            <h2>Forgot Password</h2>
+            <p>Enter your email to receive a reset code</p>
+        </div>
 
         <form method="POST" action="{{ route('lupapassword') }}">
             @csrf
 
-            <div class="flex flex-col gap-1">
-                <h5 class="text-lg font-bold text-left text-gray-900">Email</h5>
+            <div class="stayzy-field">
+                <label class="stayzy-label">Email</label>
+
                 <input
                     type="email"
                     name="email"
                     value="{{ old('email') }}"
-                    placeholder="Enter your email"
-                    class="w-full px-3 py-3 border text-lg rounded-lg focus:ring-2 focus:ring-blue-400 {{ $errors->has('email') ? 'border-red-500' : '' }}">
+                    class="stayzy-input {{ $errors->has('email') ? 'has-error' : '' }}"
+                    placeholder="Enter your email">
+
                 @error('email')
-                <p class="text-red-500 text-sm">{{ $message }}</p>
+                    <p class="stayzy-error">{{ $message }}</p>
                 @enderror
             </div>
 
-            <div class="flex flex-col gap-2">
-                <button type="submit"
-                    class="w-full bg-blue-500 text-white py-2 text-lg rounded-lg hover:bg-blue-600 mt-4">
-                    Send Code
-                </button>
-            </div>
+            <button type="submit" class="stayzy-btn">
+                Send Code
+            </button>
 
-            <div class="flex justify-between items-center text-[15px] text-gray-600 mt-3">
+            <div class="stayzy-meta-row">
                 <span>
                     Remember your password?
-                    <a href="/login" class="text-blue-600 font-semibold hover:underline">
+                    <a href="/login" class="stayzy-link">
                         Login here
                     </a>
                 </span>
             </div>
+
         </form>
 
     </div>
 
+</body>
 </html>

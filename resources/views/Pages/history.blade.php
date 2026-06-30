@@ -45,7 +45,7 @@
                 <div>
                   <p class="text-sm text-gray-500">Kamar</p>
                   <p class="font-medium">
-                    {{ $item->room_name ?? 'Tidak tersedia' }} • {{ $item->room_type ?? '-' }}
+                    {{ $item->roomType->name ?? 'Tidak tersedia' }}
                   </p>
                 </div>
 
@@ -68,15 +68,11 @@
                   <p class="font-medium">{{ $item->guest_total }} orang</p>
                 </div>
 
-                {{-- ✅ Offer selalu ditampilkan, dengan fallback jika null --}}
+                {{-- ✅ Offer ditampilkan dari relasi offer() --}}
                 <div>
                   <p class="text-sm text-gray-500">Penawaran</p>
                   @php
-                    $offerName = '-'; // default jika tidak ada offer
-                    if ($item->offer) {
-                        $decoded = json_decode($item->offer, true);
-                        $offerName = '-';
-                    }
+                    $offerName = $item->offer->name ?? '-';
                   @endphp
                   <p class="font-medium {{ $offerName !== '-' ? 'text-blue-600' : 'text-gray-400' }}">
                     {{ $offerName !== '-' ? '🎁 ' . $offerName : $offerName }}
