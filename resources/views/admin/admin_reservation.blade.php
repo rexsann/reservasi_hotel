@@ -5,6 +5,24 @@
 @endsection
 
 @section('content')
+
+{{-- ═══ FLASH MESSAGES ═══ --}}
+@if (session('success'))
+    <div id="flash-success"
+         class="flex items-center gap-3 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl text-sm mb-5">
+        <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        <span>{{ session('success') }}</span>
+        <button onclick="document.getElementById('flash-success').remove()"
+                class="ml-auto text-green-400 hover:text-green-600">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+        </button>
+    </div>
+@endif
+
     {{-- HEADER --}}
     <div class="flex justify-between items-center mb-6">
         <button onclick="openModalTambah()"
@@ -747,7 +765,6 @@
         }
 
         // ── LOAD AVAILABLE ROOMS ─────────────────────────────────────────────────
-        // ── LOAD AVAILABLE ROOMS ─────────────────────────────────────────────────
         function fetchAvailableRooms(reservationId, checkin, checkout, roomTypeId) {
             const params = new URLSearchParams({
                 checkin,
@@ -1010,4 +1027,11 @@
             if (!document.getElementById('modal-edit').classList.contains('hidden'))   closeEditModal();
         });
     </script>
+
+<script>
+setTimeout(() => {
+    const s = document.getElementById('flash-success');
+    if (s) s.remove();
+}, 4000);
+</script>
 @endsection
