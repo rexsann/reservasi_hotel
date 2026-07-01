@@ -203,13 +203,9 @@
                 <hr>
 
                 {{-- Payment Deadline --}}
-                @if (in_array($reservation->status, ['Pending Payment', 'Waiting Verification']))
+                @if ($reservation->status === 'Pending Payment')
                     @php
-                        $deadlineBase =
-                            $reservation->status === 'Waiting Verification'
-                                ? $reservation->paid_at
-                                : $reservation->created_at;
-                        $deadline = \Carbon\Carbon::parse($deadlineBase)->addHours(24);
+                        $deadline = \Carbon\Carbon::parse($reservation->created_at)->addHours(24);
                     @endphp
                     <div id="paymentDeadlineBox" data-deadline="{{ $deadline->toIso8601String() }}"
                         class="flex items-start gap-3 bg-orange-50 border border-orange-200 text-orange-700 p-4 rounded-xl text-sm">

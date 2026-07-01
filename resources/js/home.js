@@ -135,6 +135,11 @@ window.openModal = function (btn) {
     document.getElementById('modalBedText').innerText   = btn.dataset.bed;
     document.getElementById('modalGuestText').innerText = btn.dataset.guest;
 
+    const modalImage = document.getElementById('modalImage');
+    if (modalImage && btn.dataset.image) {
+        modalImage.src = btn.dataset.image;
+    }
+
     const facilities = btn.dataset.facilities.split(',');
     let html = '';
     facilities.forEach(f => {

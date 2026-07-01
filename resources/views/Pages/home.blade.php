@@ -14,7 +14,7 @@
 
                     <!-- Item 1 -->
                     <div class="duration-700 ease-in-out absolute inset-0" data-carousel-item="active">
-                        <img src="/images/logopdi.jpg" class="absolute block w-full h-full object-cover">
+                        <img src="/images/Deluxe_room.jpg" class="absolute block w-full h-full object-cover">
                         <div
                             class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent flex items-center justify-center text-center z-10">
                             <div class="text-white">
@@ -26,7 +26,7 @@
 
                     <!-- Item 2 -->
                     <div class="hidden duration-700 ease-in-out absolute inset-0" data-carousel-item>
-                        <img src="https://picsum.photos/800/500" class="absolute block w-full h-full object-cover">
+                        <img src="/images/Standard_room.jpg" class="absolute block w-full h-full object-cover">
                         <div class="absolute inset-0 bg-black/50 flex items-center justify-center text-center">
                             <div class="text-white">
                                 <h1 class="text-3xl md:text-5xl font-bold">Luxury Hotels</h1>
@@ -37,7 +37,7 @@
 
                     <!-- Item 3 -->
                     <div class="hidden duration-700 ease-in-out absolute inset-0" data-carousel-item>
-                        <img src="https://picsum.photos/800/700" class="absolute block w-full h-full object-cover">
+                        <img src="/images/Superior_room.jpg" class="absolute block w-full h-full object-cover">
                         <div class="absolute inset-0 bg-black/50 flex items-center justify-center text-center">
                             <div class="text-white">
                                 <h1 class="text-3xl md:text-5xl font-bold">Perfect Vacation</h1>
@@ -339,8 +339,16 @@
 
                                     <!-- LEFT -->
                                     <div class="p-6 md:border-r">
-                                        <img src="https://picsum.photos/800/500"
-                                            class="rounded-2xl w-full h-56 object-cover">
+                                        @php
+    $roomImage = match (true) {
+        str_contains(strtolower($type->name), 'deluxe') => '/images/Deluxe_room.jpg',
+        str_contains(strtolower($type->name), 'superior') => '/images/Superior_room.jpg',
+        str_contains(strtolower($type->name), 'standard') => '/images/Standard_room.jpg',
+        default => '/images/Standard_room.jpg',
+    };
+@endphp
+<img src="{{ $roomImage }}" alt="{{ $type->name }}"
+    class="rounded-2xl w-full h-56 object-cover">
                                         <h4 class="mt-5 font-bold text-2xl">{{ $type->name }}</h4>
                                         <p class="text-sm text-gray-500">1 Bed • 2 Guest</p>
 
@@ -356,6 +364,7 @@
                                         <!-- DETAIL BUTTON -->
                                         <button onclick="openModal(this)" data-name="{{ $type->name }}"
                                             data-bed="1 Bed" data-guest="2 Guest"
+                                            data-image="{{ $roomImage }}"
                                             data-facilities="{{ $typeFacilities->pluck('name')->join(', ') }}"
                                             class="mt-6 w-full bg-gray-900 text-white py-3 rounded-xl">
                                             See Details
@@ -415,8 +424,8 @@
 
                         {{-- Image --}}
                         <div class="relative h-48 bg-gray-100">
-                            <img src="https://picsum.photos/800/400" class="w-full h-full object-cover">
-                            <button onclick="closeModal()"
+    <img id="modalImage" src="https://picsum.photos/800/400" class="w-full h-full object-cover">
+    <button onclick="closeModal()" 
                                 class="absolute top-3 right-3 w-8 h-8 bg-white/90 rounded-full flex items-center justify-center text-gray-600 hover:bg-white transition">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"
                                     viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
