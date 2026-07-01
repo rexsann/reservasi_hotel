@@ -6,6 +6,16 @@
 
 <div class="p-2 space-y-6 bg-gray-50 min-h-screen">
 
+    {{-- SESSION ALERT (untuk redirect biasa, jaga-jaga) --}}
+    @if(session('success'))
+        <div id="sessionAlert" class="flex items-center gap-2 bg-green-50 border border-green-200 text-green-700 text-sm px-4 py-3 rounded-xl">
+            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            </svg>
+            {{ session('success') }}
+        </div>
+    @endif
+
     {{-- HEADER --}}
     <div>
         <h1 class="text-2xl font-semibold text-gray-800">Payment Verification</h1>
@@ -69,6 +79,12 @@
     <img id="previewImg" class="max-h-[80%] rounded-xl shadow-lg">
 </div>
 
+{{-- TOAST ALERT --}}
+<div id="toastAlert" class="fixed top-5 right-5 z-[100] hidden items-center gap-2 px-4 py-3 rounded-xl shadow-lg text-sm font-medium transition-all">
+    <svg id="toastIcon" class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"></svg>
+    <span id="toastMessage"></span>
+</div>
+
 <script>
 function switchTab(tab) {
     const isPending = tab === 'pending';
@@ -99,6 +115,33 @@ function previewImage(src) {
     };
 }
 
+function showToast(message, type = 'success') {
+    const toast = document.getElementById('toastAlert');
+    const icon = document.getElementById('toastIcon');
+    const msg = document.getElementById('toastMessage');
+
+    const styles = {
+        success: {
+            box: 'bg-green-50 border border-green-200 text-green-700',
+            path: 'M5 13l4 4L19 7'
+        },
+        error: {
+            box: 'bg-red-50 border border-red-200 text-red-700',
+            path: 'M6 18L18 6M6 6l12 12'
+        }
+    };
+
+    toast.className = `fixed top-5 right-5 z-[100] flex items-center gap-2 px-4 py-3 rounded-xl shadow-lg text-sm font-medium transition-all ${styles[type].box}`;
+    icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${styles[type].path}" />`;
+    msg.textContent = message;
+
+    toast.classList.remove('hidden');
+
+    setTimeout(() => {
+        toast.classList.add('hidden');
+    }, 3000);
+}
+
 function updateStatus(id, status) {
     fetch(`/admin/pembayaran/${id}/status`, {
         method: 'POST',
@@ -109,8 +152,22 @@ function updateStatus(id, status) {
         body: JSON.stringify({ status: status })
     })
     .then(res => res.json())
-    .then(() => location.reload());
+    .then(() => {
+        showToast(status === 'Paid' ? 'Payment confirmed successfully.' : 'Payment rejected.', 'success');
+        setTimeout(() => location.reload(), 1000);
+    })
+    .catch(() => {
+        showToast('Something went wrong.', 'error');
+    });
 }
+
+// auto-hide session alert kalau ada
+document.addEventListener('DOMContentLoaded', () => {
+    const sessionAlert = document.getElementById('sessionAlert');
+    if (sessionAlert) {
+        setTimeout(() => sessionAlert.remove(), 3000);
+    }
+});
 </script>
 
 @endsection
