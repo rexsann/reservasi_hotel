@@ -28,6 +28,7 @@ class OfferController extends Controller
             'name' => 'required|string|max:255',
             'room_type_id' => 'required|exists:room_types,id',
             'price' => 'required|numeric|min:0',
+            'benefits' => 'required|array|min:1',
         ]);
 
                 Offer::create([
@@ -43,16 +44,15 @@ class OfferController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'price' => 'required|numeric|min:0',
-        ]);
+    'price' => 'required|numeric|min:0',
 
-        $offer = Offer::findOrFail($id);
-
-        $offer->update([
-            'price' => $request->price,
-            'benefits' => json_encode($request->benefits ?? []),
-        ]);
-
+    'benefits' => 'required|array|min:1',
+    'benefits.*' => 'string',
+    ],[
+        'benefits.required' => 'Please select at least one benefit.',
+        'benefits.min' => 'Please select at least one benefit.',
+    ]);
+        
         return back()->with('success', 'Offer updated successfully.');
     }
 

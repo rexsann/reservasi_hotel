@@ -133,6 +133,8 @@ class AdminReservationController extends Controller
             Reservation::where('reservation_code', $reservationCode)
                 ->update(['status' => 'Waiting Verification']);
 
+            session()->flash('success', 'Reservation added successfully.');
+
             return response()->json(['success' => true]);
 
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -188,6 +190,8 @@ class AdminReservationController extends Controller
                     $res->update($data);
                 }
 
+                session()->flash('success', $this->statusMessage($status));
+
                 return response()->json(['success' => true]);
             }
 
@@ -218,6 +222,8 @@ class AdminReservationController extends Controller
                 $r->update($data);
             }
 
+            session()->flash('success', $this->statusMessage($status));
+
             return response()->json(['success' => true]);
 
         } catch (\Throwable $e) {
@@ -231,6 +237,9 @@ class AdminReservationController extends Controller
         try {
             $reservation = Reservation::findOrFail($id);
             Reservation::where('reservation_code', $reservation->reservation_code)->delete();
+
+            session()->flash('success', 'Reservation deleted successfully.');
+
             return response()->json(['success' => true]);
         } catch (\Throwable $e) {
             Log::error('Delete reservation #' . $id . ' failed: ' . $e->getMessage());
@@ -277,5 +286,14 @@ class AdminReservationController extends Controller
             ->get();
 
         return response()->json(['rooms' => $rooms]);
+    }
+
+    private function statusMessage($status)
+    {
+        return match ($status) {
+            'Checked Out' => 'Reservation checked out and moved to history.',
+            'Cancelled'   => 'Reservation cancelled and moved to history.',
+            default       => 'Reservation status updated successfully.',
+        };
     }
 }
