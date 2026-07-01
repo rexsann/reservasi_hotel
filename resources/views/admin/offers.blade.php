@@ -214,9 +214,13 @@ $allBenefits = [
             <div class="field-group">
                 <label class="field-label" style="margin-bottom:8px;">Benefits</label>
                 <div class="benefits-grid">
-                    @foreach($allBenefits as $b)
+                    @foreach($allBenefits as $index => $b)
                     <label class="benefit-chip-label">
-                        <input type="checkbox" name="benefits[]" value="{{ $b }}" class="edit-benefit-cb">
+                        <input
+                                type="checkbox"
+                                name="benefits[]"
+                                value="{{ $b }}"
+                                {{ $index == 0 ? 'required' : '' }}>
                         <div class="benefit-chip">{{ $b }}</div>
                     </label>
                     @endforeach
